@@ -29,7 +29,8 @@ return new class extends Migration
             $table->string(column: 'specs')->nullable();
             $table->string(column: 'sides')->nullable();
             $table->string(column: 'maze')->nullable();
-           $table->boolean('common')->default(false);
+            $table->boolean('common')->default(false);
+            $table->boolean('status')->default(true);
             $table->foreignId('boq_config_id')->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig
             $table->unique(['boq_config_id', 'item_code']);
             $table->softDeletes();

@@ -14,10 +14,10 @@ class Category extends Model
         'parent_id', 'category_name', 'category_image', 'description',
         'url', 'meta_title', 'meta_description', 'meta_keywords', 'status'
     ];
-    // public function products()
-    // {
-    //     return $this->hasMany(Product::class);
-    // }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
     // Relationship to parent category
     public function parent()
     {

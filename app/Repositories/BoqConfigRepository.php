@@ -22,15 +22,15 @@ class BoqConfigRepository implements BoqConfigRepositoryInterface
     //     return BoqConfig::create($data);
     // }
 
-    // public function update($id, array $data)
-    // {
+    public function update($id, array $data)
+    {
 
-    //        $boqConfig = BoqConfig::findOrFail($id);
+           $boqConfig = BoqConfig::findOrFail($id);
 
-    //         $boqConfig->update($data);
+            $boqConfig->update($data);
 
-    //     return $boqConfig;
-    // }
+        return $boqConfig;
+    }
 
     // public function delete($id)
     // {

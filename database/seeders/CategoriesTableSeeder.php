@@ -15,6 +15,7 @@ class CategoriesTableSeeder extends Seeder
         DB::table('categories')->insert([
             [
                 'parent_id' => null,
+                'code' => 'baskets',
                 'category_name' => 'Baskets',
                 'category_image' => '',
                 'description' => 'All Basket items',
@@ -28,6 +29,7 @@ class CategoriesTableSeeder extends Seeder
             ],
             [
                 'parent_id' => 1,
+                'code' => 'basket_materials',
                 'category_name' => 'Basket Materials',
                 'category_image' => '',
                 'description' => 'Latest Basket Parts',
@@ -41,6 +43,7 @@ class CategoriesTableSeeder extends Seeder
             ],
             [
                 'parent_id' => null,
+                'code' => 'fences',
                 'category_name' => 'Fences',
                 'category_image' => '',
                 'description' => 'Latest trends in fences',
@@ -54,6 +57,7 @@ class CategoriesTableSeeder extends Seeder
             ],
             [
                 'parent_id' => 3,
+                'code' => 'fence_materials',
                 'category_name' => 'Fence Materials',
                 'category_image' => '',
                 'description' => 'Latest Fence Parts',

@@ -24,8 +24,12 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex">
-                            <a href="{{ route('categories.create') }}" class="btn btn-primary" style="margin-left: auto;">Create Category</a>
+                            {{-- <a href="{{ route('categories.create') }}" class="btn btn-primary" style="margin-left: auto;" disabled>Create Category</a> --}}
                             {{-- <a href="javascript:;" class="btn btn-primary" style="margin-left: auto;" id="create-category-btn">Create Category</a> --}}
+                            <a href="{{ route('categories.create') }}"
+                            class="btn btn-primary disabled-link"
+                            style="margin-left: auto;"
+                            onclick="return false;">Create Category</a>
                         </div>
                         <div class="card-body table-responsive">
                             <table id="categories" class="table table-bordered table-striped text-center">
@@ -72,10 +76,14 @@
                                             {{-- <td>{{ $category->created_at->format('F j, Y') }}</td>
                                             <td>{{ $category->updated_at->format('F j, Y') }}</td> --}}
                                             <td>
-                                                <a href="{{ route('categories.edit', $category->id) }}" class="text-warning"><i class="fas fa-edit"></i></a>
+                                                <a href="{{ route('categories.edit', $category->id) }}" class="text-warning disabled-link"><i class="fas fa-edit"></i></a>
                                                 {{-- <a href="javascript:void(0)" class="confirmDelete text-danger" record="categories" recordid="{{ $category->id }}">
                                                     <i class="fas fa-trash ml-2"></i>
                                                 </a> --}}
+                                                {{-- <a href="{{ route('products.index') }}."/"., $category->id class="text-primary ml-2"><i class="fas fa-plus"></i></a> --}}
+                                                <a href="{{ route('products.index', $category->id) }}" class="text-primary ml-2">
+                                                    <i class="fas fa-plus"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                         @foreach ($category->children as $child)
@@ -111,6 +119,8 @@
                                                     {{-- <a href="javascript:void(0)" class="confirmDelete text-danger" record="categories" recordid="{{ $child->id }}">
                                                         <i class="fas fa-trash ml-2"></i>
                                                     </a> --}}
+                                                    <a href="{{ route('products.index', $child->id) }}" class="text-primary ml-2"><i class="fas fa-plus"></i></a>
+
                                                 </td>
                                             </tr>
                                             @foreach ($child->children as $grandchild)
@@ -149,6 +159,7 @@
                                                     </td> --}}
                                                       <td>
                                                         <a href="{{ route('categories.edit', $grandchild->id) }}" class="text-warning"><i class="fas fa-edit"></i></a>
+                                                        <a href="{{ route('products.index', $grandchild->id) }}" class="text-primary ml-2"><i class="fas fa-plus"></i></a>
 
                                                     </td>
                                                 </tr>

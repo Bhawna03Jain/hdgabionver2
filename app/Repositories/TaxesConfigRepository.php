@@ -66,4 +66,10 @@ class TaxesConfigRepository implements TaxesConfigRepositoryInterface
         $lastId =  TaxesConfig::max('id');
         return $lastId;
     }
+    public function getCode($request){
+        $exist = TaxesConfig::where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code])->exists();
+
+        return $exist;
+
+    }
 }

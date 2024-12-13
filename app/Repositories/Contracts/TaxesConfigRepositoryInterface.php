@@ -7,6 +7,7 @@ namespace App\Repositories\Contracts;
 
 interface TaxesConfigRepositoryInterface
 {
+    public function getCode($code);
     // public function getByBoqConfigAndId($boqConfigId,$id);
     // // public function all();
     // // public function find($id);

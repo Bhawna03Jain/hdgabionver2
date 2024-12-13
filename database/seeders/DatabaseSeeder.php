@@ -22,8 +22,13 @@ class DatabaseSeeder extends Seeder
         $this->call(ManufacturingConfigSeeder::class);
         $this->call(TaxesConfigSeeder::class);
         $this->call(MaterialConfigSeeder::class);
-        // $this->call(CurrencySeeder::class);
-        // $this->call(CountrySeeder::class);
+
+        $this->call(CurrencySeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(LocalesSeeder::class);
+        $this->call(MarginFactorsConfigSeeder::class);
+        $this->call(ProductsTableSeeder::class);
+        $this->call(AttributesTableSeeder::class);
         // $this->call(ExchangeRateSeeder::class);
     }
 }

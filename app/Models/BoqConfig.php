@@ -31,4 +31,8 @@ class BoqConfig extends Model
     {
         return $this->hasMany(TaxesConfig::class);
     }
+    public function marginFactorsConfigs()
+    {
+        return $this->hasMany(MarginFactorConfig::class);
+    }
 }

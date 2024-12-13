@@ -130,7 +130,7 @@
                 </li>
 
                 {{-- Super Admin --}}
-                {{-- <li class="nav-item ">
+                <li class="nav-item ">
                     <a href="#" class="nav-link">
 
                         <i class="nav-icon fas fa-users-cog"></i>
@@ -139,7 +139,7 @@
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview"> --}}
+                    <ul class="nav nav-treeview">
 
                         {{-- <li class="nav-item">
                             <a href="{{ route('templates.index') }}" class="nav-link">
@@ -150,30 +150,30 @@
                             </a>
                         </li> --}}
 
-                        {{-- <li class="nav-item">
+                        <li class="nav-item">
                             <a href="{{ route('adminLocales') }}" class="nav-link">
 
                                 <i class="nav-icon fas fa-globe"></i>
                                 <p>Locale</p>
                             </a>
-                        </li> --}}
-                        {{-- <li class="nav-item">
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('currencies.index') }}" class="nav-link  disabled-link">
 
                                 <i class="nav-icon fas fa-euro-sign"></i>
                                 <p>Currencies</p>
                             </a>
-                        </li> --}}
+                        </li>
 
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('countries.index') }}" class="nav-link  disabled-link">
+                    <li class="nav-item">
+                            <a href="{{ route('countries.index') }}" class="nav-link ">
 
                                 <i class="nav-icon fas fa-flag"></i>
                                 <p>
                                     Country
                                 </p>
                             </a>
-                        </li> --}}
+                        </li>
                         {{-- <li class="nav-item">
                             <a href="#" class="nav-link  disabled-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -199,8 +199,8 @@
                                 <p>Tax Rate</p>
                             </a>
                         </li> --}}
-                    {{-- </ul>
-                </li> --}}
+                    </ul>
+                </li>
                 {{--  Catalog-->Categories, Product, Product Attributes --}}
                 {{-- <li class="nav-item">
                     <a href="{{ route('categories.index') }}" class="nav-link">
@@ -229,7 +229,16 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-header">Master Sheet</li>
+                <li class="nav-header">Master Sheet Inventory</li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/mastersheet/inventory/fence') }}" class="nav-link">
+
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Fences Inventory</p>
+                    </a>
+                </li>
+
+                <li class="nav-header">Master Sheet BOQ</li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-copy"></i>
@@ -242,31 +251,38 @@
 
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/fence') }}" class="nav-link">
+                            <a href="{{ url('/admin/mastersheet/boq/fence') }}" class="nav-link">
 
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>2.5m Fence BOQ</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/fence/materials') }}" class="nav-link">
+                            <a href="{{ url('/admin/mastersheet/boq/fence/materials') }}" class="nav-link">
 
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Materials</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/fence/manufacturing') }}" class="nav-link">
+                            <a href="{{ url('/admin/mastersheet/boq/fence/manufacturing') }}" class="nav-link">
 
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Manufacturing</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/fence/taxes') }}" class="nav-link">
+                            <a href="{{ url('/admin/mastersheet/boq/fence/taxes') }}" class="nav-link">
 
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Taxes</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('/admin/mastersheet/boq/fence/margin-factors') }}" class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Margin Factors</p>
                             </a>
                         </li>
                         {{-- <li class="nav-item">
@@ -295,8 +311,8 @@
                             Products
                             <i class="fas fa-angle-left right"></i>
                             {{-- <span class="badge badge-info right">6</span> --}}
-                        </p>
-                    </a>
+                        {{-- </p> --}}
+                    {{-- </a> --}}
                     <ul class="nav nav-treeview">
                         {{-- <li class="nav-item">
                             <a href="{{ url('admin/products/baskets') }}" class="nav-link">

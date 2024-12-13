@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id(); // auto-incrementing primary key
             // $table->integer('parent_id')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('categories')->onDelete('cascade'); // self-referencing foreign key for parent category
+            $table->string('code');
             $table->string('category_name');
             $table->string('category_image')->nullable();
             // $table->float('category_discount')->nullable(); // assuming discount is a decimal value

@@ -16,11 +16,20 @@ class ManufacturingConfigRepository implements ManufacturingConfigRepositoryInte
                 ->where('boq_config_id', $boqConfigId)
                                  ->where('id', $id)
                                  ->first();
+
     return $config;
     }
+    public function getByBoqConfigAndCode($boqConfigId,$code){
+
+        $config = ManufacturingConfig::withTrashed()
+                    ->where('boq_config_id', $boqConfigId)
+                                     ->where('code', $code)
+                                     ->first();
+        return $config;
+        }
     public function create(array $data)
     {
-
+// dd('create');
         return ManufacturingConfig::create($data);
     }
 
@@ -30,7 +39,7 @@ class ManufacturingConfigRepository implements ManufacturingConfigRepositoryInte
            $manufacturingConfig = ManufacturingConfig::findOrFail($id);
 
             $manufacturingConfig->update($data);
-
+            // dd($manufacturingConfig);
         return $manufacturingConfig;
     }
 
@@ -65,5 +74,11 @@ class ManufacturingConfigRepository implements ManufacturingConfigRepositoryInte
     public function getLastId(){
         $lastId =  ManufacturingConfig::max('id');
         return $lastId;
+    }
+    public function getCode($request){
+        $exist = ManufacturingConfig::where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code])->exists();
+
+        return $exist;
+
     }
 }
