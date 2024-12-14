@@ -23,6 +23,20 @@ class AttributeService
     {
         return $this->attributeRepository->getAll();
     }
+    public function updateAttribute($attributeData, $attributeId) {
+        // Find the attribute by ID
+        $attribute = $this->attributeRepository->findById($attributeId);
+
+        if (!$attribute) {
+            // throw new ModelNotFoundException('Attribute not found.');
+            return false;
+        }
+
+        // Update the attribute
+        $this->attributeRepository->update($attributeData, $attributeId);
+
+        return $attribute;
+    }
 
     // public function getproductById($id)
     // {
@@ -32,9 +46,13 @@ class AttributeService
     // {
     //     return $this->attributeRepository->getAll()->where('category_id',$catid);
     // }
+    public function findByProductAndName($productId, $name) {
+        return $this->attributeRepository->findByProductAndName($productId, $name);
+        // where('product_id', $productId)->where('name', $name)->first();
+    }
     public function createAttribute($data)
     {
-        dd($data);
+        // dd($data);
         return $this->attributeRepository->create($data);
     }
 

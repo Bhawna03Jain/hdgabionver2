@@ -90,15 +90,15 @@
 
                                                         <td>
                                                             <div class="form-group">
-                                                                <input type="text" name="margin_factors[0][country_id]" class="form-control margin-factor-input"
-                                                                value="All" required readonly>
+                                                                <input type="text" name="margin_factors[0][country_name]" class="form-control margin-factor-input"
+                                                                value="Europe" required readonly>
                                                             </div>
                                                         </td>
 
                                                         <td>
                                                             <div class="form-group">
                                                                 <input type="number" name="margin_factors[0][margin_factor]" class="form-control editable-field margin-factor-input"
-                                                                    value="{{ $basic_margin_factor}}" required readonly>
+                                                                    value="{{ $country_margin_factors[0]->margin_factor }}" required readonly>
                                                             </div>
                                                         </td>
 
@@ -129,16 +129,44 @@
                                             <thead>
                                                 <tr>
                                                     <th>Country</th>
-                                                    <th>Margin Factor (%)</th>
+                                                    <th>Margin Factor</th>
+                                                    <th>Discount Percentage</th>
                                                     {{-- <th>Action</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
 
-                                                @forelse ($country_margin_factors as $key => $item)
-                                                    {{-- <tr data-id="{{ $item->id }}">
+                                                {{-- @forelse ($country_margin_factors as $key => $item) --}}
+                                                @forelse ($countries as $key => $item)
+                                                <input type="hidden" name="margin_factors[{{ strtolower($item->id) }}][id]" id="id" value="{{ $item->marginFactors ? $item->marginFactors->id : '' }}">
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <input type="text" name="margin_factors[{{ strtolower($item->id) }}][country_name]" class="form-control margin-factor-input"
+                                                                value=" {{ $item->name }}" required readonly>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <input
+                                                                type="number"
+                                                                name="margin_factors[{{ strtolower($item->id) }}][margin_factor]"
+                                                                class="form-control margin-factor-input editable-field"
+                                                                value="{{ $item->marginFactors ? $item->marginFactors->margin_factor : '' }}"
+                                                                required
+                                                                readonly>
+                                                        </div>
+                                                    </td>0
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <input type="number" name="margin_factors[{{ strtolower($item->id) }}][discount_per]" class="form-control editable-field margin-factor-input"
+                                                                value="{{  $item->marginFactors ? $item->marginFactors->discount_per :''}}" required readonly>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                    {{-- {{-- <tr data-id="{{ $item->id }}"> --}}
 
-                                                        <td>
+                                                        {{-- <td>
                                                             <div class="form-group">
                                                                 <select name="margin_factors[{{ strtolower($item->country->code) }}][country_id]" class="form-control" readonly>
                                                                     @foreach($countries as $country)
@@ -148,23 +176,35 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                        </td>
+                                                        </td> --}}
 
+                                                        {{-- <td>
+                                                            <div class="form-group">
+                                                                <input type="text" name="margin_factors[{{ strtolower($item->country->code) }}][margin_factor]" class="form-control margin-factor-input"
+                                                                    value=" {{ $item->country->name }}" required readonly>
+                                                            </div>
+                                                        </td>
                                                         <td>
                                                             <div class="form-group">
                                                                 <input type="number" name="margin_factors[{{ strtolower($item->country->code) }}][margin_factor]" class="form-control margin-factor-input"
                                                                     value="{{ $item->margin_factor }}" required readonly>
                                                             </div>
                                                         </td>
-
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <input type="number" name="margin_factors[{{ strtolower($item->country->code) }}][margin_factor]" class="form-control margin-factor-input"
+                                                                    value="{{ $item->discount_per }}" required readonly>
+                                                            </div>
+                                                        </td> --}}
+</tr>
                                                         {{-- <td>
                                                             <button type="button" class="btn btn-danger delete-margin-factor-button" data-id="{{ $item->id }}">
                                                                 Delete
                                                             </button>
                                                         </td> --}}
-                                                        <tr>
+                                                        {{-- <tr>
                                                             <td colspan="3">For Future Use</td>
-                                                        </tr>
+                                                        </tr> --}}
                                                     {{-- </tr>  --}}
                                                     @empty
                                                     <tr>

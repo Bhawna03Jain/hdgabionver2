@@ -1,5 +1,13 @@
 @extends('admin.Layout.layout')
-
+@section('style')
+<style>
+    .note-editable{
+        height: 209.614px;
+    background-color: white;
+    color: black;
+    }
+</style>
+@endsection
 @section('content')
 
     <!-- Content Wrapper. Contains page content -->
@@ -150,11 +158,7 @@
                                                     <p class="reset-height"></p>
                                                 </div>
                                             </div>
-
-
-
-
-                                        <div class="row">
+                                        {{-- <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="main_image">Description</label>
@@ -163,10 +167,46 @@
                                                 </div>
                                                 <p class="reset-description"></p>
                                             </div>
+                                        </div> --}}
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="short_description">Short Description</label>
+                                                    <textarea class="form-control" id="short_description" name="attributes[short_description]">
+                                                        {{ old('short_description', $product->attributes->where('name', 'short_description')->first()->value ?? '')}}
+                                                    </textarea>
+                                                </div>
+                                                <p class="reset-short_description"></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="card card-outline card-info">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">
+                                                            Full Description
+                                                        </h3>
+                                                    </div>
+                                                    <!-- /.card-header -->
+                                                    <div class="card-body">
+                                                        <textarea id="summernote" name="attributes[full_description]" style="display: none;">                Place &lt;em&gt;some&lt;/em&gt; &lt;u&gt;text&lt;/u&gt; &lt;strong&gt;here&lt;/strong&gt;
+                                                            {{ old('full_description', $product->attributes->where('name', 'full_description')->first()->value ?? '')}}
+                                                        </textarea>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
+                                                    <input type="hidden" class="form-control" id="main_image" name="main_image" value="{{$product->main_image?$product->main_image:""  }}">
+
                                                     <label for="main_image">Main Image</label>
                                                     <input type="file" class="form-control" id="main_image" name="main_image">
                                                     {{-- Display existing main image if available --}}
@@ -183,6 +223,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="relevant_images">Relevant Images</label>
+                                                    <input type="hidden" class="form-control" id="relevant_images" name="relevant_images" value="{{ $product->relevant_images?$product->relevant_images:"" }}">
                                                     <input type="file" class="form-control" id="relevant_images" name="relevant_images[]" multiple>
                                                     {{-- Display existing relevant images if available --}}
                                                     <div id="rel_image_box">
@@ -190,6 +231,9 @@
                                                             @foreach(json_decode($product->relevant_images) as $image)
                                                                 <img src="{{ asset($image) }}" alt="Relevant Image" width="100">
                                                             @endforeach
+                                                            {{-- @foreach($product->relevant_images as $image)
+                                                            <img src="{{ asset($image) }}" alt="Relevant Image" width="100">
+                                                        @endforeach --}}
                                                         @endif
                                                     </div>
                                                     {{-- @if (isset($product) && $product->relevant_images) --}}
@@ -197,10 +241,7 @@
                                                 <p class="reset-relevant_images"></p>
                                             </div>
                                         </div>
-
-
                                     </div>
-
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-primary" id="save-product">Save
                                             Product</button>

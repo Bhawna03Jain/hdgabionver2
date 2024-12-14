@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id(); // Auto-incrementing ID
             $table->foreignId('country_id')->constrained('countries')->onDelete('cascade'); // Foreign key to countries table
             $table->decimal('margin_factor', 8, 2)->nullable(); // Country-specific margin factor
+            $table->decimal('discount_per', 8, 2)->default(0); // Country-specific margin factor
             $table->unique('country_id'); // Ensures country_id is unique
             $table->integer('cost')->default(0);
             $table->foreignId('boq_config_id')->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig

@@ -42,6 +42,7 @@ class BOQConfigController extends Controller
             case 'margin-factors':
                 $basic_margin_factor = $boqConfig->margin_factor;
                 $country_margin_factors = $boqConfig->marginFactorsConfigs;
+            // dd($country_margin_factors[0]);
                 $countries = $this->countryService->getAllCountries();
                 return view('admin.mastersheet.boq.fence.marginfactors', compact('boqConfig', 'basic_margin_factor', 'country_margin_factors', 'countries'));
 
@@ -62,7 +63,7 @@ class BOQConfigController extends Controller
 
     public function storeOrUpdateFenceConfig(Request $request, $type = "")
     {
-
+// dd($request->all());
         // Define the validation rules and custom messages for each type
         $validationRules = [
             'materials' => [
@@ -82,7 +83,7 @@ class BOQConfigController extends Controller
             ],
             'margin_factors' => [
                 'boqconfigid' => 'required|exists:boq_configs,id',
-                'margin_factors.*.country_id' => 'required',
+                'margin_factors.*.country_name' => 'required',
                 'margin_factors.*.margin_factor' => 'required',
             ],
         ];

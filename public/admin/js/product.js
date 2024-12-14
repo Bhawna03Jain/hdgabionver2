@@ -1,25 +1,41 @@
 
 $(document).ready(function () {
-// ajaxFormSubmit(
-//     "#productCreateForm", // Form ID
-//     "#save-product", // Submit button ID
-//     "/admin/products/store", // Update URL
-//     "POST", // HTTP Method
-//     "Product Created Successfully!" // Success message
-// );
-// handleFormValidation(
-//    "#productCreateForm",
-//    "/admin/products/store",
-//     "Product Created Successfully!",
-//     "reset",
-//     successCallback = null,
-//     isFileUpload = true
-// )
+
+const mainImageInput = document.getElementById('main_image');
+const relevantImageInput = document.getElementById('relevant_images');
+const form = document.querySelector('form');  // Assuming your form is wrapped with <form>
+
+// Main Image Handling
+// if (document.getElementById('main_image_box').innerHTML.trim() !== '') {
+//     // Append the existing main image to the form data
+//     const existingMainImage = document.getElementById('main_image_box').querySelector('img').src;
+//     appendImageToForm(form, 'main_image', existingMainImage);
+// }
+
+// // // Relevant Images Handling
+// if (document.getElementById('rel_image_box').innerHTML.trim() !== '') {
+//     // Append existing relevant images to the form data
+//     const existingRelevantImages = document.getElementById('rel_image_box').querySelectorAll('img');
+//     existingRelevantImages.forEach(img => {
+//         appendImageToForm(form, 'relevant_images[]', img.src);
+//     });
+// }
+
+// function appendImageToForm(form, name, value) {
+//     const input = document.createElement('input');
+//     input.type = 'hidden';
+//     input.name = name;
+//     input.value = value;
+//     form.appendChild(input);
+// }
 
 $("#productCreateForm").submit(function (event) {
     event.preventDefault(); // Prevent default form submission
-
-    // Show loader
+    // appendImageToForm(form, 'main_image', existingMainImage);
+    // document.querySelectorAll('#rel_image_box img').forEach(img => {
+    //     appendImageToForm(form, 'relevant_images[]', img.src);
+    // });
+    // // Show loader
     $("#loader").show();
     // $('.overlay').show();
     // Set form data and handle file upload
@@ -74,8 +90,14 @@ console.log("Redirecting to: " + resp.message);
         },
     });
 });
-$("#save-product").click(function (event) {
+//
+// $("#save-product").click
+$("#productEditForm").submit(function (event) {
     event.preventDefault(); // Prevent default form submission
+    // appendImageToForm(form, 'main_image', existingMainImage);
+    // document.querySelectorAll('#rel_image_box img').forEach(img => {
+    //     appendImageToForm(form, 'relevant_images[]', img.src);
+    // });
     var url = $(this).attr('action');
 
     // Show loader
@@ -149,7 +171,160 @@ document.querySelectorAll('.show-product-images-btn').forEach(button => {
         }
     });
 });
+document.querySelectorAll('.view-description').forEach(link => {
+    link.addEventListener('click', function(e) {
 
+        e.preventDefault(); // Prevent default behavior
+        const productId = this.getAttribute('data-id');
+
+        const descriptionRow = document.getElementById(`full-description-${productId}`);
+
+        if (descriptionRow.style.display === 'none' || descriptionRow.style.display === '') {
+            descriptionRow.style.display = 'table-row'; // Show row
+        } else {
+            descriptionRow.style.display = 'none'; // Hide row
+        }
+    });
+});
+// document.addEventListener('DOMContentLoaded', function () {
+//     // const mainImageInput = document.getElementById('main_image');
+//     console.log(mainImageInput);
+//     if (mainImageInput) { // Check if the element exists
+//         mainImageInput.addEventListener('change', function (event) {
+//             const file = event.target.files[0];
+//             const reader = new FileReader();
+//             reader.onload = function (e) {
+//                 document.getElementById('main_image_box').innerHTML =
+//                     `<img src="${e.target.result}" width="100" />`;
+//             };
+//             reader.readAsDataURL(file);
+//         });
+//     } else {
+//         console.error('Element with ID "main_image" not found.');
+//     }
+// });
+$('#productEditForm #main_image').on('change', function (event) {
+
+if (mainImageInput) { // Check if the element exists
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        document.getElementById('main_image_box').innerHTML =
+            `<img src="${e.target.result}" width="100" />`;
+    };
+    reader.readAsDataURL(file);
+
+} else {
+    console.error('Element with ID "main_image" not found.');
+}
+
+});
+$('#productEditForm #relevant_images').on('change', function (event) {
+    // alert("hi");
+    if (relevantImageInput) { // Check if the element exists
+        const files = event.target.files; // Get all selected files
+            const relImageBox = document.getElementById('rel_image_box'); // Container to display images
+            relImageBox.innerHTML = ''; // Clear any existing content
+
+            Array.from(files).forEach(file => { // Loop through each selected file
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Append each image preview to the container
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imgElement.width = 100;
+                imgElement.style.margin = '5px'; // Add some margin for better spacing
+                relImageBox.appendChild(imgElement);
+            };
+            reader.readAsDataURL(file); // Read the file and trigger onload
+            });
+
+    } else {
+        console.error('Element with ID "main_image" not found.');
+    }
+
+    });
+    $('#productCreateForm #main_image').on('change', function (event) {
+
+        if (mainImageInput) { // Check if the element exists
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('main_image_box').innerHTML =
+                    `<img src="${e.target.result}" width="100" />`;
+            };
+            reader.readAsDataURL(file);
+
+        } else {
+            console.error('Element with ID "main_image" not found.');
+        }
+
+        });
+        $('#productCreateForm #relevant_images').on('change', function (event) {
+            // alert("hi");
+            if (relevantImageInput) { // Check if the element exists
+                const files = event.target.files; // Get all selected files
+                    const relImageBox = document.getElementById('rel_image_box'); // Container to display images
+                    relImageBox.innerHTML = ''; // Clear any existing content
+
+                    Array.from(files).forEach(file => { // Loop through each selected file
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Append each image preview to the container
+                        const imgElement = document.createElement('img');
+                        imgElement.src = e.target.result;
+                        imgElement.width = 100;
+                        imgElement.style.margin = '5px'; // Add some margin for better spacing
+                        relImageBox.appendChild(imgElement);
+                    };
+                    reader.readAsDataURL(file); // Read the file and trigger onload
+                    });
+
+            } else {
+                console.error('Element with ID "main_image" not found.');
+            }
+
+            });
+// document.getElementById('relevant_images').addEventListener('change', function(event) {
+//     const files = event.target.files; // Get all selected files
+//     const relImageBox = document.getElementById('rel_image_box'); // Container to display images
+//     relImageBox.innerHTML = ''; // Clear any existing content
+
+//     Array.from(files).forEach(file => { // Loop through each selected file
+//     const reader = new FileReader();
+//     reader.onload = function(e) {
+//         // Append each image preview to the container
+//         const imgElement = document.createElement('img');
+//         imgElement.src = e.target.result;
+//         imgElement.width = 100;
+//         imgElement.style.margin = '5px'; // Add some margin for better spacing
+//         relImageBox.appendChild(imgElement);
+//     };
+//     reader.readAsDataURL(file); // Read the file and trigger onload
+//     });
+//     });
+// document.querySelectorAll('.full-description').forEach(button => {
+//     button.addEventListener('click', function() {
+//         const productId = this.getAttribute('data-id');
+//         const gallery = document.getElementById(`image-gallery-${productId}`);
+
+//         console.log('Button clicked for product ID:', productId); // Debugging line
+
+//         if (gallery.style.display === 'none' || gallery.style.display === '') {
+//             gallery.style.display = 'table-row';
+//             this.innerHTML = '<i class="fas fa-eye-slash icon-white" data-toggle="tooltip" title="Hide Images"></i>';
+//         } else {
+//             gallery.style.display = 'none';
+//             this.innerHTML = '<i class="fas fa-eye icon-white" data-toggle="tooltip" title="Show Images"></i>';
+//         }
+//     });
+// });
+// $('.view-description').on('click', function(e) {
+    //     e.preventDefault(); // Prevent default anchor behavior
+    //     $(this).next('.description-content').toggle(); // Toggle visibility of the description content
+    // });
 // document.getElementsByClassName()
 // document.querySelectorAll('.edit-product-btn').forEach(button => {
 //     button.addEventListener('click', function() {
@@ -219,72 +394,70 @@ document.querySelectorAll('.show-product-images-btn').forEach(button => {
 
 
 // }
-document.querySelector('#producteditForm #main_image').addEventListener('change', function(event) {
+// document.querySelector('#productEditForm #main_image').addEventListener('change', function(event) {
 
-     const file = event.target.files[0]; // Get the first selected file
-     const reader = new FileReader();
+//      const file = event.target.files[0]; // Get the first selected file
+//      const reader = new FileReader();
 
-     reader.onload = function(e) {
+//      reader.onload = function(e) {
 
-         // Update the main image box with the preview
-         document.querySelector('#producteditForm #main_image_box').innerHTML =
-             `<img src="${e.target.result}" width="100" />`;
-     };
+//          // Update the main image box with the preview
+//          document.querySelector('#productEditForm #main_image_box').innerHTML =
+//              `<img src="${e.target.result}" width="100" />`;
+//      };
 
-     reader.readAsDataURL(file); // Read the file as a data URL
- });
+//      reader.readAsDataURL(file); // Read the file as a data URL
+//  });
 
- // Listen for changes on the relevant_images input within the #producteditForm
- document.querySelector('#producteditForm #relevant_images').addEventListener('change', function(event) {
-     const files = event.target.files; // Get all selected files
-     const relImageBox = document.querySelector('#producteditForm #rel_image_box'); // Container to display images
-     relImageBox.innerHTML = ''; // Clear any existing content
+//  // Listen for changes on the relevant_images input within the #producteditForm
+//  document.querySelector('#productEditForm #relevant_images').addEventListener('change', function(event) {
+//      const files = event.target.files; // Get all selected files
+//      const relImageBox = document.querySelector('#productEditForm #rel_image_box'); // Container to display images
+//      relImageBox.innerHTML = ''; // Clear any existing content
 
-     // Loop through each selected file
-     Array.from(files).forEach(file => {
-         const reader = new FileReader();
+//      // Loop through each selected file
+//      Array.from(files).forEach(file => {
+//          const reader = new FileReader();
 
-         reader.onload = function(e) {
-             // Create and append an image preview to the container
-             const imgElement = document.createElement('img');
-             imgElement.src = e.target.result;
-             imgElement.width = 100;
-             imgElement.style.margin = '5px'; // Add some margin for better spacing
-             relImageBox.appendChild(imgElement);
-         };
+//          reader.onload = function(e) {
+//              // Create and append an image preview to the container
+//              const imgElement = document.createElement('img');
+//              imgElement.src = e.target.result;
+//              imgElement.width = 100;
+//              imgElement.style.margin = '5px'; // Add some margin for better spacing
+//              relImageBox.appendChild(imgElement);
+//          };
 
-         reader.readAsDataURL(file); // Read the file and trigger onload
-     });
- });
-document.getElementById('main_image').addEventListener('change', function(event) {
+//          reader.readAsDataURL(file); // Read the file and trigger onload
+//      });
+//  });
+//  if(document.getElementById('main_image')){
+//     document.getElementById('main_image').addEventListener('change', function(event) {
+//         console.log("hi");
+//         // console.log(e.target.result);
+//             const file = event.target.files[0];
+//             const reader = new FileReader();
+//             reader.onload = function(e) {
+//                 document.getElementById('main_image_box').innerHTML =
+//                     `<img src="${e.target.result}" width="100" />`;
+//             };
+//             reader.readAsDataURL(file);
+//         });
+//  }
 
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        document.getElementById('main_image_box').innerHTML =
-            `<img src="${e.target.result}" width="100" />`;
-    };
-    reader.readAsDataURL(file);
-});
+// document.getElementById('main_image').addEventListener('change', function(event) {
+// console.log("hi");
+// // console.log(e.target.result);
+//     const file = event.target.files[0];
+//     const reader = new FileReader();
+//     reader.onload = function(e) {
+//         document.getElementById('main_image_box').innerHTML =
+//             `<img src="${e.target.result}" width="100" />`;
+//     };
+//     reader.readAsDataURL(file);
+// });
 
-document.getElementById('relevant_images').addEventListener('change', function(event) {
-const files = event.target.files; // Get all selected files
-const relImageBox = document.getElementById('rel_image_box'); // Container to display images
-relImageBox.innerHTML = ''; // Clear any existing content
 
-Array.from(files).forEach(file => { // Loop through each selected file
-const reader = new FileReader();
-reader.onload = function(e) {
-    // Append each image preview to the container
-    const imgElement = document.createElement('img');
-    imgElement.src = e.target.result;
-    imgElement.width = 100;
-    imgElement.style.margin = '5px'; // Add some margin for better spacing
-    relImageBox.appendChild(imgElement);
-};
-reader.readAsDataURL(file); // Read the file and trigger onload
-});
-});
 
 // Listen for changes on the main_image input within the #producteditForm
 

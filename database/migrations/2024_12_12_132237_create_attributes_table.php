@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->string('name'); // Attribute name (e.g., Color, Size)
-            $table->string('value'); // Attribute value (e.g., Red, Large)
+            $table->text('value'); // Attribute value (e.g., Red, Large)
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Foreign key constraint
             $table->softDeletes(); // Soft deletes (deleted_at column)
             $table->timestamps(); // Created at and updated at timestamps

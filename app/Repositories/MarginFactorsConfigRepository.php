@@ -11,11 +11,11 @@ class MarginFactorsConfigRepository implements MarginFactorsConfigRepositoryInte
 {
 
     public function getByBoqConfigAndId($boqConfigId,$id,$data){
-// dd($data);
+// dd($id);
 foreach ($data as $code => $item) {
     $config = MarginFactorConfig::withTrashed()
     ->where('boq_config_id', $boqConfigId)
-                     ->where('id', $id)->where('country_id', $id)
+                     ->where('country_id', $id)
                      ->first();
 return $config;
 }
@@ -28,8 +28,8 @@ return $config;
     public function create(array $data)
     {
 
-$data['common']=0;
-$data['item_code']=strtolower($data['item_name']);
+// $data['common']=0;
+// $data['item_code']=strtolower($data['item_name']);
 
 // foreach ($data as $code => $item) {
     // dd($item);
@@ -41,13 +41,15 @@ $data['item_code']=strtolower($data['item_name']);
 
     public function update($id, array $data)
     {
-
 $MarginFactorConfig = MarginFactorConfig::findOrFail($id);
-
-foreach ($data as $code => $item) {
-    $MarginFactorConfig->update($item);
-}
-
+// dd($data);
+$MarginFactorConfig->update($data);
+// dd($MarginFactorConfig);
+// foreach ($data as $code => $item) {
+//     // dd($code);
+//     $MarginFactorConfig->update($item);
+// }
+// dd($data);
         return $MarginFactorConfig;
     }
 

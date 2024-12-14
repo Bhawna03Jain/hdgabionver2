@@ -30,16 +30,22 @@ class AttributeRepository implements AttributeRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update(array $data)
+    public function update($data)
     {
+        // dd($data);
         $Attribute = $this->model->find($data['id']);
+
         if ($Attribute) {
-            $Attribute->update($data);
+            $Attribute->update([
+                'value'=>$data['value']
+            ]);
             return $Attribute;
         }
         return null;
     }
-
+    public function findByProductAndName($productId, $name) {
+        return $this->model->where('product_id', $productId)->where('name', $name)->first();
+    }
     public function delete($id)
     {
         $Attribute = $this->model->find($id);

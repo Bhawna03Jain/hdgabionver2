@@ -40,6 +40,7 @@ class ImageService
             }
         }
 
+
         return "";
     }
     public function uploadMultipleImages(Request $request,$imageName, $path)

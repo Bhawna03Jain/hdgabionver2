@@ -1,12 +1,12 @@
 @extends('admin.Layout.layout')
 @section('style')
-<style>
-    .note-editable{
-        height: 209.614px;
-    background-color: white;
-    color: black;
-    }
-</style>
+    <style>
+        .note-editable {
+            height: 209.614px;
+            background-color: white;
+            color: black;
+        }
+    </style>
 @endsection
 @section('content')
 
@@ -145,11 +145,13 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="short_decsription">Short Description</label>
-                                                    <textarea class="form-control" id="short_decsription" name="short_decsription">
+                                                    <label for="short_description">Short Description</label>
+                                                    <textarea class="form-control" id="short_description" name="attributes[short_description]" required>
                                                     </textarea>
+                                                    <p class="reset-attributes_short_description">Short Error</p>
                                                 </div>
-                                                <p class="reset-short_decsription"></p>
+
+
                                             </div>
                                         </div>
                                         <div class="row">
@@ -162,16 +164,14 @@
                                                     </div>
                                                     <!-- /.card-header -->
                                                     <div class="card-body">
-                                                        <textarea id="summernote" style="display: none;">                Place &lt;em&gt;some&lt;/em&gt; &lt;u&gt;text&lt;/u&gt; &lt;strong&gt;here&lt;/strong&gt;
+                                                        <textarea id="summernote" style="display: none;" name="attributes[full_description]">                Place &lt;em&gt;some&lt;/em&gt; &lt;u&gt;text&lt;/u&gt; &lt;strong&gt;here&lt;/strong&gt;
                                                   </textarea>
-
-
                                                     </div>
 
                                                 </div>
                                             </div>
                                             <div class="card-footer">
-
+                                                <p class="reset-attributes_full_description"></p>
                                             </div>
                                         </div>
 
@@ -183,8 +183,8 @@
                                                     <input type="file" class="form-control" id="main_image"
                                                         name="main_image">
                                                     {{-- @if (isset($product) && $product->main_image) --}}
-                                                    <div id="main_image_box">
-                                                        <img src="" alt="Main Image" width="100">
+                                                    <div id="main_image_box" class="mt-2">
+                                                        {{-- <img src="" alt="Main Image" width="100"> --}}
                                                     </div>
                                                     {{-- @endif --}}
                                                 </div>
@@ -322,7 +322,7 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary" id="save-product">Save
+                                        <button type="submit" class="btn btn-primary" id="create-product">Save
                                             Product</button>
                                     </div>
                                 </form>
@@ -477,9 +477,9 @@
 
 @section('jscript')
     <!-- Select2 -->
-    <script src="{{ url('admin/plugins/select2/js/select2.full.min.js') }}"></script>
+    {{-- <script src="{{ url('admin/plugins/select2/js/select2.full.min.js') }}"></script> --}}
     <script src="{{ asset('admin/js/product.js') }}"></script>
-    <script>
+    {{-- <script>
         $('.select2').select2()
-    </script>
+    </script> --}}
 @endsection

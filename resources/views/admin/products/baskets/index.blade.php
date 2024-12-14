@@ -69,16 +69,18 @@
                                             <th>Depth</th>
                                             <th>Height</th>
                                             <th>Maze</th>
+                                            <th>Short Description</th>
+                                            <th>Detailed Description</th>
                                             <th>Main Image</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($products as $product)
-                                        @php
-                                            // echo $product->attributes;
-                                            @endphp
-                                        @endphp
+                                        {{-- @php
+                                            echo $product->attributes;
+                                            @endphp --}}
+                                        {{-- @endphp --}}
                                             <tr>
                                                 <td>{{ $product->id }}</td>
                                                 {{-- <td>{{ $product->category->category_name ?? 'N/A' }}</td> --}}
@@ -108,6 +110,27 @@
                                                    {{ $Attribute->value }}
                                                 @endif</td>
 
+                                                <td>
+                                                    @php
+                                                    $Attribute = $product->attributes->firstWhere('name', 'short_description');
+                                                @endphp
+                                                @if ($Attribute)
+                                                   {{ $Attribute->value }}
+                                                @endif
+                                            </td>
+                                            {{-- <td>
+                                                @php
+                                                $Attribute = $product->attributes->firstWhere('name', 'full_description');
+                                            @endphp
+                                            @if ($Attribute)
+                                            {!! $Attribute->value !!}
+                                            @endif
+                                        </td> --}}
+                                        <td>
+                                            <a href="#" class="view-description" data-id="{{ $product->id }}">View Full Description</a>
+
+
+                                        </td>
                                                 <td>
                                                     @if ($product->main_image )
                                                         <img src="{{ asset($product->main_image) }}" alt="Main Image"
@@ -146,8 +169,21 @@
                                                     @endif
                                                 </td>
                                             </tr>
-
-                                            <tr id="image-gallery-{{ $product->id }}" style="display: none;">
+                                            <tr id="full-description-{{ $product->id }}" style="display: none;">
+                                                <td colspan="10">
+                                                    @php
+                                                    $Attribute = $product->attributes->firstWhere('name', 'full_description');
+                                                @endphp
+                                                @if ($Attribute)
+                                                    <div class="description-content" style="width: 100vw;">
+                                                        {!! $Attribute->value !!}
+                                                    </div>
+                                                    @else
+                                                        <p>No Detailed Description</p>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            {{-- <tr id="image-gallery-{{ $product->id }}" style="display: none;">
                                                 <td colspan="10">
                                                     @if ($products && count($products) > 0)
                                                         @foreach ($products as $product)
@@ -164,7 +200,7 @@
                                                         <p>No additional images</p>
                                                     @endif
                                                 </td>
-                                            </tr>
+                                            </tr> --}}
                                         @empty
                                             <tr>
                                                 <td colspan="10">No Products found.</td>

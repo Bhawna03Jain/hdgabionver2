@@ -32,7 +32,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function update(array $data)
     {
-        $product = $this->model->find($data['id']);
+        $product = $this->model->find($data['product_id']);
         if ($product) {
             $product->update($data);
             return $product;

@@ -259,9 +259,9 @@ class MasterSheetBOQFenceService
     {
         // Start a database transaction to ensure data integrity
 
-        DB::beginTransaction();
+        // DB::beginTransaction();
 
-        try {
+        // try {
             $boqConfigId = $request->input('boqconfigid'); // Get boqconfigid
 
             // Loop through the 'manufacturing' data and update each record
@@ -270,15 +270,17 @@ class MasterSheetBOQFenceService
                 if ($key == 0) {
                     $this->boqConfigRepository->update($boqConfigId, ['margin_factor' => $data['margin_factor']]);
                 } else {
+$data['country_id']=$key;
+$data['boq_config_id']=$boqConfigId;
 
 
                     $existingRecord = $this->marginFactorsConfigRepository->getByBoqConfigAndId($boqConfigId, $key, $data);
-
+// dd($existingRecord);
                     if ($existingRecord && $existingRecord->trashed()) {
                         // Restore soft-deleted record
                         $existingRecord->restore();
 
-                        $this->marginFactorsConfigRepository->update($key, $data);
+                        $this->marginFactorsConfigRepository->update($existingRecord->id, $data);
 
                     } elseif (!$existingRecord) {
                         $data['boq_config_id'] = $boqConfigId;
@@ -286,8 +288,10 @@ class MasterSheetBOQFenceService
                         $this->marginFactorsConfigRepository->create($data);
 
                     } else {
+// dd($existingRecord->id);
+// dd($data);
+                        $this->marginFactorsConfigRepository->update($existingRecord->id, $data);
 
-                        $this->marginFactorsConfigRepository->update($key, $data);
                     }
                 }
 
@@ -297,12 +301,12 @@ class MasterSheetBOQFenceService
             DB::commit();
 
             return true;
-        } catch (\Exception $e) {
-            // Rollback the transaction if something goes wrong
-            DB::rollBack();
-            return false;
+        // } catch (\Exception $e) {
+        //     // Rollback the transaction if something goes wrong
+        //     DB::rollBack();
+        //     return false;
 
-        }
+        // }
     }
 
 

@@ -59,11 +59,48 @@ class ProductService
         // $product = $this->productRepository->create($data);
         // return $this->attributeRepository->create($data);
     }
+    public function updateProduct($data) {
+        // Fetch the existing product
+        $productId=$data['product_id'];
+        // $product = $this->productRepository->find($productId);
 
-    public function updateproduct($data)
-    {
-        return $this->productRepository->update($data);
+        // if (!$product) {
+        //     throw new \Exception('Product not found'); // Handle the case if product not found
+        // }
+
+        // Update product data
+        $product = $this->productRepository->update($data);
+
+        // Update or create attributes with product_id reference
+        if (isset($data['attributes'])) {
+            // $this->attributeRepository->update($data['attributes']);
+            foreach ($data['attributes'] as $key => $attributeData) {
+                // dd($key);
+                $attribute = $this->attributeRepository->findByProductAndName($product->id, $key);
+
+                if ($attribute) {
+                    // dd($attribute);
+                    // If attribute exists, update the value
+                    $attribute->value = $attributeData;
+                    $this->attributeRepository->update($attribute);
+                } else {
+                    // If attribute does not exist, create it
+                    $this->attributeRepository->create([
+                        'product_id' => $product->id,
+                        'name' => $key, // name key from attribute data
+                        'value' => $attributeData, // value key from attribute data
+                    ]);
+                }
+            }
+        }
+
+        return $product;
     }
+
+    // public function updateproduct($data)
+    // {
+    //     return $this->productRepository->update($data);
+    // }
 
     public function deleteproduct($id)
     {

@@ -21,7 +21,7 @@ class ProductController extends Controller
         $this->categoryService = $categoryService;
         $this->productService = $productService;
         $this->imageService = $imageService;
-        $this->attributeService=$attributeService;
+        $this->attributeService = $attributeService;
     }
     public function index($catid)
     {
@@ -32,9 +32,9 @@ class ProductController extends Controller
         if ($cat_code) {
             switch ($cat_code) {
                 case 'baskets':
-                     $products = $this->productService->getproductsWithAttributesByCatId
+                    $products = $this->productService->getproductsWithAttributesByCatId
                     ($catid);
-
+                    // dd($products);
                     //  $categories = $this->categoryService->getAllCategories();
                     return view('admin.products.baskets.index', compact('products', 'category'));
                 case 'fences':
@@ -68,7 +68,7 @@ class ProductController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->all());
+
         $data = $request->all();
         // dd($data);
         $rules = [
@@ -81,6 +81,7 @@ class ProductController extends Controller
             'attributes.length' => 'required|numeric|min:0',
             'attributes.depth' => 'required|numeric|min:0',
             'attributes.height' => 'required|numeric|min:0',
+            'attributes.short_description' => 'required',
 
         ];
         $customMessages = [
@@ -109,19 +110,38 @@ class ProductController extends Controller
 
         // Check validation fails
         if ($validator->fails()) {
+            // dd($validator->messages()[attributes . short_description]);
+            $messages = $validator->messages()->toArray();
+
+            $modifiedMessages = collect($messages)->mapWithKeys(function ($value, $key) {
+                // Replace the dot with an underscore in the key if it matches "attributes.short_description"
+                if ($key === 'attributes.short_description') {
+                    return ['attributes_short_description' => "Short Description is required"];
+                }
+                if ($key === 'attributes.full_description') {
+                    return ['attributes_full_description' => "Long Description is required"];
+                }
+                // Keep other keys as is
+                return [$key => $value];
+            });
+
+            // Convert back to an array if needed
+            $modifiedMessagesArray = $modifiedMessages->toArray();
             return response()->json([
                 'status' => 'false',
                 'type' => 'error',
-                'errors' => $validator->messages(),
+                'errors' =>  $modifiedMessagesArray,
+                // $validator->messages(),
             ]);
             ;
         }
+        // dd($request->all());
         $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
         $RelimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
         $data['main_image'] = $imageName;
         $data['relevant_images'] = $RelimageName;
 
-
+// dd($data);
 
         // $this->productService->createProduct($data);
         if ($this->productService->createProduct($data)) {
@@ -135,10 +155,9 @@ class ProductController extends Controller
     }
     public function edit($productid)
     {
-        $product = $this->productService->getproductById
-        ($productid);
+        $product = $this->productService->getproductById($productid);
         $category = $this->categoryService->getCategoryById($product->category_id);
-        return view('admin.products.baskets.edit', compact('product','category'));
+        return view('admin.products.baskets.edit', compact('product', 'category'));
         // return response()->json([
         //     'product' => $product,
         //     'categories' => $categories
@@ -155,7 +174,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             // |unique:products',
             'attributes.maze' => 'required',
-            'main_image' => 'required|image',
+            'main_image' => 'required',
             // 'relevant_images.*' => 'required',
             'attributes.length' => 'required|numeric|min:0',
             'attributes.depth' => 'required|numeric|min:0',
@@ -196,18 +215,31 @@ class ProductController extends Controller
             ;
         }
         $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
-        $RelimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
-        $data['main_image'] = $imageName;
-        $data['relevant_images'] = $RelimageName;
+        if ($imageName) {
+            $data['main_image'] = $imageName;
+        } elseif ($imageName == "" && $request->main_image != "") {
+            $data['main_image'] = $request->main_image;
+        }
+// dd($request->relevant_images);
+        $relimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
+        // dd(empty(json_decode($relimageName)));
+        if (!empty(json_decode($relimageName))) {
+            // dd("a");
+            $data['relevant_images'] = $relimageName;
+        } elseif (empty(json_decode($relimageName)) && $request->relevant_images != "") {
+            // dd("b");
+            $data['relevant_images'] = $request->relevant_images;
+        }
+        // $data['relevant_images'] = $relimageName;
 
-
+        // dd($data);
 
         // $this->productService->createProduct($data);
         if ($this->productService->updateProduct($data)) {
             return response()->json([
                 'status' => 'success',
                 'type' => 'success',
-                'message' => '/admin/products/'.$request->category_id,
+                'message' => '/admin/products/' . $request->category_id,
             ]);
         }
         // return redirect()->route('products.index')->with('success', 'Product created successfully.');

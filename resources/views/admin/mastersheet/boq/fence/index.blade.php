@@ -453,13 +453,13 @@
 
                                                             <td>
                                                                 <div class="form-group">
-                                                                    <input type="text" name="margin_factors[0][country_id]" class="form-control margin-factor-input" value="All" required="" readonly="" fdprocessedid="tb415f">
+                                                                    <input type="text" name="margin_factors[0][country_id]" class="form-control margin-factor-input" value="Europe" required="" readonly="" fdprocessedid="tb415f">
                                                                 </div>
                                                             </td>
 
                                                             <td>
                                                                 <div class="form-group">
-                                                                    <input type="number" name="margin_factors[0][margin_factor]" class="form-control editable-field margin-factor-input" value="{{ $basic_margin_factor }}" required="" readonly="" fdprocessedid="iru7md">
+                                                                    <input type="number" name="margin_factors[0][margin_factor]" class="form-control editable-field margin-factor-input" value="{{ $country_margin_factors->margin_factor }}" required="" readonly="" fdprocessedid="iru7md">
                                                                 </div>
                                                             </td>
 

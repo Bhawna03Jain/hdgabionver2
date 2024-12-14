@@ -17,6 +17,8 @@ class MarginFactorConfig extends Model
     protected $fillable = [
         'country_id',
         'margin_factor',
+        'discount_per',
+        'boq_config_id'
     ];
 
     // Define relationships
