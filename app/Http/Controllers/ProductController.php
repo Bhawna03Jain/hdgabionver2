@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\AttributeService;
 use App\Services\CategoryService;
 use App\Services\ImageService;
 use App\Services\ProductService;
-use App\Services\AttributeService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Validator;
 
 class ProductController extends Controller
@@ -73,8 +74,17 @@ class ProductController extends Controller
         // dd($data);
         $rules = [
             'category_id' => 'exists:categories,id',
-            'name' => 'required|string|max:255',
+            // 'sku' => 'required|string|max:255|unique:products',
+            // 'name' => 'required|string|max:255',
             // |unique:products',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')->where(function ($query) use ($request) {
+                    return $query->where('category_id', $request->category_id);
+                }),
+            ],
             'attributes.maze' => 'required',
             'main_image' => 'required|image',
             // 'relevant_images.*' => 'required',
@@ -85,25 +95,28 @@ class ProductController extends Controller
 
         ];
         $customMessages = [
-            // 'category_id.required' => 'The category is required.',
             'category_id.exists' => 'The selected category does not exist.',
+            // 'sku.required' => 'The SKU field is required.',
+            // 'sku.string' => 'The SKU must be a valid string.',
+            // 'sku.max' => 'The SKU may not exceed 255 characters.',
+            // 'sku.unique' => 'The SKU has already been taken. Please use a unique SKU.',
             'name.unique' => 'The product name has already been taken.',
             'name.required' => 'The product name is required.',
             'name.string' => 'The product name must be a string.',
             'name.max' => 'The product name may not exceed 255 characters.',
             'main_image.required' => 'The main image is required.',
             'main_image.image' => 'The main image must be a valid image file.',
-            // 'relevant_images.*.image' => 'Each relevant image must be a valid image file.',
-            'maze.required' => 'The maze size must be selected',
-            'length.required' => 'The length is required.',
-            'length.numeric' => 'The length must be a number.',
-            'length.min' => 'The length must be at least 0.',
-            'depth.required' => 'The depth is required.',
-            'depth.numeric' => 'The depth must be a number.',
-            'depth.min' => 'The depth must be at least 0.',
-            'height.required' => 'The height is required.',
-            'height.numeric' => 'The height must be a number.',
-            'height.min' => 'The height must be at least 0.',
+            'attributes.maze.required' => 'The maze size must be selected.',
+            'attributes.length.required' => 'The length is required.',
+            'attributes.length.numeric' => 'The length must be a number.',
+            'attributes.length.min' => 'The length must be at least 0.',
+            'attributes.depth.required' => 'The depth is required.',
+            'attributes.depth.numeric' => 'The depth must be a number.',
+            'attributes.depth.min' => 'The depth must be at least 0.',
+            'attributes.height.required' => 'The height is required.',
+            'attributes.height.numeric' => 'The height must be a number.',
+            'attributes.height.min' => 'The height must be at least 0.',
+            'attributes.short_description.required' => 'The short description is required.',
         ];
 
         $validator = Validator::make($request->all(), $rules, $customMessages);
@@ -130,28 +143,52 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'false',
                 'type' => 'error',
-                'errors' =>  $modifiedMessagesArray,
+                'errors' => $modifiedMessagesArray,
                 // $validator->messages(),
             ]);
             ;
         }
-        // dd($request->all());
-        $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
-        $RelimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
-        $data['main_image'] = $imageName;
-        $data['relevant_images'] = $RelimageName;
-
-// dd($data);
-
-        // $this->productService->createProduct($data);
-        if ($this->productService->createProduct($data)) {
+        // dd($data);
+        $cat_code = $this->categoryService->getCategoryById($data['category_id'])->code;
+        $sku = $this->productService->generateSku($data, $cat_code);
+        $existingRecord = $this->productService->isSkuExists($sku, $data['category_id']);
+        // dd($existingRecord);
+        if ($existingRecord === "yes") {
             return response()->json([
-                'status' => 'success',
-                'type' => 'success',
-                'message' => '/admin/products/'.$request->category_id,
+                'status' => 'fail',
+                'type' => 'duplicate',
+                // 'message' => '/admin/products/'.$request->category_id,
             ]);
+        } else {
+            $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
+            $RelimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
+            $data['main_image'] = $imageName;
+            $data['relevant_images'] = $RelimageName;
+            $data['sku'] = $sku;
+            if ($existingRecord === "trashed") {
+                $prod = $this->productService->getproductsByCatIdAndSku($sku, $data['category_id']);
+
+                $prod = $this->productService->restore($prod->id);
+                $data['product_id'] = $prod->id;
+                if ($this->productService->updateProduct($data)) {
+                    return response()->json([
+                        'status' => 'success',
+                        'type' => 'success',
+                        'message' => '/admin/products/' . $request->category_id,
+                    ]);
+                }
+            } else {
+
+                if ($this->productService->createProduct($data)) {
+                    return response()->json([
+                        'status' => 'success',
+                        'type' => 'success',
+                        'message' => '/admin/products/' . $request->category_id,
+                    ]);
+                }
+            }
         }
-        // return redirect()->route('products.index')->with('success', 'Product created successfully.');
+
     }
     public function edit($productid)
     {
@@ -171,8 +208,17 @@ class ProductController extends Controller
         // dd($data);
         $rules = [
             'category_id' => 'exists:categories,id',
-            'name' => 'required|string|max:255',
-            // |unique:products',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products')
+                    ->ignore($request->product_id) // Ignore the current product ID during update
+                    ->where(function ($query) use ($request) {
+                        return $query->where('category_id', $request->category_id);
+                    }),
+            ],
+
             'attributes.maze' => 'required',
             'main_image' => 'required',
             // 'relevant_images.*' => 'required',
@@ -214,34 +260,84 @@ class ProductController extends Controller
             ]);
             ;
         }
-        $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
-        if ($imageName) {
-            $data['main_image'] = $imageName;
-        } elseif ($imageName == "" && $request->main_image != "") {
-            $data['main_image'] = $request->main_image;
-        }
-// dd($request->relevant_images);
-        $relimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
-        // dd(empty(json_decode($relimageName)));
-        if (!empty(json_decode($relimageName))) {
-            // dd("a");
-            $data['relevant_images'] = $relimageName;
-        } elseif (empty(json_decode($relimageName)) && $request->relevant_images != "") {
-            // dd("b");
-            $data['relevant_images'] = $request->relevant_images;
-        }
-        // $data['relevant_images'] = $relimageName;
 
         // dd($data);
+        $cat_code = $this->categoryService->getCategoryById($data['category_id'])->code;
+        $sku = $this->productService->generateSku($data, $cat_code);
+        $existingRecord = $this->productService->isSkuExists($sku, $data['category_id']);
+        // dd($existingRecord);
+        if ($existingRecord === "no") {
+            $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
 
-        // $this->productService->createProduct($data);
-        if ($this->productService->updateProduct($data)) {
+            if ($imageName != "") {
+                $data['main_image'] = $imageName;
+            } elseif ($imageName == "" && $request->main_image != "") {
+                $data['main_image'] = $request->main_image;
+            }
+            // dd($request->relevant_images);
+            $relimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
+            if (!empty(json_decode($relimageName))) {
+                $data['relevant_images'] = $relimageName;
+            } elseif (empty(json_decode($relimageName)) && $request->relevant_images != "") {
+                $data['relevant_images'] = $request->relevant_images;
+            }
+            $data['sku'] = $sku;
+            if ($this->productService->updateProduct($data)) {
+                return response()->json([
+                    'status' => 'success',
+                    'type' => 'success',
+                    'message' => '/admin/products/' . $request->category_id,
+                ]);
+            }
+        } elseif ($existingRecord === "yes") { {
+                $prod = $this->productService->getproductsByCatIdAndSku($sku, $data['category_id'])->where('id', $data['product_id']);
+                if ($prod) {
+                    $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
+
+                    if ($imageName != "") {
+                        $data['main_image'] = $imageName;
+                    } elseif ($imageName == "" && $request->main_image != "") {
+                        $data['main_image'] = $request->main_image;
+                    }
+                    // dd($request->relevant_images);
+                    $relimageName = $this->imageService->uploadMultipleImages($request, 'relevant_images', 'admin/images/products/baskets');
+                    if (!empty(json_decode($relimageName))) {
+                        $data['relevant_images'] = $relimageName;
+                    } elseif (empty(json_decode($relimageName)) && $request->relevant_images != "") {
+                        $data['relevant_images'] = $request->relevant_images;
+                    }
+                    $data['sku'] = $sku;
+                    if ($this->productService->updateProduct($data)) {
+                        return response()->json([
+                            'status' => 'success',
+                            'type' => 'success',
+                            'message' => '/admin/products/' . $request->category_id,
+                        ]);
+                    }
+                }
+            }
+        } else {
             return response()->json([
-                'status' => 'success',
-                'type' => 'success',
-                'message' => '/admin/products/' . $request->category_id,
+                'status' => 'fail',
+                'type' => 'duplicate',
+                // 'message' => '/admin/products/'.$request->category_id,
             ]);
         }
+        // if ($existingRecord === "yes") {
+        //     return response()->json([
+        //         'status' => 'fail',
+        //         'type' => 'duplicate',
+        //         // 'message' => '/admin/products/'.$request->category_id,
+        //     ]);
+        // } else {}
+
+
+
         // return redirect()->route('products.index')->with('success', 'Product created successfully.');
+    }
+    public function stock()
+    {
+        $products = Product::with('transactions')->get();
+        return view('products.stock', compact('products'));
     }
 }

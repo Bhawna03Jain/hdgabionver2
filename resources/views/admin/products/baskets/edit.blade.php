@@ -78,6 +78,8 @@
                                                     value="{{ $category->id }}">
                                                 <input type="hidden" name="product_id" id="product_id"
                                                     value="{{ $product->id }}">
+                                                    <input type="hidden" name="sku" id="sku"
+                                                    value="{{ $product->sku }}">
                                                 <div class="form-group">
                                                     <label for="category_id">Category</label>
                                                     <input type="text" class="form-control" id="cat_name"

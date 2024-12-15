@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'price', 'category_id', 'stock', 'is_active','main_image','relevant_images'];
+    protected $fillable = ['name','sku', 'description', 'price', 'category_id', 'stock', 'is_active','main_image','relevant_images'];
 
     // Define the relationship to Category
     public function category()
@@ -20,5 +20,9 @@ class Product extends Model
     public function attributes()
 {
     return $this->hasMany(Attribute::class);
+}
+public function transactions()
+{
+    return $this->hasMany(Transaction::class);
 }
 }

@@ -63,7 +63,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            {{-- <th>Category</th> --}}
+                                            <th>SKU</th>
                                             <th>Name</th>
                                             <th>Length</th>
                                             <th>Depth</th>
@@ -83,7 +83,7 @@
                                         {{-- @endphp --}}
                                             <tr>
                                                 <td>{{ $product->id }}</td>
-                                                {{-- <td>{{ $product->category->category_name ?? 'N/A' }}</td> --}}
+                                                <td>{{ $product->sku  }}</td>
                                                 <td>{{ $product->name }}</td>
                                                 <td>@php
                                                     $Attribute = $product->attributes->firstWhere('name', 'length');

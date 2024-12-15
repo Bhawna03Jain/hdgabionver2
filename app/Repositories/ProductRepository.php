@@ -29,12 +29,20 @@ class ProductRepository implements ProductRepositoryInterface
 
         return $this->model->create($data);
     }
+public function restore($id){
 
+    $product = $this->model->withTrashed()->where('id', $id)->first();
+
+    if ($product && $product->trashed()) {
+        $product->restore(); // This restores the product
+    }
+    return $product;
+}
     public function update(array $data)
     {
         $product = $this->model->find($data['product_id']);
         if ($product) {
-            $product->update($data);
+            $product=$product->update($data);
             return $product;
         }
         return null;
@@ -57,5 +65,12 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $this->model->where('category_id', $catid)->with('attributes')->get();
         return $this->model->where('category_id', $catid)->with('attributes')->get();
+    }
+    public function getproductsByCatIdAndSku($sku, $cat_id)
+    {
+        $prod=$this->model->where('category_id', $cat_id)->where('sku', $sku) // Ensure soft deleted records are included
+        ->withTrashed()->first();
+
+        return $prod;
     }
 }

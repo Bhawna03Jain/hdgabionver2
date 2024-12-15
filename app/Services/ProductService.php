@@ -40,28 +40,35 @@ class ProductService
     }
     public function createproduct($data)
     {
+
         $product = $this->productRepository->create($data);
 
         // Save attributes with product_id reference
         if (isset($data['attributes'])) {
-            foreach ($data['attributes'] as $key=>$attributeData) {
-                $this->attributeRepository->create([
-                    'product_id' => $product->id,
-                    'name' => $key, // name key from attribute data
-                    'value' => $attributeData, // value key from attribute data
+            foreach ($data['attributes'] as $key => $attributeData) {
+                $this->attributeRepository->create(
+                    [
+                        'product_id' => $product->id,
+                        'name' => $key, // name key from attribute data
+                        'value' => $attributeData, // value key from attribute data
 
-                ]
+                    ]
 
-            );
+                );
             }
         }
         return $product;
         // $product = $this->productRepository->create($data);
         // return $this->attributeRepository->create($data);
     }
-    public function updateProduct($data) {
+    public function restore($id){
+
+        return $this->productRepository->restore($id);
+    }
+    public function updateProduct($data)
+    {
         // Fetch the existing product
-        $productId=$data['product_id'];
+        // $productId = $data['product_id'];
         // $product = $this->productRepository->find($productId);
 
         // if (!$product) {
@@ -70,18 +77,19 @@ class ProductService
 
         // Update product data
         $product = $this->productRepository->update($data);
-
+// dd($data);
         // Update or create attributes with product_id reference
         if (isset($data['attributes'])) {
             // $this->attributeRepository->update($data['attributes']);
             foreach ($data['attributes'] as $key => $attributeData) {
-                // dd($key);
-                $attribute = $this->attributeRepository->findByProductAndName($product->id, $key);
-
+// dd($data);
+                $attribute = $this->attributeRepository->findByProductAndName($data['product_id'], $key);
+                // dd($attribute);
                 if ($attribute) {
-                    // dd($attribute);
+                    // dd($attributeData);
                     // If attribute exists, update the value
                     $attribute->value = $attributeData;
+                    // dd($attribute);
                     $this->attributeRepository->update($attribute);
                 } else {
                     // If attribute does not exist, create it
@@ -106,7 +114,36 @@ class ProductService
     {
         return $this->productRepository->delete($id);
     }
+    public function generateSku($data, $cat_code)
+    {
+        if ($cat_code === 'baskets') {
+            if (isset($data['attributes'])) {
+                $sku = $cat_code . "-" . $data['attributes']['length'] . "-" . $data['attributes']['depth'] . "-" . $data['attributes']['height'] . "-" . $data['attributes']['maze'];
+            }
+            return $sku;
+        }
+    }
+    public function getproductsByCatIdAndSku($sku, $cat_id){
+        $prod = $this->productRepository->getproductsByCatIdAndSku($sku, $cat_id);
+       return $prod;
+    }
+    public function isSkuExists($sku, $cat_id)
+    {
 
+        $prod = $this->productRepository->getproductsByCatIdAndSku($sku, $cat_id);
+         if (!$prod) {
+            return "no";
+        } else {
+            // Check if soft deleted
+            if ($prod->deleted_at !== null) {
+                return "trashed";
+            } else {
+                return "yes";
+            }
+        }
+
+        // dd($isexist);
+    }
     //     public function uploadAndGetImage(Request $request)
 // {
 //     if ($request->hasFile('main_image')) {

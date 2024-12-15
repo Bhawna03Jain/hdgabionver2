@@ -144,7 +144,7 @@ class MasterSheetBOQFenceService
         }
         foreach ($request->input('extra_material_configs') as $key => $data) {
 
-            dd($data);
+            // dd($data);
             $existingRecord = $this->materialConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
 
             // if ($existingRecord && $existingRecord->trashed()) {
