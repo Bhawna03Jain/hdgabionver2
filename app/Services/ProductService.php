@@ -82,7 +82,7 @@ class ProductService
         if (isset($data['attributes'])) {
             // $this->attributeRepository->update($data['attributes']);
             foreach ($data['attributes'] as $key => $attributeData) {
-// dd($data);
+// dd($key);
                 $attribute = $this->attributeRepository->findByProductAndName($data['product_id'], $key);
                 // dd($attribute);
                 if ($attribute) {
@@ -92,9 +92,10 @@ class ProductService
                     // dd($attribute);
                     $this->attributeRepository->update($attribute);
                 } else {
+                    // dd($data);
                     // If attribute does not exist, create it
                     $this->attributeRepository->create([
-                        'product_id' => $product->id,
+                        'product_id' => $data['product_id'],
                         'name' => $key, // name key from attribute data
                         'value' => $attributeData, // value key from attribute data
                     ]);

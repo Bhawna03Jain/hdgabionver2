@@ -347,7 +347,7 @@
                                                                                     <div class="card">
                                                                                         <div class="card-image">
                                                                                             <a href="{{ asset($image) }}"
-                                                                                                data-fancybox="gallery"
+                                                                                                data-fancybox="gallery-{{ $product->id }}"
                                                                                                 data-caption="Caption Images 1">
                                                                                                 <img src="{{ asset($image) }}"
                                                                                                     class="img-fluid"
@@ -483,29 +483,30 @@
     </script>
     <script src="{{ asset('admin/js/product.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            $('.fancybox').fancybox({
-                buttons: [
-                    'slideShow',
-                    'fullScreen',
-                    'thumbs',
-                    'close'
-                ]
-            });
-        });
+        // $(document).ready(function() {
+        //     $('.fancybox').fancybox({
+        //         buttons: [
+        //             'slideShow',
+        //             'fullScreen',
+        //             'thumbs',
+        //             'close'
+        //         ]
+        //     });
+        // });
+//         var productId = document.querySelector('#relevantImagesModal-{{ $product->id }}').dataset.productId;
 
-
-        $('[data-fancybox="gallery"]').fancybox({
-            buttons: [
-                "slideShow",
-                "thumbs",
-                "zoom",
-                "fullScreen",
-                "share",
-                "close"
-            ],
-            loop: false,
-            protect: true
-        });
+// console.log(productId);
+//         $('[data-fancybox="gallery"]').fancybox({
+//             buttons: [
+//                 "slideShow",
+//                 // "thumbs",
+//                 "zoom",
+//                 "fullScreen",
+//                 // "share",
+//                 "close"
+//             ],
+//             loop: false,
+//             protect: true
+//         });
     </script>
 @endsection

@@ -188,9 +188,27 @@ $(document).ready(function () {
     document.querySelectorAll(".show-product-images-btn").forEach(function (link) {
         link.addEventListener("click", function (e) {
             e.preventDefault(); // Prevent default behavior
+            var productId = document.querySelector('#relevantImagesModal-{{ $product->id }}').dataset.productId;
+
+            console.log(productId);
+                    $('[data-fancybox="gallery"]').fancybox({
+                        buttons: [
+                            "slideShow",
+                            // "thumbs",
+                            "zoom",
+                            "fullScreen",
+                            // "share",
+                            "close"
+                        ],
+                        loop: false,
+                        protect: true
+                    });
 
         });
     });
+
+
+
     // document.querySelectorAll(".view-description").forEach((link) => {
     //     link.addEventListener("click", function (e) {
     //         e.preventDefault(); // Prevent default behavior
@@ -655,7 +673,7 @@ $(document).ready(function () {
         }
     });
     $("#productEditForm #relevant_images").on("change", function (event) {
-        // alert("hi");
+
         if (relevantImageInput) {
             // Check if the element exists
             const files = event.target.files; // Get all selected files
@@ -890,4 +908,18 @@ $(document).ready(function () {
     // });
 
     // Listen for changes on the main_image input within the #producteditForm
+    $('#relevantImagesModal-{{ $product->id }}').on('shown.bs.modal', function () {
+        var productId = $(this).data('productId');
+        console.log(productId);
+        $('[data-fancybox="gallery-' + productId + '"]').fancybox({
+            buttons: [
+                "slideShow",
+                "zoom",
+                "fullScreen",
+                "close"
+            ],
+            loop: true,
+            protect: true
+        });
+    })
 });

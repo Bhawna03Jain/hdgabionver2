@@ -292,6 +292,7 @@ class ProductController extends Controller
             }
         } elseif ($existingRecord === "yes") { {
                 $prod = $this->productService->getproductsByCatIdAndSku($sku, $data['category_id'])->where('id', $data['product_id']);
+                // dd($prod);
                 if ($prod) {
                     $imageName = $this->imageService->uploadAndGetImage($request, 'main_image', 'admin/images/products/baskets');
 
@@ -308,6 +309,7 @@ class ProductController extends Controller
                         $data['relevant_images'] = $request->relevant_images;
                     }
                     $data['sku'] = $sku;
+                    // dd($data);
                     if ($this->productService->updateProduct($data)) {
                         return response()->json([
                             'status' => 'success',

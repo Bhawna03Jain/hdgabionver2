@@ -116,17 +116,81 @@
                                                             {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '5x10' ? 'selected' : '' }}>
                                                             5x10
                                                         </option>
-                                                        <option value="5x15"
+                                                        {{-- <option value="5x15"
                                                             {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '5x15' ? 'selected' : '' }}>
                                                             5x15
-                                                        </option>
+                                                        </option> --}}
                                                     </select>
                                                 </div>
                                                 <p class="reset-maze"></p>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="length">Length</label>
+                                                    {{-- <input type="number" step="any" class="form-control" id="length"
+                                                        name="attributes[length]" value="" required> --}}
+                                                        <select class="form-control" id="length" name="attributes[length]">
+                                                            {{-- <option value="">Select Length</option> --}}
+                                                            <option value="30"  {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '30' ? 'selected' : '' }}>
 
-                                            <div class="row">
+                                                                30</option>
+                                                            <option value="50"  {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '50' ? 'selected' : '' }}>
+
+                                                                50</option>
+                                                            <option value="100"  {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '100' ? 'selected' : '' }}>
+
+                                                                100</option>
+                                                        </select>
+                                                </div>
+                                                <p class="reset-length"></p>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="depth">Width</label>
+                                                    {{-- <input type="number" step="any" class="form-control" id="depth"
+                                                        name="attributes[depth]" value="" required> --}}
+                                                        <select class="form-control" id="width" name="attributes[width]">
+                                                            <option value="">Select Width</option>
+                                                            <option value="20" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '20' ? 'selected' : '' }}>
+                                                                20</option>
+                                                            <option value="30" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '30' ? 'selected' : '' }}>
+                                                                30</option>
+                                                            <option value="50" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '50' ? 'selected' : '' }}>
+                                                                50</option>
+                                                                <option value="70" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '70' ? 'selected' : '' }}>
+                                                                    70</option>
+                                                                <option value="100" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '100' ? 'selected' : '' }}>
+                                                                    100</option>
+                                                        </select>
+                                                </div>
+                                                <p class="reset-width"></p>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="height">Height</label>
+                                                    {{-- <input type="number" step="any" class="form-control" id="height"
+                                                        name="attributes[height]" value="" required> --}}
+                                                        <select class="form-control" id="height" name="attributes[height]">
+                                                            <option value="">Select Height</option>
+
+                                                            <option value="30" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '30' ? 'selected' : '' }}>
+                                                                30</option>
+                                                            <option value="50" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '50' ? 'selected' : '' }}>
+                                                                50</option>
+                                                                <option value="70" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '70' ? 'selected' : '' }}>
+                                                                    70</option>
+                                                                <option value="100" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '100' ? 'selected' : '' }}>
+                                                                    100</option>
+                                                        </select>
+                                                </div>
+                                                <p class="reset-height"></p>
+                                            </div>
+                                        </div>
+                                            {{-- <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="length">Length</label>
@@ -159,7 +223,7 @@
                                                     </div>
                                                     <p class="reset-height"></p>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         {{-- <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
@@ -225,7 +289,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="relevant_images">Relevant Images</label>
-                                                    <input type="hidden" class="form-control" id="relevant_images" name="relevant_images" value="{{ $product->relevant_images?$product->relevant_images:"" }}">
+                                                    <input type="hidden" class="form-control" id="relevant_images_hidden" name="relevant_images" value="{{ $product->relevant_images?$product->relevant_images:"" }}">
                                                     <input type="file" class="form-control" id="relevant_images" name="relevant_images[]" multiple>
                                                     {{-- Display existing relevant images if available --}}
                                                     <div id="rel_image_box">

@@ -92,6 +92,31 @@
         <script src="{{ url('admin/plugins/dropzone/min/dropzone.min.js') }}"></script>
 <script src="{{url('admin/js/functions.js') }}"></script>
 <script>
+    $(function() {
+        // Summernote
+        $('#summernote').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear', 'strikethrough', 'superscript',
+                    'subscript'
+                ]],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['view', ['fullscreen', 'help']],
+            ]
+        });
+
+        // CodeMirror
+        //   CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+        //     mode: "htmlmixed",
+        //     theme: "monokai"
+        //   });
+    })
+</script>
+<script>
     // Configure Toastr options globally
     toastr.options = {
       "closeButton": true,

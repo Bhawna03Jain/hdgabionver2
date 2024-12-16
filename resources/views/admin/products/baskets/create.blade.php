@@ -107,8 +107,8 @@
                                                             5x5</option>
                                                         <option value="5x10">
                                                             5x10</option>
-                                                        <option value="5x15">
-                                                            5x15</option>
+                                                        {{-- <option value="5x15">
+                                                            5x15</option> --}}
                                                     </select>
                                                 </div>
                                                 <p class="reset-maze"></p>
@@ -138,7 +138,7 @@
                                                     <label for="depth">Width</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="depth"
                                                         name="attributes[depth]" value="" required> --}}
-                                                        <select class="form-control" id="length" name="attributes[width]">
+                                                        <select class="form-control" id="width" name="attributes[width]">
                                                             <option value="">Select Width</option>
                                                             <option value="20">
                                                                 20</option>
@@ -160,7 +160,7 @@
                                                     <label for="height">Height</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="height"
                                                         name="attributes[height]" value="" required> --}}
-                                                        <select class="form-control" id="length" name="attributes[height]">
+                                                        <select class="form-control" id="height" name="attributes[height]">
                                                             <option value="">Select Height</option>
 
                                                             <option value="30">
