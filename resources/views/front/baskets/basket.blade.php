@@ -1406,7 +1406,7 @@
                                                 <input class="form-check-input basket-filter" type="checkbox"
                                                     name="length[]" id="length5x5" value="30">
                                                 <label class="form-check-label" for="length5x5">
-                                                    30m
+                                                    30cm
                                                 </label>
                                             </div>
                                         </div>
@@ -1415,7 +1415,7 @@
                                                 <input class="form-check-input basket-filter" type="checkbox"
                                                     name="length[]" id="length5x10" value="50">
                                                 <label class="form-check-label" for="length5x10">
-                                                    50m
+                                                    50cm
                                                 </label>
                                             </div>
                                         </div>
@@ -1424,7 +1424,7 @@
                                                 <input class="form-check-input basket-filter" type="checkbox"
                                                     name="length[]" id="length5x15" value="100">
                                                 <label class="form-check-label" for="length5x15">
-                                                    100m
+                                                    100cm
                                                 </label>
                                             </div>
                                         </div>

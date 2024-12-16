@@ -1,6 +1,7 @@
 @extends('front.Layout.layout')
 
 @section('style')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
     <style>
         :root {
             --lightbox: rgb(0 0 0 / 0.75);
@@ -112,11 +113,127 @@
             filter: none;
         }
     </style>
+    <style>
+        .main {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    background: $color-white;
+    box-shadow: $box-shadow;
+    color: $color-dark;
+    border-radius: 2px;
+
+    &-image {
+      background: $color-white;
+      display: block;
+      padding-top: 70%;
+      position: relative;
+      width: 100%;
+
+      img {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .main {
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-gap: 1rem;
+    }
+  }
+}
+
+    </style>
 @endsection
 
 @section('main-content')
     <section class="content">
         <div class="container-fluid">
+            <section class="new_gallery">
+                <main class="main">
+                    <div class="container">
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/34MdBRc" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/34MdBRc" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/2Nv9zHh" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/2Nv9zHh" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/2q0iuay" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/2q0iuay" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/34PEofp" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/34PEofp" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/2X4z711" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/2X4z711" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/2rtIqMl" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/2rtIqMl" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/33xTVAn" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/33xTVAn" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/2K3jaDa" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/2K3jaDa" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-image">
+                          <a href="https://bit.ly/2WZ3fe2" data-fancybox="gallery" data-caption="Caption Images 1">
+                            <img src="https://bit.ly/2WZ3fe2" alt="Image Gallery">
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
+            </section>
             <section class="mt-5" style="margin: 1.5rem 0 3.5rem;">
                 <h1 class="text-center mb-5">Our Gallery</h1>
                 {{-- <p class="text-center mb-4">Click an image to reveal the lightbox</p> --}}
@@ -200,6 +317,7 @@
     </section>
 @endsection
 @section('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script>
         const html = document.querySelector('html');
         html.setAttribute('data-bs-theme', 'dark');
@@ -301,5 +419,22 @@
                 bsModal.show();
             });
         }
+    </script>
+
+    <script>
+        // Fancybox Config
+$('[data-fancybox="gallery"]').fancybox({
+  buttons: [
+    "slideShow",
+    "thumbs",
+    "zoom",
+    "fullScreen",
+    "share",
+    "close"
+  ],
+  loop: false,
+  protect: true
+});
+
     </script>
 @endsection

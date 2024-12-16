@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BOQConfigController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CurrencyController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
+
 
 // ===============Admin======================
 Route::prefix('/admin')->group(function () {
@@ -125,6 +127,15 @@ Route::get('/baskets', function () {
 Route::get('/baskets2', function () {
     return view('front.baskets.basket2');
 })->name('baskets');
+// *************************Cart**********************
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+
+
+
+// **************************cart**************************
+
+
 // ************Doc***************
 Route::get('terms-conditions', function () {
     return view('doc.terms-conditions');

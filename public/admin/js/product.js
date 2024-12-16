@@ -162,46 +162,73 @@ $(document).ready(function () {
         });
     });
 
-    document.querySelectorAll(".show-product-images-btn").forEach((button) => {
-        button.addEventListener("click", function () {
-            const productId = this.getAttribute("data-id");
-            const gallery = document.getElementById(
-                `image-gallery-${productId}`
-            );
+    // document.querySelectorAll(".show-product-images-btn").forEach((button) => {
+    //     button.addEventListener("click", function () {
+    //         const productId = this.getAttribute("data-id");
+    //         const gallery = document.getElementById(
+    //             `image-gallery-${productId}`
+    //         );
 
-            console.log("Button clicked for product ID:", productId); // Debugging line
+    //         console.log("Button clicked for product ID:", productId); // Debugging line
 
-            if (
-                gallery.style.display === "none" ||
-                gallery.style.display === ""
-            ) {
-                gallery.style.display = "table-row";
-                this.innerHTML =
-                    '<i class="fas fa-eye-slash icon-white" data-toggle="tooltip" title="Hide Images"></i>';
-            } else {
-                gallery.style.display = "none";
-                this.innerHTML =
-                    '<i class="fas fa-eye icon-white" data-toggle="tooltip" title="Show Images"></i>';
-            }
-        });
-    });
-    document.querySelectorAll(".view-description").forEach((link) => {
+    //         if (
+    //             gallery.style.display === "none" ||
+    //             gallery.style.display === ""
+    //         ) {
+    //             gallery.style.display = "table-row";
+    //             this.innerHTML =
+    //                 '<i class="fas fa-eye-slash icon-white" data-toggle="tooltip" title="Hide Images"></i>';
+    //         } else {
+    //             gallery.style.display = "none";
+    //             this.innerHTML =
+    //                 '<i class="fas fa-eye icon-white" data-toggle="tooltip" title="Show Images"></i>';
+    //         }
+    //     });
+    // });
+    document.querySelectorAll(".show-product-images-btn").forEach(function (link) {
         link.addEventListener("click", function (e) {
             e.preventDefault(); // Prevent default behavior
-            const productId = this.getAttribute("data-id");
 
-            const descriptionRow = document.getElementById(
-                `full-description-${productId}`
-            );
+        });
+    });
+    // document.querySelectorAll(".view-description").forEach((link) => {
+    //     link.addEventListener("click", function (e) {
+    //         e.preventDefault(); // Prevent default behavior
+    //         const productId = this.getAttribute("data-id");
 
-            if (
-                descriptionRow.style.display === "none" ||
-                descriptionRow.style.display === ""
-            ) {
-                descriptionRow.style.display = "table-row"; // Show row
-            } else {
-                descriptionRow.style.display = "none"; // Hide row
-            }
+    //         const descriptionRow = document.getElementById(
+    //             `full-description-${productId}`
+    //         );
+
+    //         if (
+    //             descriptionRow.style.display === "none" ||
+    //             descriptionRow.style.display === ""
+    //         ) {
+    //             descriptionRow.style.display = "table-row"; // Show row
+    //         } else {
+    //             descriptionRow.style.display = "none"; // Hide row
+    //         }
+    //     });
+    // });
+
+    document.querySelectorAll(".view-description").forEach(function (link) {
+        link.addEventListener("click", function (e) {
+            e.preventDefault(); // Prevent default behavior
+
+            // const productId = this.getAttribute("data-id");
+            // const modal = document.getElementById(
+            //     `productDescriptionModal-${productId}`
+            // );
+            // console.log(modal);
+            // // const modalContent = document.getElementById(
+            // //     `modalContent-${productId}`
+            // // );
+            // console.log(productId);
+
+            // const instance = M.Modal.getInstance(modal); // Initialize modal instance
+
+            // instance.open(); // Open modal
+            // });
         });
     });
 
@@ -341,12 +368,7 @@ $(document).ready(function () {
                         <div class="product-back">
                             <div class="shadow"></div>
                             <div class="carousel">
-// <ul>
-// <li> <img src="admin/images/products/baskets/27241.png" alt=""></li>
-// <li> <img src="admin/images/products/baskets/27241.png" alt=""></li>
-// <li> <img src="admin/images/products/baskets/27241.png" alt=""></li>
-// </ul>
-           <!-- other code -->
+
         <ul class="carousel-container" rel="0" style="width: 945px;">
         ${
             Array.isArray(product.relavant_images)

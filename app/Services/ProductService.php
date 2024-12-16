@@ -118,7 +118,7 @@ class ProductService
     {
         if ($cat_code === 'baskets') {
             if (isset($data['attributes'])) {
-                $sku = $cat_code . "-" . $data['attributes']['length'] . "-" . $data['attributes']['depth'] . "-" . $data['attributes']['height'] . "-" . $data['attributes']['maze'];
+                $sku = $cat_code . "-" . $data['attributes']['length'] . "-" . $data['attributes']['width'] . "-" . $data['attributes']['height'] . "-" . $data['attributes']['maze'];
             }
             return $sku;
         }

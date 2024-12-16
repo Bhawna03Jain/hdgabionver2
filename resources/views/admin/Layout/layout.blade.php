@@ -88,7 +88,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params/1.1.0/url-search-params.js" integrity="sha512-XITCo00srdVr9XH7ep5JEijPPpLA60TqvvoqLCyQlIdctLUjEsIRCtlgSaoj+RbsF+e/YnkaRTV/7Ei5GvVylg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params-polyfill/7.0.1/url-search-params.min.js"></script>
-<script src= "{{asset('admin/plugins/summernote/summernote-bs4.min.js')}}"></script>
+    <script src="{{ url('admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+        <script src="{{ url('admin/plugins/dropzone/min/dropzone.min.js') }}"></script>
 <script src="{{url('admin/js/functions.js') }}"></script>
 <script>
     // Configure Toastr options globally

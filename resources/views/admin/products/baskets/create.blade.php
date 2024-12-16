@@ -17,7 +17,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>{{ $category->category_name }}</h1>
+                        <h1>Create {{ $category->category_name }}</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -64,13 +64,13 @@
                                     enctype="multipart/form-data">
                                     @csrf
 
-                                    <div class="modal-header">
+                                    {{-- <div class="modal-header">
                                         <h5 class="modal-title" id="createProductModalLabel">
                                             Create Product </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                    </div>
+                                    </div> --}}
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-4">
@@ -118,17 +118,39 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="length">Length</label>
-                                                    <input type="number" step="any" class="form-control" id="length"
-                                                        name="attributes[length]" value="" required>
+                                                    {{-- <input type="number" step="any" class="form-control" id="length"
+                                                        name="attributes[length]" value="" required> --}}
+                                                        <select class="form-control" id="length" name="attributes[length]">
+                                                            <option value="">Select Length</option>
+                                                            <option value="30">
+                                                                30</option>
+                                                            <option value="50">
+                                                                50</option>
+                                                            <option value="100">
+                                                                100</option>
+                                                        </select>
                                                 </div>
                                                 <p class="reset-length"></p>
                                             </div>
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="depth">Depth</label>
-                                                    <input type="number" step="any" class="form-control" id="depth"
-                                                        name="attributes[depth]" value="" required>
+                                                    <label for="depth">Width</label>
+                                                    {{-- <input type="number" step="any" class="form-control" id="depth"
+                                                        name="attributes[depth]" value="" required> --}}
+                                                        <select class="form-control" id="length" name="attributes[width]">
+                                                            <option value="">Select Width</option>
+                                                            <option value="20">
+                                                                20</option>
+                                                            <option value="30">
+                                                                30</option>
+                                                            <option value="50">
+                                                                50</option>
+                                                                <option value="70">
+                                                                    70</option>
+                                                                <option value="100">
+                                                                    100</option>
+                                                        </select>
                                                 </div>
                                                 <p class="reset-depth"></p>
                                             </div>
@@ -136,8 +158,20 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="height">Height</label>
-                                                    <input type="number" step="any" class="form-control" id="height"
-                                                        name="attributes[height]" value="" required>
+                                                    {{-- <input type="number" step="any" class="form-control" id="height"
+                                                        name="attributes[height]" value="" required> --}}
+                                                        <select class="form-control" id="length" name="attributes[height]">
+                                                            <option value="">Select Height</option>
+
+                                                            <option value="30">
+                                                                30</option>
+                                                            <option value="50">
+                                                                50</option>
+                                                                <option value="70">
+                                                                    70</option>
+                                                                <option value="100">
+                                                                    100</option>
+                                                        </select>
                                                 </div>
                                                 <p class="reset-height"></p>
                                             </div>
@@ -208,7 +242,7 @@
                                                 <p class="reset-relevant_images"></p>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        {{-- <div class="row">
                                             <div class="col-md-6">
 
                                                 <div class="form-group">
@@ -224,7 +258,7 @@
                                                 <p class="reset-model_3d"></p>
                                             </div>
 
-                                        </div>
+                                        </div> --}}
                                         {{-- <div class="row">
                                             <div class="col-md-12">
                                                 <div class="card card-default">

@@ -7,7 +7,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Validator;
-
+use Session;
 class AdminController extends Controller
 {
     protected $adminService;
@@ -61,7 +61,15 @@ class AdminController extends Controller
         $this->adminService->logout();
         return redirect()->route('admin.login');
     }
-
+    public function storeSessionId()
+    {
+        // Check if the session ID already exists
+        if (!Session::has('session_id')) {
+            // Generate a unique session ID
+            $session_id = bin2hex(random_bytes(16)); // Generates a unique session ID
+            Session::put('session_id', $session_id);
+        }
+    }
     // public function resetPassword(Request $request, $code = null)
     // {
 

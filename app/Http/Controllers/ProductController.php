@@ -90,7 +90,7 @@ class ProductController extends Controller
             'main_image' => 'required|image',
             // 'relevant_images.*' => 'required',
             'attributes.length' => 'required|numeric|min:0',
-            'attributes.depth' => 'required|numeric|min:0',
+            'attributes.width' => 'required|numeric|min:0',
             'attributes.height' => 'required|numeric|min:0',
             'attributes.short_description' => 'required',
 
@@ -111,9 +111,9 @@ class ProductController extends Controller
             'attributes.length.required' => 'The length is required.',
             'attributes.length.numeric' => 'The length must be a number.',
             'attributes.length.min' => 'The length must be at least 0.',
-            'attributes.depth.required' => 'The depth is required.',
-            'attributes.depth.numeric' => 'The depth must be a number.',
-            'attributes.depth.min' => 'The depth must be at least 0.',
+            'attributes.width.required' => 'The width is required.',
+            'attributes.width.numeric' => 'The width must be a number.',
+            'attributes.width.min' => 'The width must be at least 0.',
             'attributes.height.required' => 'The height is required.',
             'attributes.height.numeric' => 'The height must be a number.',
             'attributes.height.min' => 'The height must be at least 0.',
@@ -224,7 +224,7 @@ class ProductController extends Controller
             'main_image' => 'required',
             // 'relevant_images.*' => 'required',
             'attributes.length' => 'required|numeric|min:0',
-            'attributes.depth' => 'required|numeric|min:0',
+            'attributes.width' => 'required|numeric|min:0',
             'attributes.height' => 'required|numeric|min:0',
 
         ];
@@ -242,9 +242,9 @@ class ProductController extends Controller
             'length.required' => 'The length is required.',
             'length.numeric' => 'The length must be a number.',
             'length.min' => 'The length must be at least 0.',
-            'depth.required' => 'The depth is required.',
-            'depth.numeric' => 'The depth must be a number.',
-            'depth.min' => 'The depth must be at least 0.',
+            'width.required' => 'The width is required.',
+            'width.numeric' => 'The width must be a number.',
+            'width.min' => 'The width must be at least 0.',
             'height.required' => 'The height is required.',
             'height.numeric' => 'The height must be a number.',
             'height.min' => 'The height must be at least 0.',
@@ -362,10 +362,10 @@ switch($type){
         });
     }
 
-    // Apply Depth Filter
-    if ($request->filled('width') && !in_array('depth_all', $request->width)) {
+    // Apply width Filter
+    if ($request->filled('width') && !in_array('width_all', $request->width)) {
         $query->whereHas('attributes', function ($q) use ($request) {
-            $q->where('name', 'depth')
+            $q->where('name', 'width')
               ->whereIn('value', $request->width);
         });
     }

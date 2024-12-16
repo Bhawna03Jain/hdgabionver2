@@ -954,7 +954,7 @@
                 language: this.s.dt.settings()[0].oLanguage,
                 paging: haveScroller ? true : false,
                 scrollX: false,
-                scrollY: '200px',
+                scrollY: '100vh',
                 scroller: haveScroller ? true : false,
                 select: true,
                 stateSave: table.settings()[0].oFeatures.bStateSave ? true : false
