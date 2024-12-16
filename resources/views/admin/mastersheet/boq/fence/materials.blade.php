@@ -358,6 +358,44 @@
 @endsection
 
 @section('jscript')
+<script>
+    $("#materials").DataTable({
+                     "lengthChange": true,
+                     "autoWidth": true,
+                     "paging": true,
+                     "searching": true,
+                     "ordering": true,
+                     "info": true,
+                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                 }).buttons().container().appendTo('#materials_wrapper .col-md-6:eq(0)');
+
+  </script>
+    <script>
+        $("#materialTable").DataTable({
+                         "lengthChange": true,
+                         "autoWidth": true,
+                         "paging": true,
+                         "searching": true,
+                         "ordering": true,
+                         "info": true,
+                         "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                     }).buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
+
+      </script>
+  <script>
+    $("#extramaterials").DataTable({
+                     "lengthChange": true,
+                     "autoWidth": true,
+                     "paging": true,
+                     "searching": true,
+                     "ordering": true,
+                     "info": true,
+                    //  scrollX: true,
+                    //  scrollY: 200,
+                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                 }).buttons().container().appendTo('#extramaterials_wrapper .col-md-6:eq(0)');
+
+  </script>
     <!-- DataTables & Plugins -->
     <script src="{{ asset('admin/js/mastersheet-boq-fence-material.js') }}"></script>
 @endsection

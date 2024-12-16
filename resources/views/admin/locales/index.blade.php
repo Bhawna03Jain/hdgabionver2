@@ -242,9 +242,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params/1.1.0/url-search-params.js" integrity="sha512-XITCo00srdVr9XH7ep5JEijPPpLA60TqvvoqLCyQlIdctLUjEsIRCtlgSaoj+RbsF+e/YnkaRTV/7Ei5GvVylg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-        $(function() {
+        // $(function() {
             $("#locales").DataTable();
-        });
+        // });
+        // $(function() {
+        //         $("#locales").DataTable({
+        //             "responsive": true,
+        //             "lengthChange": false,
+        //             "autoWidth": false,
+        //             "paging": true,
+
+        //             "searching": false,
+        //             "ordering": true,
+        //             "info": true,
+
+        //             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        //         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        //     });
     </script>
       <script src="{{ asset('admin/js/locale.js') }}"></script>
 @endsection

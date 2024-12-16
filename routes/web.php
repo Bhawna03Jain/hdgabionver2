@@ -5,17 +5,11 @@ use App\Http\Controllers\BOQConfigController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
-
-
-
-
-
-
-
 
 // ===============Admin======================
 Route::prefix('/admin')->group(function () {
@@ -113,3 +107,77 @@ Route::get('/', function () {
 Route::get('/home', function () {
     return view('front.index');
 })->name('home');
+Route::get('/gallery', function () {
+    return view('front.gallery');
+})->name('front.gallery');
+Route::get('/about-us', function () {
+    return view('front.about');
+})->name('front.about');
+Route::get('fence-detail', function () {
+    return view('front.fences.detail');
+})->name('fence-detail');
+Route::get('/basket-detail', function () {
+    return view('front.baskets.detail');
+})->name('basket-detail');
+Route::get('/baskets', function () {
+    return view('front.baskets.basket');
+})->name('baskets');
+Route::get('/baskets2', function () {
+    return view('front.baskets.basket2');
+})->name('baskets');
+// ************Doc***************
+Route::get('terms-conditions', function () {
+    return view('doc.terms-conditions');
+})->name('terms-conditions');
+Route::get('privacy-policy', function () {
+    return view('doc.privacy-policy');
+})->name('privacy-policy');
+Route::post('product-filter-data/{type}', [ProductController::class, 'filterData'])->name('filter.products');
+// ==========================End Guest======================
+
+Route::prefix('/customer')->group(function () {
+
+    // Route::match(['get', 'post'], '/login', [CustomerController::class, 'login'])->name('customerLogin');
+    Route::get('/login', [CustomerController::class, 'showLoginForm'])->name('customerLogin');
+    Route::post('/login', [CustomerController::class, 'login']);
+
+
+    Route::match(['get', 'post'], '/register', [CustomerController::class, 'register'])->name('customerRegister');
+    // Confirm Account
+    Route::match(['GET', 'POST'], '/confirm/{code}', [CustomerController::class, 'confirmAccount']);
+    Route::match(['GET', 'POST'], '/forgot-password', [CustomerController::class, 'forgotPassword'])->name('customerForgotPassword');
+    Route::match(['GET', 'POST'], '/reset-password/{code?}', [CustomerController::class, 'resetPassword'])->name('customerResetPassword');
+    Route::match(['GET', 'POST'], '/update-password', [CustomerController::class, 'updatePassword'])->name('customerUpdatePassword');
+    //USER-Auth
+    Route::group(['middleware' => ['auth']], function () {
+
+        Route::get('logout', [CustomerController::class, 'logout'])->name('customerLogout');
+        Route::get('account', [CustomerController::class, 'account'])->name('customerAccount');
+        Route::get('profile', [CustomerController::class, 'profile'])->name('customerProfile');
+        Route::get('user-info', [CustomerController::class, 'getUserInfo'])->name('getUserInfo');
+        // Route::get('orders', [CustomerController::class, 'orders'])->name('customerOrders');
+        // Route::get('orders', [CustomerController::class, 'orders'])->name('customerOrders');
+        //Customer Update Details
+        Route::match(['GET', 'POST'], 'update-details', [CustomerController::class, 'updateDetails'])->name('customerUpdateDetails');
+        //Customer Update Pic
+        Route::match(['GET', 'POST'], 'update-pic', [CustomerController::class, 'updatePic'])->name('customerUpdatePic');
+        // Routes for BOQController
+
+        // Route::get('boq_baskets', [BOQController::class, 'BOQBaskets'])->name('boq_baskets.index');
+        // Route::get('getBOQFence', [BOQController::class, 'getBOQFence'])->name('boq_fences.getBOQFence');
+        // Route::post('getFenceBOQPriceByDrawing', [BOQConfigController::class, 'getFenceBOQPriceByDrawing'])->name('boq_fences.getFencesBOQByDrawing');
+        // Route::post('getFencesBOQPrice', [BOQConfigController::class, 'getFencesBOQPrice'])->name('boq_fences.getFencesBOQPrice');
+        // Route::post('getTry', [BOQConfigController::class, 'getTry'])->name('boq_fences.getFencesBOQ');
+
+        // Route::post('request-quote', [QuoteController::class, 'reqQuote'])->name('customer.reqQuote');
+        // Route::get('thank-you', [QuoteController::class, 'thankyou'])->name('customer.thankyou');
+        Route::get('orders', [CustomerController::class, 'showQuotesWithOrders'])->name('customer.orders');
+    });
+    Route::middleware(['redirect.intended'])->group(function () {
+        // Route::get('/customer/boq_fences', [YourController::class, 'index'])->name('customer_boq_fences.index');
+        // Route::get('boq_fences', [BOQConfigController::class, 'CustomerBOQFences'])->name('customer_boq_fences.index');
+        // Route::get('/drawing-fence', [DrawingController::class, 'drawFence'])->name('drawing-fence');
+        // Other routes that need this middleware
+    });
+});
+

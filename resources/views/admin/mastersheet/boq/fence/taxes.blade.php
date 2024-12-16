@@ -197,6 +197,30 @@
 @endsection
 
 @section('jscript')
+<script>
+    $("#taxes").DataTable({
+                     "lengthChange": true,
+                     "autoWidth": true,
+                     "paging": true,
+                     "searching": true,
+                     "ordering": true,
+                     "info": true,
+                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                 }).buttons().container().appendTo('#taxes_wrapper .col-md-6:eq(0)');
+
+  </script>
+  <script>
+    $("#taxesTable").DataTable({
+                     "lengthChange": true,
+                     "autoWidth": true,
+                     "paging": true,
+                     "searching": true,
+                     "ordering": true,
+                     "info": true,
+                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                 }).buttons().container().appendTo('#taxesTable_wrapper .col-md-6:eq(0)');
+
+  </script>
     <!-- DataTables & Plugins -->
     <script src="{{ asset('admin/js/mastersheet-boq-fence-taxes.js') }}"></script>
 @endsection

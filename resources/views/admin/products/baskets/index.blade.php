@@ -20,9 +20,10 @@
             gap: 10px;
             flex-wrap: wrap;
         }
+
         .icon-white {
-    color: white;
-}
+            color: white;
+        }
     </style>
 @endsection
 @section('content')
@@ -77,65 +78,61 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($products as $product)
-                                        {{-- @php
-                                            echo $product->attributes;
-                                            @endphp --}}
-                                        {{-- @endphp --}}
                                             <tr>
                                                 <td>{{ $product->id }}</td>
-                                                <td>{{ $product->sku  }}</td>
+                                                <td>{{ $product->sku }}</td>
                                                 <td>{{ $product->name }}</td>
                                                 <td>@php
                                                     $Attribute = $product->attributes->firstWhere('name', 'length');
                                                 @endphp
-                                                @if ($Attribute)
-                                                   {{ $Attribute->value }}
-                                                @endif</td>
+                                                    @if ($Attribute)
+                                                        {{ $Attribute->value }}
+                                                    @endif
+                                                </td>
                                                 <td>@php
                                                     $Attribute = $product->attributes->firstWhere('name', 'depth');
                                                 @endphp
-                                                @if ($Attribute)
-                                                   {{ $Attribute->value }}
-                                                @endif</td>
+                                                    @if ($Attribute)
+                                                        {{ $Attribute->value }}
+                                                    @endif
+                                                </td>
                                                 <td>@php
                                                     $Attribute = $product->attributes->firstWhere('name', 'height');
                                                 @endphp
-                                                @if ($Attribute)
-                                                   {{ $Attribute->value }}
-                                                @endif</td>
+                                                    @if ($Attribute)
+                                                        {{ $Attribute->value }}
+                                                    @endif
+                                                </td>
                                                 <td>@php
                                                     $Attribute = $product->attributes->firstWhere('name', 'maze');
                                                 @endphp
-                                                @if ($Attribute)
-                                                   {{ $Attribute->value }}
-                                                @endif</td>
+                                                    @if ($Attribute)
+                                                        {{ $Attribute->value }}
+                                                    @endif
+                                                </td>
 
                                                 <td>
                                                     @php
-                                                    $Attribute = $product->attributes->firstWhere('name', 'short_description');
-                                                @endphp
-                                                @if ($Attribute)
-                                                   {{ $Attribute->value }}
-                                                @endif
-                                            </td>
-                                            {{-- <td>
-                                                @php
-                                                $Attribute = $product->attributes->firstWhere('name', 'full_description');
-                                            @endphp
-                                            @if ($Attribute)
-                                            {!! $Attribute->value !!}
-                                            @endif
-                                        </td> --}}
-                                        <td>
-                                            <a href="#" class="view-description" data-id="{{ $product->id }}">View Full Description</a>
+                                                        $Attribute = $product->attributes->firstWhere(
+                                                            'name',
+                                                            'short_description',
+                                                        );
+                                                    @endphp
+                                                    @if ($Attribute)
+                                                        {{ $Attribute->value }}
+                                                    @endif
+                                                </td>
 
-
-                                        </td>
                                                 <td>
-                                                    @if ($product->main_image )
+                                                    <a href="#" class="view-description"
+                                                        data-id="{{ $product->id }}">View Full Description</a>
+
+
+                                                </td>
+                                                <td>
+                                                    @if ($product->main_image)
                                                         <img src="{{ asset($product->main_image) }}" alt="Main Image"
                                                             width="50">
-
                                                     @else
                                                         <p>No Image</p>
                                                     @endif
@@ -144,19 +141,24 @@
                                                     {{-- <a href="javascript:void(0)" class="text-warning edit-product-btn" data-id="{{ $product->id }}">
                                                     <i class="fas fa-edit"></i>
                                                 </a> --}}
-                                                    <a href="{{ route('products.edit', $product->id) }}" class="text-warning edit-product-btn"
+                                                    <a href="{{ route('products.edit', $product->id) }}"
+                                                        class="text-warning edit-product-btn"
                                                         data-id="{{ $product->id }}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <a href="javascript:void(0)"
                                                         class="text-primary show-product-images-btn"
                                                         data-id="{{ $product->id }}">
-                                                        <i class="fas fa-eye icon-white" data-toggle="tooltip" title="Show Images"></i>
+                                                        <i class="fas fa-eye icon-white" data-toggle="tooltip"
+                                                            title="Show Images"></i>
                                                     </a>
                                                 </td>
                                             </tr>
                                             <!-- Image Gallery -->
-                                            <tr id="image-gallery-{{ $product->id }}" style="display: none;">
+
+                                            {{-- <tr class="image-gallery-row" id="image-gallery-{{ $product->id }}" style="display: none;"> --}}
+
+                                            <tr class="no-datatable image-gallery-row" id="image-gallery-{{ $product->id }}" style="display: none;">
                                                 <td colspan="10">
                                                     {{-- @if (!empty($product->relevant_images) && count(json_decode($product->relevant_images)) > 0) --}}
                                                     @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
@@ -169,41 +171,27 @@
                                                     @endif
                                                 </td>
                                             </tr>
-                                            <tr id="full-description-{{ $product->id }}" style="display: none;">
+                                            <tr class="no-datatable full-description-row" id="full-description-{{ $product->id }}" style="display: none;">
                                                 <td colspan="10">
                                                     @php
-                                                    $Attribute = $product->attributes->firstWhere('name', 'full_description');
-                                                @endphp
-                                                @if ($Attribute)
-                                                    <div class="description-content" style="width: 100vw;">
-                                                        {!! $Attribute->value !!}
-                                                    </div>
+                                                        $Attribute = $product->attributes->firstWhere(
+                                                            'name',
+                                                            'full_description',
+                                                        );
+                                                    @endphp
+                                                    @if ($Attribute)
+                                                        <div class="description-content" style="width: 100vw;">
+                                                            {!! $Attribute->value !!}
+                                                        </div>
                                                     @else
                                                         <p>No Detailed Description</p>
                                                     @endif
                                                 </td>
                                             </tr>
-                                            {{-- <tr id="image-gallery-{{ $product->id }}" style="display: none;">
-                                                <td colspan="10">
-                                                    @if ($products && count($products) > 0)
-                                                        @foreach ($products as $product)
-                                                            @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images)))
-                                                                @foreach (json_decode($product->relevant_images) as $image)
-                                                                    <img src="{{ asset($image) }}" alt="Relevant Image"
-                                                                        width="100">
-                                                                @endforeach
-                                                            @else
-                                                                <p>No additional images</p>
-                                                            @endif
-                                                        @endforeach
-                                                    @else
-                                                        <p>No additional images</p>
-                                                    @endif
-                                                </td>
-                                            </tr> --}}
+
                                         @empty
                                             <tr>
-                                                <td colspan="10">No Products found.</td>
+                                                <td colspan="10" >No Products found.</td>
                                             </tr>
                                         @endforelse
 
@@ -227,11 +215,33 @@
     <script src="{{ url('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
 
-    <script>
+    {{-- <script>
         $(function() {
             $("#products").DataTable();
         });
-    </script>
+    </script> --}}
     {{-- <script src="{{ asset('admin/js/functions.js') }}"></script> --}}
-    <script src="{{ asset('admin/js/product.js') }}"></script>
+    {{-- <script src="{{ asset('admin/js/product.js') }}"></script> --}}
+   <script>
+   $("#products").DataTable({
+                    "lengthChange": true,
+                    "autoWidth": true,
+                    "paging": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    scrollX: true,
+                    scrollY: 200,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                    rowCallback: function (row, data, index) {
+            if ($(row).hasClass("no-datatable")) {
+
+                $(row).remove();
+            }
+        }
+                }).buttons().container().appendTo('#products_wrapper .col-md-6:eq(0)');
+
+ </script>
+   <script src="{{ asset('admin/js/product.js') }}"></script>
+
 @endsection

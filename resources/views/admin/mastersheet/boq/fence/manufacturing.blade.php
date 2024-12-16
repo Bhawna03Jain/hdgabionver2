@@ -195,6 +195,30 @@
 @endsection
 
 @section('jscript')
+<script>
+    $("#manufacturing").DataTable({
+                     "lengthChange": true,
+                     "autoWidth": true,
+                     "paging": true,
+                     "searching": true,
+                     "ordering": true,
+                     "info": true,
+                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                 }).buttons().container().appendTo('#manufacturing_wrapper .col-md-6:eq(0)');
+
+  </script>
+  <script>
+    $("#manufacturingTable").DataTable({
+                     "lengthChange": true,
+                     "autoWidth": true,
+                     "paging": true,
+                     "searching": true,
+                     "ordering": true,
+                     "info": true,
+                     "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                 }).buttons().container().appendTo('#manufacturingTable_wrapper .col-md-6:eq(0)');
+
+  </script>
     <!-- DataTables & Plugins -->
     <script src="{{ asset('admin/js/mastersheet-boq-fence-manufacturing.js') }}"></script>
 @endsection

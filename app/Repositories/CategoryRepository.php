@@ -30,7 +30,10 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return $this->model->findOrFail($id);
     }
-
+    public function byCode($code)
+    {
+        return $this->model->where('code',$code);
+    }
     public function create(array $data)
     {
         return $this->model->create($data);

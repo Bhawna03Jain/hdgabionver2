@@ -81,14 +81,12 @@ $(document).ready(function () {
                     }
 
                     // encodeURIComponent(resp.data || "Action successful.");
-                }
-                else if (
+                } else if (
                     resp.type === "duplicate" &&
                     resp.status === "fail"
                 ) {
                     // encodeURIComponent("");
                     toastr.error(decodeURIComponent("Product Already Exist"));
-
                 }
             },
             error: function () {
@@ -163,6 +161,7 @@ $(document).ready(function () {
             },
         });
     });
+
     document.querySelectorAll(".show-product-images-btn").forEach((button) => {
         button.addEventListener("click", function () {
             const productId = this.getAttribute("data-id");
@@ -205,6 +204,401 @@ $(document).ready(function () {
             }
         });
     });
+
+    document
+        .querySelectorAll("#filterBasketForm .basket-filter")
+        .forEach((checkbox) => {
+            checkbox.addEventListener("change", function () {
+                // Pass the DOM element explicitly
+                handleCheckboxChange($(this)); // Wrap it with jQuery to use jQuery methods
+            });
+        });
+
+    function handleCheckboxChange($checkbox) {
+        const form = $("#filterBasketForm");
+        const allCheckboxes = $(`input[name="${$checkbox.attr("name")}"]`);
+
+        const isFileUpload = false; // Update if file upload is involved
+
+        if ($checkbox.val().includes("_all")) {
+            // If "All" is checked, uncheck all others
+            if ($checkbox.is(":checked")) {
+                allCheckboxes.not($checkbox).prop("checked", false);
+            }
+        } else {
+            // If a specific option is checked, uncheck "All"
+            allCheckboxes.filter('[value*="_all"]').prop("checked", false);
+        }
+
+        // Gather form data
+        const formData = form.serialize(); // Serialize form inputs
+        console.log(formData);
+        // AJAX call
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "POST",
+            url: "product-filter-data/baskets",
+            data: formData,
+            processData: !isFileUpload,
+            contentType: isFileUpload
+                ? false
+                : "application/x-www-form-urlencoded",
+            success: function (resp) {
+                console.log(resp);
+
+                $("#loader").hide();
+                if (resp.type === "error" && resp.status === "false") {
+                    $.each(resp.errors, function (i, error) {
+                        $(".reset-" + i)
+                            .css("color", "red")
+                            .html(error)
+                            .show();
+
+                        setTimeout(function () {
+                            $(".reset-" + i).hide();
+                        }, 4000);
+
+                        toastr.error(decodeURIComponent(error));
+                    });
+                } else if (
+                    resp.type === "success" ||
+                    resp.type === "uploaded"
+                ) {
+                    updateProductList(resp.products);
+                    // console.log("Redirecting to: " + resp.message);
+                    // window.location.href =
+                    //     resp.message +
+                    //     "?successMessage=" +
+                    //     encodeURIComponent("Filter Applied Successfully");
+
+                    // if (typeof successCallback === "function") {
+                    //     successCallback(resp);
+                    // }
+                } else {
+                    // Update UI dynamically for products
+                    // updateProductList(resp.products);
+                }
+            },
+            error: function () {
+                console.log("Error occurred.");
+            },
+        });
+    }
+    function updateProductList(products) {
+        const productContainer = $(".productContainer"); // Target the container where products will be rendered
+        // console.log(productContainer);
+        // Clear existing products
+        // productContainer.empty();
+
+        // productContainer.append("productHTML");
+        // Iterate over the products and append them to the container
+        products.forEach((product) => {
+            // console.log(product.name);
+            // const productHTML = `${product.name}`;
+            const productHTML = `
+                <div class="product">
+                    <div class="info-large">
+                        <h4>${product.name}</h4>
+                        <div class="sku">
+                            <strong>${product.sku}</strong>
+                        </div>
+                        <div class="price-big">
+                            $${product.price}
+                        </div>
+                        <button class="add-cart-large"><a href=/basket-detail/${
+                            product.id
+                        }>View Detail</a></button>
+                    </div>
+                    <div class="make3D">
+                        <div class="product-front">
+                            <div class="shadow"></div>
+                            <img src="${product.main_image}" alt="">
+                            <div class="image_overlay"></div>
+                            <div class="view_gallery"><a href="/basket-detail/${
+                                product.id
+                            }">View Detail</a></div>
+                            <div class="add_to_cart">Add To Cart</div>
+                            <div class="view_gallery">View gallery</div>
+                            <div class="stats">
+                                <div class="stats-container">
+                                    <span class="product_price">$${
+                                        product.price
+                                    }</span>
+                                    <span class="product_name">${
+                                        product.name
+                                    }</span>
+                                    <p>${
+                                        product.attributes.find(
+                                            (attr) => attr.name === "length"
+                                        ).value
+                                    }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-back">
+                            <div class="shadow"></div>
+                            <div class="carousel">
+// <ul>
+// <li> <img src="admin/images/products/baskets/27241.png" alt=""></li>
+// <li> <img src="admin/images/products/baskets/27241.png" alt=""></li>
+// <li> <img src="admin/images/products/baskets/27241.png" alt=""></li>
+// </ul>
+           <!-- other code -->
+        <ul class="carousel-container" rel="0" style="width: 945px;">
+        ${
+            Array.isArray(product.relavant_images)
+                ? product.relavant_images
+                      .map(
+                          (img) =>
+                              `<li style="width: 33.3333%;"><img src="${img}" alt=""></li>`
+                      )
+                      .join("")
+                : "<li>No images available</li>"
+        }
+        </ul>
+                                <div class="arrows-perspective">
+                                    <div class="carouselPrev">
+                                        <div class="y"></div>
+                                        <div class="x"></div>
+                                    </div>
+                                    <div class="carouselNext">
+                                        <div class="y"></div>
+                                        <div class="x"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flip-back">
+                                <div class="cy"></div>
+                                <div class="cx"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            productContainer.append(productHTML);
+        });
+
+        // Initialize any interactive elements like carousels if needed
+        // initializeCarousels();
+
+        // Reinitialize interactive elements
+        initializeInteractiveElements();
+    }
+    // Function to reinitialize interactive elements
+    function initializeInteractiveElements() {
+        // Reinitialize hover effects and event listeners
+        $(".product").each(function (i, el) {
+            // Lift card and show stats on mouseover
+            $(el)
+                .find(".make3D")
+                .hover(
+                    function () {
+                        $(this).parent().css("z-index", "20");
+                        $(this).addClass("animate");
+                        $(this)
+                            .find("div.carouselNext, div.carouselPrev")
+                            .addClass("visible");
+                    },
+                    function () {
+                        $(this).removeClass("animate");
+                        $(this).parent().css("z-index", "1");
+                        $(this)
+                            .find("div.carouselNext, div.carouselPrev")
+                            .removeClass("visible");
+                    }
+                );
+
+            // Flip card to the back side
+            $(el)
+                .find(".view_gallery")
+                .click(function () {
+                    $(el)
+                        .find("div.carouselNext, div.carouselPrev")
+                        .removeClass("visible");
+                    $(el).find(".make3D").addClass("flip-10");
+                    setTimeout(function () {
+                        $(el)
+                            .find(".make3D")
+                            .removeClass("flip-10")
+                            .addClass("flip90")
+                            .find("div.shadow")
+                            .show()
+                            .fadeTo(80, 1, function () {
+                                $(el)
+                                    .find(
+                                        ".product-front, .product-front div.shadow"
+                                    )
+                                    .hide();
+                            });
+                    }, 50);
+
+                    setTimeout(function () {
+                        $(el)
+                            .find(".make3D")
+                            .removeClass("flip90")
+                            .addClass("flip190");
+                        $(el)
+                            .find(".product-back")
+                            .show()
+                            .find("div.shadow")
+                            .show()
+                            .fadeTo(90, 0);
+                        setTimeout(function () {
+                            $(el)
+                                .find(".make3D")
+                                .removeClass("flip190")
+                                .addClass("flip180")
+                                .find("div.shadow")
+                                .hide();
+                            setTimeout(function () {
+                                $(el)
+                                    .find(".make3D")
+                                    .css("transition", "100ms ease-out");
+                                $(el).find(".cx, .cy").addClass("s1");
+                                setTimeout(function () {
+                                    $(el).find(".cx, .cy").addClass("s2");
+                                }, 100);
+                                setTimeout(function () {
+                                    $(el).find(".cx, .cy").addClass("s3");
+                                }, 200);
+                                $(el)
+                                    .find("div.carouselNext, div.carouselPrev")
+                                    .addClass("visible");
+                            }, 100);
+                        }, 100);
+                    }, 150);
+                });
+
+            // Flip card back to the front side
+            $(el)
+                .find(".flip-back")
+                .click(function () {
+                    $(el)
+                        .find(".make3D")
+                        .removeClass("flip180")
+                        .addClass("flip190");
+                    setTimeout(function () {
+                        $(el)
+                            .find(".make3D")
+                            .removeClass("flip190")
+                            .addClass("flip90");
+
+                        $(el)
+                            .find(".product-back div.shadow")
+                            .css("opacity", 0)
+                            .fadeTo(100, 1, function () {
+                                $(el)
+                                    .find(
+                                        ".product-back, .product-back div.shadow"
+                                    )
+                                    .hide();
+                                $(el)
+                                    .find(
+                                        ".product-front, .product-front div.shadow"
+                                    )
+                                    .show();
+                            });
+                    }, 50);
+
+                    setTimeout(function () {
+                        $(el)
+                            .find(".make3D")
+                            .removeClass("flip90")
+                            .addClass("flip-10");
+                        $(el)
+                            .find(".product-front div.shadow")
+                            .show()
+                            .fadeTo(100, 0);
+                        setTimeout(function () {
+                            $(el).find(".product-front div.shadow").hide();
+                            $(el)
+                                .find(".make3D")
+                                .removeClass("flip-10")
+                                .css("transition", "100ms ease-out");
+                            $(el).find(".cx, .cy").removeClass("s1 s2 s3");
+                        }, 100);
+                    }, 150);
+                });
+
+            makeCarousel(el);
+            // Any other interactivity initialization
+            // $('.carousel-container').slick({
+            //     // Slick.js settings, if applicable
+            // });
+        });
+
+        // Initialize other necessary components (e.g., Slick or other carousel libraries)
+    }
+    function makeCarousel(el) {
+        const carousel = $(el).find(".carousel ul");
+        const carouselSlideWidth = 315;
+        let carouselWidth = 0;
+        let isAnimating = false;
+        let currSlide = 0;
+
+        $(carousel).attr("rel", currSlide);
+
+        // Build the width of the carousel
+        $(carousel)
+            .find("li")
+            .each(function () {
+                carouselWidth += carouselSlideWidth;
+            });
+        $(carousel).css("width", carouselWidth);
+
+        // Load Next Image
+        $(el)
+            .find("div.carouselNext")
+            .on("click", function () {
+                const currentLeft = Math.abs(parseInt($(carousel).css("left")));
+                const newLeft = currentLeft + carouselSlideWidth;
+                if (newLeft >= carouselWidth || isAnimating) return;
+
+                $(carousel).css({
+                    left: `-${newLeft}px`,
+                    transition: "300ms ease-out",
+                });
+                isAnimating = true;
+                currSlide++;
+                $(carousel).attr("rel", currSlide);
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 300);
+            });
+
+        // Load Previous Image
+        $(el)
+            .find("div.carouselPrev")
+            .on("click", function () {
+                const currentLeft = Math.abs(parseInt($(carousel).css("left")));
+                const newLeft = currentLeft - carouselSlideWidth;
+                if (newLeft < 0 || isAnimating) return;
+
+                $(carousel).css({
+                    left: `-${newLeft}px`,
+                    transition: "300ms ease-out",
+                });
+                isAnimating = true;
+                currSlide--;
+                $(carousel).attr("rel", currSlide);
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 300);
+            });
+    }
+
+    // Function to initialize carousel controls or any other JS-based interactivity
+    function initializeCarousels() {
+        // Example carousel initialization code
+        $(".carousel-container").slick({
+            // Initialize the carousel here, e.g., slick.js settings
+        });
+    }
+
     // document.addEventListener('DOMContentLoaded', function () {
     //     // const mainImageInput = document.getElementById('main_image');
     //     console.log(mainImageInput);

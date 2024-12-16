@@ -34,7 +34,10 @@ class CategoryService
     {
         return $this->categoryRepository->find($id);
     }
-
+    public function getCategoryByCode($code)
+    {
+        return $this->categoryRepository->byCode($code)->first();
+    }
     public function createCategory(array $data)
     {
         return $this->categoryRepository->create($data);

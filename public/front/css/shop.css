@@ -1,0 +1,56 @@
+
+/*---------------------
+  Common
+-----------------------*/
+
+.section-title {
+	margin-bottom: 2.5rem;
+	margin-top: 2.5rem;
+}
+
+.section-title h4 {
+	color: #111111;
+	font-weight: 600;
+	text-transform: uppercase;
+	position: relative;
+	display: inline-block;
+}
+
+.section-title h4:after {
+	position: absolute;
+	left: 0;
+	bottom: -4px;
+	height: 2px;
+	width: 70px;
+	background: #ca1515;
+	content: "";
+}
+
+/*---------------------
+  Shop
+-----------------------*/
+
+.sidebar__categories {
+    margin-bottom: 50px;
+}
+.sidebar__categories .section-title {
+    margin-bottom: 35px;
+}
+
+.sidebar__categories .section-title h4 {
+	font-size: 18px;
+}
+
+.sidebar__sizes .size__list label, .sidebar__color .size__list label {
+    display: block;
+    padding-left: 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #444444;
+    position: relative;
+    cursor: pointer;
+}
+.checklist{
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+}

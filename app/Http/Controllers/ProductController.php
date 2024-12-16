@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Services\AttributeService;
 use App\Services\CategoryService;
 use App\Services\ImageService;
@@ -339,5 +340,58 @@ class ProductController extends Controller
     {
         $products = Product::with('transactions')->get();
         return view('products.stock', compact('products'));
+    }
+
+    public function filterData($type,Request $request){
+// dd($request->all());
+switch($type){
+    case 'baskets':
+
+        $query = Product::query();
+
+        // if ($request->filled('length') && !in_array('length_all', $request->length)) {
+        //     $query->whereHas('attributes', function ($q) use ($request) {
+        //         $q->where('name', 'length')->whereIn('value', $request->length);
+        //     });
+        // }
+    // Apply Length Filter
+    if ($request->filled('length') && !in_array('length_all', $request->length)) {
+        $query->whereHas('attributes', function ($q) use ($request) {
+            $q->where('name', 'length')
+              ->whereIn('value', $request->length);
+        });
+    }
+
+    // Apply Depth Filter
+    if ($request->filled('width') && !in_array('depth_all', $request->width)) {
+        $query->whereHas('attributes', function ($q) use ($request) {
+            $q->where('name', 'depth')
+              ->whereIn('value', $request->width);
+        });
+    }
+    if ($request->filled('height') && !in_array('height_all', $request->height)) {
+        $query->whereHas('attributes', function ($q) use ($request) {
+            $q->where('name', 'height')
+              ->whereIn('value', $request->height);
+        });
+    }
+    if ($request->filled('maze') && !in_array('maze_all', $request->maze)) {
+        $query->whereHas('attributes', function ($q) use ($request) {
+            $q->where('name', 'maze')
+              ->whereIn('value', $request->maze);
+        });
+    }
+    // Get the filtered results
+    $products = $query->with('attributes')->get();
+// dd($products[0]['attributes']);
+return response()->json([
+    'type' => 'success',
+    'products' => $products,
+    'message'=>'/baskets'
+]);
+        // $query = Product::query();
+        // dd($query);
+}
+
     }
 }

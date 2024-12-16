@@ -403,9 +403,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
-        $(function() {
+        // $(function() {
             $("#products").DataTable();
-        });
+        // });
+        // $(function() {
+        //         $("#products").DataTable({
+        //             "responsive": true,
+        //             "lengthChange": false,
+        //             "autoWidth": false,
+        //             "paging": true,
+
+        //             "searching": false,
+        //             "ordering": true,
+        //             "info": true,
+
+        //             "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        //         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        //     });
     </script>
     <script src="{{ asset('admin/js/functions.js') }}"></script>
     <script src="{{ asset('admin/js/product.js') }}"></script>
