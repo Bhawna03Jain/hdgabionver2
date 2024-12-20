@@ -451,17 +451,17 @@
                                                         <tr>
                                                             <input type="hidden" name="boqconfigid" id="boqconfigid" value="{{ $boqConfig->id }}">
 
-                                                            <td>
+                                                            {{-- <td>
                                                                 <div class="form-group">
                                                                     <input type="text" name="margin_factors[0][country_id]" class="form-control margin-factor-input" value="Europe" required="" readonly="" fdprocessedid="tb415f">
                                                                 </div>
-                                                            </td>
+                                                            </td> --}}
 
-                                                            <td>
+                                                            {{-- <td>
                                                                 <div class="form-group">
                                                                     <input type="number" name="margin_factors[0][margin_factor]" class="form-control editable-field margin-factor-input" value="{{ $country_margin_factors->margin_factor }}" required="" readonly="" fdprocessedid="iru7md">
                                                                 </div>
-                                                            </td>
+                                                            </td> --}}
 
 
 

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Price Formula - Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest"></script>
+    <style>
+        #attribute-list, #formula-area {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            min-height: 50px;
+        }
+
+        .attribute, .operator, .bracket {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            cursor: move;
+        }
+
+        .dropzone {
+            min-height: 50px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Create Formula - Test</h1>
+<div id="attribute-list">
+    <div class="attribute" data-key="length">Length</div>
+    <div class="attribute" data-key="weight">Weight</div>
+    <div class="attribute" data-key="unit_price">Unit Price</div>
+    <div class="attribute" data-key="quantity">Quantity</div>
+</div>
+
+<div id="operators">
+    <button class="operator" data-operator="+">+</button>
+    <button class="operator" data-operator="-">-</button>
+    <button class="operator" data-operator="*">*</button>
+    <button class="operator" data-operator="/">/</button>
+    <button class="bracket" data-bracket="(">(</button>
+    <button class="bracket" data-bracket=")">)</button>
+</div>
+
+<div id="formula-area" class="dropzone">
+    <!-- Dragged items will appear here -->
+</div>
+
+<button id="save-formula">Save Formula</button>
+
+<script>
+    // Initialize SortableJS
+    new Sortable(document.getElementById('attribute-list'), {
+        group: 'shared',
+        animation: 150,
+    });
+
+    new Sortable(document.getElementById('formula-area'), {
+        group: 'shared',
+        animation: 150,
+    });
+
+    // Handle operator button click
+    document.querySelectorAll('#operators .operator').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const operator = this.dataset.operator;
+            const operatorEl = document.createElement('div');
+            operatorEl.className = 'operator';
+            operatorEl.textContent = operator;
+            operatorEl.dataset.operator = operator;
+            document.getElementById('formula-area').appendChild(operatorEl);
+        });
+    });
+
+    // Handle bracket button click
+    document.querySelectorAll('#operators .bracket').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const bracket = this.dataset.bracket;
+            const bracketEl = document.createElement('div');
+            bracketEl.className = 'bracket';
+            bracketEl.textContent = bracket;
+            bracketEl.dataset.bracket = bracket;
+            document.getElementById('formula-area').appendChild(bracketEl);
+        });
+    });
+
+    // Handle save formula
+    document.getElementById('save-formula').addEventListener('click', function () {
+    const formula = Array.from(document.querySelectorAll('#formula-area .attribute, #formula-area .operator, #formula-area .bracket'))
+        .map(el => el.dataset.key || el.dataset.operator || el.dataset.bracket || el.textContent)
+        .join(' ');
+
+    if (isValidFormula(formula)) {
+        alert('Generated Formula: ' + formula);
+        console.log('Valid formula:', formula);
+    } else {
+        alert('Invalid formula. Please check for missing operators, mismatched parentheses, or invalid placement.');
+        console.log('Invalid formula:', formula);
+    }
+});
+
+
+    // Function to validate formula
+//     function isValidFormula(formula) {
+//     const terms = formula.split(/\s+/); // Split the formula into components
+//     const operators = ['+', '-', '*', '/'];
+//     const validVariables = ['weight', 'length', 'unit_price']; // Define valid variables
+
+//     // Check for empty formula
+//     if (terms.length === 0) return false;
+
+//     // Stack to check matching parentheses
+//     const stack = [];
+//     for (let i = 0; i < terms.length; i++) {
+//         const current = terms[i];
+//         const previous = terms[i - 1] || null;
+//         const next = terms[i + 1] || null;
+
+//         // Check for valid parentheses
+//         if (current === '(') {
+//             stack.push(current);
+//             // Ensure '(' is followed by a variable or another '('
+//             if (!next || (!validVariables.includes(next) && next !== '(')) return false;
+//         } else if (current === ')') {
+//             if (stack.length === 0 || stack.pop() !== '(') return false;
+//             // Ensure ')' is preceded by a variable or another ')'
+//             if (!previous || (!validVariables.includes(previous) && previous !== ')')) return false;
+//         }
+
+//         // Check for valid placement of operators
+//         if (operators.includes(current)) {
+//             // Operators cannot be at the start or end
+//             if (!previous || !next) return false;
+
+//             // Operators must be surrounded by valid terms or parentheses
+//             if ((previous === '(' || operators.includes(previous)) || (next === ')' || operators.includes(next))) {
+//                 return false;
+//             }
+//         }
+
+//         // Check for consecutive variables or numbers without an operator
+//         if (validVariables.includes(current)) {
+//             if (validVariables.includes(previous) || validVariables.includes(next)) {
+//                 return false;
+//             }
+//         }
+//     }
+
+//     // Ensure all parentheses are matched
+//     if (stack.length > 0) return false;
+
+//     // Ensure the formula ends with a valid term or closing parenthesis
+//     const lastTerm = terms[terms.length - 1];
+//     if (operators.includes(lastTerm) || lastTerm === '(') {
+//         return false;
+//     }
+
+//     return true;
+// }
+function isValidFormula(formula) {
+    const terms = formula.trim().split(/\s+/); // Split the formula into components
+    const operators = ['+', '-', '*', '/'];
+    const validVariables = ['weight', 'length', 'unit_price', 'quantity']; // Add 'quantity'
+
+    console.log('Formula:', formula);
+    console.log('Terms:', terms);
+
+    if (terms.length === 0) return false; // Empty formula
+
+    const stack = []; // To track parentheses
+
+    for (let i = 0; i < terms.length; i++) {
+        const current = terms[i];
+        const previous = terms[i - 1] || null;
+        const next = terms[i + 1] || null;
+
+        console.log(`Current: ${current}, Previous: ${previous}, Next: ${next}`);
+
+        // Parentheses Logic
+        if (current === '(') {
+            stack.push(current);
+            if (!next || (!validVariables.includes(next) && next !== '(')) {
+                console.log('Error: Invalid term after "("');
+                return false;
+            }
+        } else if (current === ')') {
+            if (stack.length === 0 || stack.pop() !== '(') {
+                console.log('Error: Unmatched ")"');
+                return false;
+            }
+            if (!previous || (!validVariables.includes(previous) && previous !== ')')) {
+                console.log('Error: Invalid term before ")"');
+                return false;
+            }
+        }
+
+        // Operator Placement
+        if (operators.includes(current)) {
+            if (!previous || !next) {
+                console.log('Error: Operator at start/end');
+                return false;
+            }
+            if ((previous === '(' || operators.includes(previous)) || (next === ')' || operators.includes(next))) {
+                console.log('Error: Operator surrounded by invalid terms');
+                return false;
+            }
+        }
+
+        // Consecutive Variables
+        if (validVariables.includes(current)) {
+            if (validVariables.includes(previous) || validVariables.includes(next)) {
+                console.log('Error: Consecutive variables without an operator');
+                return false;
+            }
+        }
+    }
+
+    // Check unmatched parentheses
+    if (stack.length > 0) {
+        console.log('Error: Unmatched "("');
+        return false;
+    }
+
+    // Final term validation
+    const lastTerm = terms[terms.length - 1];
+    if (operators.includes(lastTerm) || lastTerm === '(') {
+        console.log('Error: Formula ends with invalid term');
+        return false;
+    }
+
+    return true;
+}
+
+</script>
+
+</body>
+</html>

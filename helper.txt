@@ -1,0 +1,8 @@
+@php
+    $Attribute = $product->attributes->firstWhere('name', 'no');
+@endphp
+    @if ($Attribute)
+        {{ $Attribute->value }}
+    @endif
+</td>
+<td>@php

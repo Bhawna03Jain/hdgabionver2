@@ -29,8 +29,10 @@ class ManufacturingConfigRepository implements ManufacturingConfigRepositoryInte
         }
     public function create(array $data)
     {
-// dd('create');
-        return ManufacturingConfig::create($data);
+$result=ManufacturingConfig::create($data);
+
+        // dd($result);
+        return $result;
     }
 
     public function update($id, array $data)

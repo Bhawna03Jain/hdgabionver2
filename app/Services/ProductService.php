@@ -38,6 +38,10 @@ class ProductService
     {
         return $this->productRepository->getAll()->where('category_id', $catid);
     }
+    public function getProductsWithAttributesByCategoryCodes(array $cat_codes)
+{
+    return $this->productRepository->getProductsWithAttributesByCategoryCodes($cat_codes);
+}
     public function createproduct($data)
     {
 
@@ -80,6 +84,12 @@ class ProductService
 // dd($data);
         // Update or create attributes with product_id reference
         if (isset($data['attributes'])) {
+            // $attributes = $request->input('attributes', []);
+
+// Remove null or empty values
+$data['attributes'] = array_filter($data['attributes'], function ($value) {
+    return !is_null($value) && $value !== '';
+});
             // $this->attributeRepository->update($data['attributes']);
             foreach ($data['attributes'] as $key => $attributeData) {
 // dd($key);

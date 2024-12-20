@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->string('name');
-            $table->integer('percentage');
-            $table->integer('cost')->default(0);
+            $table->decimal('percentage',5,2);
+            $table->decimal('cost',5,2)->default(0);
             $table->foreignId('boq_config_id')->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig
             $table->unique(['boq_config_id', 'code']);
             $table->softDeletes();

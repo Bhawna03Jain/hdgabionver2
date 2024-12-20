@@ -19,17 +19,38 @@ foreach ($data as $code => $item) {
                      ->first();
 return $config;
 }
+    }
+    public function getByBoqConfigAndCodeAndProdId($boqConfigId,$prodid,$data){
+        // dd($data);
+        foreach ($data as $code => $item) {
+            $config = MaterialConfig::withTrashed()
+            ->where('boq_config_id', $boqConfigId)
+                             ->where('product_id', $prodid) ->where('item_code', $data['item_code'])
+                             ->first();
+        return $config;
+        }
+            }
+public function getByBoqConfigAndCode($boqConfigId,$code){
+    // dd($code);
+    // foreach ($data as $code => $item) {
+        $config = MaterialConfig::withTrashed()
+        ->where('boq_config_id', $boqConfigId)
+                         ->where('item_code', $code)
+                         ->first();
+    return $config;
+    // }
+}
     // $config = MaterialConfig::withTrashed()
     //             ->where('boq_config_id', $boqConfigId)
     //                              ->where('id', $id) ->where('item_code', $code)
     //                              ->first();
     // return $config;
-    }
+
     public function create(array $data)
     {
 
-$data['common']=0;
-$data['item_code']=strtolower($data['item_name']);
+// $data['common']=0;
+// $data['item_code']=strtolower($data['item_name']);
 
 // foreach ($data as $code => $item) {
     // dd($item);
@@ -43,10 +64,11 @@ $data['item_code']=strtolower($data['item_name']);
     {
 
 $materialConfig = MaterialConfig::findOrFail($id);
-
-foreach ($data as $code => $item) {
-    $materialConfig->update($item);
-}
+// dd($data);
+// foreach ($data as $code => $item) {
+    // dd($item);
+    $materialConfig->update($data);
+// }
 
         return $materialConfig;
     }
@@ -81,6 +103,7 @@ foreach ($data as $code => $item) {
     }
     public function getLastId(){
         $lastId =  MaterialConfig::max('id');
+
         return $lastId;
     }
     public function getCode($code){

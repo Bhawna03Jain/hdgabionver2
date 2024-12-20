@@ -95,6 +95,7 @@ function ajaxFormSubmit(
 ) {
     $(document).on("click", submitButtonId, function (e) {
         e.preventDefault();
+
         // $(".preloader").show();
         // $("#loader").show();
         $(".overlay").show();
@@ -123,6 +124,7 @@ function ajaxFormSubmit(
                                 display: "none",
                             });
                         }, 8000);
+                        toastr.error(error);
                     });
                 } else if (resp.status === "success") {
                     $(formId).closest(".modal").modal("hide");

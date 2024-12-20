@@ -11,6 +11,7 @@ class MaterialConfig extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'product_id',
         'item_code',
         'article_no',
         'hs_code',
@@ -28,11 +29,17 @@ class MaterialConfig extends Model
         'maze',
         'common',
         'boq_config_id',
+        'weight_kg_formula',
+        'price_formula',
     ];
 
     public function boqConfig()
     {
         return $this->belongsTo(BoqConfig::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }
 

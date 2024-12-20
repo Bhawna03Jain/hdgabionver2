@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Table Cell Input with Formula</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid black;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .modal-footer {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Table with Dynamic Cell Input and Formula</h1>
+
+    <table id="dynamicTable">
+        <thead>
+            <tr>
+                <th>Row</th>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td data-value="">Click to Set</td>
+                <td data-value="">Click to Set</td>
+                <td data-value="">Click to Set</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td data-value="">Click to Set</td>
+                <td data-value="">Click to Set</td>
+                <td data-value="">Click to Set</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="overlay"></div>
+    <div id="modal">
+        <h2>Enter or Select a Value</h2>
+        <form id="lengthForm">
+            <label for="anyValue">Enter Any Value:</label>
+            <input type="text" id="anyValue" placeholder="Enter text or leave blank" />
+
+            <span>or</span>
+
+            <label for="predefinedLength">Choose a Value:</label>
+            <select id="predefinedLength">
+                <option value="">-- Select a Value --</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="150">150</option>
+            </select>
+
+            <span>or</span>
+
+            <label for="formulaSelect">Apply Formula:</label>
+            <select id="formulaSelect">
+                <option value="">-- Select a Formula --</option>
+                <option value="sum">Sum of Row</option>
+                <option value="average">Average of Row</option>
+            </select>
+
+            <div class="modal-footer">
+                <button type="button" id="okButton">OK</button>
+                <button type="button" id="cancelButton">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.getElementById('dynamicTable');
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('overlay');
+            const anyValueInput = document.getElementById('anyValue');
+            const predefinedLengthSelect = document.getElementById('predefinedLength');
+            const formulaSelect = document.getElementById('formulaSelect');
+            const okButton = document.getElementById('okButton');
+            const cancelButton = document.getElementById('cancelButton');
+            let currentCell = null;
+
+            // Function to open the modal
+            function openModal(cell) {
+                currentCell = cell;
+                anyValueInput.value = cell.dataset.value;
+                predefinedLengthSelect.value = '';
+                formulaSelect.value = '';
+                modal.style.display = 'block';
+                overlay.style.display = 'block';
+            }
+
+            // Function to close the modal
+            function closeModal() {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+                currentCell = null;
+            }
+
+            // Handle table cell click
+            table.addEventListener('click', function (e) {
+                const target = e.target;
+                if (target.tagName === 'TD' && target.dataset.value !== undefined) {
+                    openModal(target);
+                }
+            });
+
+            // Handle OK button click
+            okButton.addEventListener('click', function () {
+                const value = anyValueInput.value || predefinedLengthSelect.value;
+                const formula = formulaSelect.value;
+                if (currentCell) {
+                    if (formula) {
+                        const rowCells = Array.from(currentCell.parentElement.children).filter(cell => cell.dataset.value);
+                        if (formula === 'sum') {
+                            const sum = rowCells.reduce((acc, cell) => acc + (parseFloat(cell.dataset.value) || 0), 0);
+                            currentCell.dataset.value = sum;
+                            currentCell.textContent = sum;
+                        } else if (formula === 'average') {
+                            const values = rowCells.map(cell => parseFloat(cell.dataset.value) || 0);
+                            const average = values.reduce((acc, val) => acc + val, 0) / values.length;
+                            currentCell.dataset.value = average.toFixed(2);
+                            currentCell.textContent = average.toFixed(2);
+                        }
+                    } else {
+                        currentCell.dataset.value = value;
+                        currentCell.textContent = value || 'Click to Set';
+                    }
+                }
+                closeModal();
+            });
+
+            // Handle Cancel button click
+            cancelButton.addEventListener('click', closeModal);
+
+            // Close modal when clicking on the overlay
+            overlay.addEventListener('click', closeModal);
+        });
+    </script>
+</body>
+</html>

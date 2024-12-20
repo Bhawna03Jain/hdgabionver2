@@ -207,7 +207,8 @@
                     "searching": true,
                     "ordering": true,
                     "info": true,
-                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                    "buttons": ["pdf", "colvis"]
+                    // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
                 }).buttons().container().appendTo('#categories_wrapper .col-md-6:eq(0)');
 
 

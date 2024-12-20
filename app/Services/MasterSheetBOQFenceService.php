@@ -34,10 +34,10 @@ class MasterSheetBOQFenceService
 
     }
 
-    public function getIdByType()
-    {
-        return $this->boqConfigRepository->getIdByType('Fence');
-    }
+    // public function getIdByType()
+    // {
+    //     return $this->boqConfigRepository->getIdByType('Fence');
+    // }
 
     public function updateOrCreateFenceManufacturing(Request $request)
     {
@@ -337,7 +337,47 @@ $data['boq_config_id']=$boqConfigId;
         return false;
     }
 
-    // public function deleteFenceManufacturing( $type,$id)
+        public function getLastId($type)
+    {
+
+        if ($type === "manufacturing") {
+            return $this->manufacturingConfigRepository->getLastId();
+        }
+        if ($type === "taxes") {
+            return $this->taxesConfigRepository->getLastId();
+        }
+        if ($type === "materials") {
+            return $this->materialConfigRepository->getLastId();
+        }
+    }
+    public function checkCodeExists($type, $request)
+    {
+
+        if ($type === "manufacturing") {
+
+            return $this->manufacturingConfigRepository->getCode($request);
+        }
+        if ($type === "taxes") {
+            return $this->taxesConfigRepository->getCode($request);
+        }
+        if ($type === "materials") {
+            return $this->materialConfigRepository->getCode($request);
+        }
+    }
+
+    public function getSingleFenceBOQPrice($request, $fenceBOQData1)
+    {
+        $fenceBOQData['material_configs'] = $fenceBOQData1;
+        $fenceBOQData['length'] = $request['lengthvalue'];
+        $fenceBOQData['height'] = $request['height'];
+        $fenceBOQData['depth'] = $request['depth'];
+        $fenceBOQData['poles'] = $request['poles'];
+        return $this->calculateMaterialCost($fenceBOQData);
+    }
+
+
+}
+// public function deleteFenceManufacturing( $type,$id)
     // {
     //     if ($type === "manufacturing") {
     //         try {
@@ -391,31 +431,3 @@ $data['boq_config_id']=$boqConfigId;
     //         }
     //     }
     // }
-    public function getLastId($type)
-    {
-
-        if ($type === "manufacturing") {
-            return $this->manufacturingConfigRepository->getLastId();
-        }
-        if ($type === "taxes") {
-            return $this->taxesConfigRepository->getLastId();
-        }
-        if ($type === "materials") {
-            return $this->materialConfigRepository->getLastId();
-        }
-    }
-    public function checkCodeExists($type, $request)
-    {
-
-        if ($type === "manufacturing") {
-
-            return $this->manufacturingConfigRepository->getCode($request);
-        }
-        if ($type === "taxes") {
-            return $this->taxesConfigRepository->getCode($request);
-        }
-        if ($type === "materials") {
-            return $this->materialConfigRepository->getCode($request);
-        }
-    }
-}

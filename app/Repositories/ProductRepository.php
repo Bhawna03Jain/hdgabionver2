@@ -73,4 +73,11 @@ public function restore($id){
 
         return $prod;
     }
+    public function getProductsWithAttributesByCategoryCodes(array $cat_codes)
+    {
+        return Product::whereHas('category', function ($query) use ($cat_codes) {
+            $query->whereIn('code', $cat_codes); // Filter categories by codes
+        })->with('attributes') // Load product attributes if necessary
+          ->get();
+    }
 }

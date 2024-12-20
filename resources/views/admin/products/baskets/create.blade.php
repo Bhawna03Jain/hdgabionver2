@@ -73,7 +73,7 @@
                                     </div> --}}
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <input type="hidden" name="category_id" id="cat_id"
                                                     value="{{ $category->id }}">
                                                 <div class="form-group">
@@ -90,34 +90,38 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="name">Product Name</label>
+                                                    <label for="name">Product Name*</label>
                                                     <input type="text" class="form-control" id="name" name="name"
                                                         value="" required>
                                                 </div>
                                                 <p class="reset-name"></p>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="maze">Maze Size</label>
-                                                    <select class="form-control" id="maze" name="attributes[maze]">
-                                                        <option value="">Select Maze Size</option>
-                                                        <option value="5x5">
-                                                            5x5</option>
-                                                        <option value="5x10">
-                                                            5x10</option>
-                                                        {{-- <option value="5x15">
-                                                            5x15</option> --}}
-                                                    </select>
+                                                    <label for="articleno">Article No*</label>
+                                                    <input type="text" class="form-control" id="article_no" name="article_no"
+                                                        value="" required>
                                                 </div>
-                                                <p class="reset-maze"></p>
+                                                <p class="article_no"></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="hs_code">HS Code </label>
+                                                    <input type="text" class="form-control" id="hs_code" name="hs_code"
+                                                        value="">
+                                                </div>
+                                                <p class="reset-hs_code"></p>
                                             </div>
                                         </div>
+
+
                                         <div class="row">
-                                            <div class="col-md-4">
+
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="length">Length</label>
+                                                    <label for="length">Length*</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="length"
                                                         name="attributes[length]" value="" required> --}}
                                                         <select class="form-control" id="length" name="attributes[length]">
@@ -133,9 +137,9 @@
                                                 <p class="reset-length"></p>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="depth">Width</label>
+                                                    <label for="width">Width*</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="depth"
                                                         name="attributes[depth]" value="" required> --}}
                                                         <select class="form-control" id="width" name="attributes[width]">
@@ -155,9 +159,9 @@
                                                 <p class="reset-depth"></p>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="height">Height</label>
+                                                    <label for="height">Height*</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="height"
                                                         name="attributes[height]" value="" required> --}}
                                                         <select class="form-control" id="height" name="attributes[height]">
@@ -175,11 +179,26 @@
                                                 </div>
                                                 <p class="reset-height"></p>
                                             </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="maze">Maze Size*</label>
+                                                    <select class="form-control" id="maze" name="attributes[maze]">
+                                                        <option value="">Select Maze Size</option>
+                                                        <option value="10x5">
+                                                            10x5</option>
+                                                        <option value="10x10">
+                                                            10x10</option>
+                                                        {{-- <option value="5x15">
+                                                            5x15</option> --}}
+                                                    </select>
+                                                </div>
+                                                <p class="reset-maze"></p>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="short_description">Short Description</label>
+                                                    <label for="short_description">Short Description*</label>
                                                     <textarea class="form-control" id="short_description" name="attributes[short_description]" required>
                                                     </textarea>
                                                     <p class="reset-attributes_short_description">Short Error</p>
@@ -213,7 +232,7 @@
                                             <div class="col-md-6">
 
                                                 <div class="form-group">
-                                                    <label for="main_image">Main Image</label>
+                                                    <label for="main_image">Main Image*</label>
                                                     <input type="file" class="form-control" id="main_image"
                                                         name="main_image">
                                                     {{-- @if (isset($product) && $product->main_image) --}}

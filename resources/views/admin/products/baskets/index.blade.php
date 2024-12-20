@@ -2,6 +2,7 @@
 @section('style')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
     <style>
+
         #main_image_box {
             padding: 10px;
             display: flex;
@@ -111,12 +112,15 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>SKU</th>
+                                            <th>Article No</th>
+                                            <th>HS Code</th>
+                                            {{-- <th>SKU</th> --}}
                                             <th>Name</th>
                                             <th>Length</th>
                                             <th>Width</th>
                                             <th>Height</th>
                                             <th>Maze</th>
+                                            <th>Price</th>
                                             <th>Short Description</th>
                                             <th>Detailed Description</th>
                                             <th>Main Image</th>
@@ -127,7 +131,9 @@
                                         @forelse ($products as $product)
                                             <tr>
                                                 <td>{{ $product->id }}</td>
-                                                <td>{{ $product->sku }}</td>
+                                                <td>{{ $product->article_no }}</td>
+                                                <td>{{ $product->hs_code }}</td>
+                                                {{-- <td>{{ $product->sku }}</td> --}}
                                                 <td>{{ $product->name }}</td>
                                                 <td>@php
                                                     $Attribute = $product->attributes->firstWhere('name', 'length');
@@ -157,7 +163,7 @@
                                                         {{ $Attribute->value }}
                                                     @endif
                                                 </td>
-
+                                                <td>{{ $product->total_price }}</td>
                                                 <td>
                                                     @php
                                                         $Attribute = $product->attributes->firstWhere(
@@ -472,7 +478,8 @@
             "info": true,
             scrollX: true,
             scrollY: "70vh",
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+            "buttons": ["pdf", "colvis"],
+            // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             rowCallback: function(row, data, index) {
                 if ($(row).hasClass("no-datatable")) {
 

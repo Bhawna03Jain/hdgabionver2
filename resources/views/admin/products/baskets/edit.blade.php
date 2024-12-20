@@ -6,6 +6,9 @@
     background-color: white;
     color: black;
     }
+    .modal-body{
+        padding: 0!important;
+    }
 </style>
 @endsection
 @section('content')
@@ -35,7 +38,7 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <h3 class="card-title">{{ $category->category_name }}</h3>
+                        <h3 class="card-title">Edit Product-{{ $category->category_name }}</h3>
 
                         <div class="card-tools">
 
@@ -64,16 +67,16 @@
                                     enctype="multipart/form-data">
                                     @csrf
 
-                                    <div class="modal-header">
+                                    {{-- <div class="modal-header">
                                         <h5 class="modal-title" id="createProductModalLabel">
                                             Edit Product </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
-                                    </div>
+                                    </div> --}}
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <input type="hidden" name="category_id" id="cat_id"
                                                     value="{{ $category->id }}">
                                                 <input type="hidden" name="product_id" id="product_id"
@@ -95,40 +98,36 @@
                                             </div>
 
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="name">Product Name</label>
+                                                    <label for="name">Product Name*</label>
                                                     <input type="text" class="form-control" id="name" name="name"
                                                         value="{{ old('name', $product->name) }}" required>
                                                 </div>
                                                 <p class="reset-name"></p>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="maze">Maze Size</label>
-                                                    <select class="form-control" id="maze" name="attributes[maze]">
-                                                        <option value="">Select Maze Size</option>
-                                                        <option value="5x5"
-                                                            {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '5x5' ? 'selected' : '' }}>
-                                                            5x5
-                                                        </option>
-                                                        <option value="5x10"
-                                                            {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '5x10' ? 'selected' : '' }}>
-                                                            5x10
-                                                        </option>
-                                                        {{-- <option value="5x15"
-                                                            {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '5x15' ? 'selected' : '' }}>
-                                                            5x15
-                                                        </option> --}}
-                                                    </select>
+                                                    <label for="article_no">Article No*</label>
+                                                    <input type="text" class="form-control" id="article_no" name="article_no"
+                                                        value="{{ old('name', $product->article_no) }}" required>
                                                 </div>
-                                                <p class="reset-maze"></p>
+                                                <p class="reset-article_no"></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="hs_code">HS Code*</label>
+                                                    <input type="text" class="form-control" id="hs_code" name="hs_code"
+                                                        value="{{ old('name', $product->hs_code) }}">
+                                                </div>
+                                                <p class="reset-hs_code"></p>
                                             </div>
                                         </div>
+
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="length">Length</label>
+                                                    <label for="length">Length*</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="length"
                                                         name="attributes[length]" value="" required> --}}
                                                         <select class="form-control" id="length" name="attributes[length]">
@@ -147,7 +146,7 @@
                                                 <p class="reset-length"></p>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="depth">Width</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="depth"
@@ -169,7 +168,7 @@
                                                 <p class="reset-width"></p>
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="height">Height</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="height"
@@ -188,6 +187,27 @@
                                                         </select>
                                                 </div>
                                                 <p class="reset-height"></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="maze">Maze Size</label>
+                                                    <select class="form-control" id="maze" name="attributes[maze]">
+                                                        <option value="">Select Maze Size</option>
+                                                        <option value="10x5"
+                                                            {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '10x5' ? 'selected' : '' }}>
+                                                        10x5
+                                                        </option>
+                                                        <option value="10x10"
+                                                            {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '10x10' ? 'selected' : '' }}>
+                                                            10x10
+                                                        </option>
+                                                        {{-- <option value="5x15"
+                                                            {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '5x15' ? 'selected' : '' }}>
+                                                            5x15
+                                                        </option> --}}
+                                                    </select>
+                                                </div>
+                                                <p class="reset-maze"></p>
                                             </div>
                                         </div>
                                             {{-- <div class="row">

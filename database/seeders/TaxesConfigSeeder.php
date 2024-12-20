@@ -9,7 +9,6 @@ class TaxesConfigSeeder extends Seeder
 {
     public function run()
     {
-        $boqConfigId = 1; // Assuming `boq_configs` table already has an entry with id 1. Adjust as necessary.
 
         $taxesConfigs = [
             [
@@ -17,7 +16,7 @@ class TaxesConfigSeeder extends Seeder
                 'name' => 'Duties',
                 'percentage' => 5, // Example percentage
                 'cost' => 0,
-                'boq_config_id' => $boqConfigId,
+                'boq_config_id' => 5,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -26,7 +25,7 @@ class TaxesConfigSeeder extends Seeder
                 'name' => 'VAT',
                 'percentage' => 23, // Example percentage
                 'cost' => 0,
-                'boq_config_id' => $boqConfigId,
+                'boq_config_id' => 5,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -35,10 +34,10 @@ class TaxesConfigSeeder extends Seeder
                 'name' => 'Service Tax',
                 'percentage' => 18, // Example percentage
                 'cost' => 0,
-                'boq_config_id' => $boqConfigId,
+                'boq_config_id' => 5,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ]
             // Add more tax configurations as needed
         ];
 

@@ -1342,7 +1342,7 @@
                 </div> --}}
                 <div id="header_content">
                     <h3 class="hero-subtitle ">3D Product Configuration</h3>
-                    <h1 class="hero-heading">Gabion Fences</h1>
+                    <h1 class="hero-heading">Gabion Baskets</h1>
                 </div>
                 <div class="tilted-box"></div>
                 <div id="model">

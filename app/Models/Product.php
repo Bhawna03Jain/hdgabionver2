@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable = ['name','sku', 'description', 'price', 'category_id', 'stock', 'is_active','main_image','relevant_images'];
+    protected $fillable = ['name','article_no','hs_code','sku','total_price', 'category_id', 'stock', 'is_active','should_display','main_image','relevant_images'];
 
     // Define the relationship to Category
     public function category()
@@ -20,6 +20,10 @@ class Product extends Model
     public function attributes()
 {
     return $this->hasMany(Attribute::class);
+}
+public function materialConfig()
+{
+    return $this->hasMany(BoqConfig::class);
 }
 public function transactions()
 {

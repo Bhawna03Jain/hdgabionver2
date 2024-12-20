@@ -80,11 +80,26 @@ Route::prefix('/admin')->group(function () {
         // BOQ Fence Configuration
 
         // Route::get('boq_fences_config', [BOQConfigController::class, 'BOQFencesConfig'])->name('admin_boq_fences_config.index');
-        Route::get('mastersheet/boq/fence/{type?}', [BOQConfigController::class, 'BOQFencesConfig']);
-        Route::post('mastersheet/boq/fence/update/{type?}', [BOQConfigController::class, 'storeOrUpdateFenceConfig'])->name('admin_mastersheet_fence_config.update');
-        Route::post('mastersheet/boq/fence/delete/{type?}/{id}', [BOQConfigController::class, 'deleteFenceConfig'])->name('admin_mastersheet_fence_config.delete');
-        Route::get('mastersheet/boq/fence/get-last-id/{type?}', [BOQConfigController::class, 'getLastId']);
-        Route::post('mastersheet/boq/fence/check-code/{type?}', [BOQConfigController::class, 'checkCodeExists']);
+        // Route::get('mastersheet/boq/fence/{type?}', [BOQConfigController::class, 'BOQFencesConfig']);
+        // Route::post('mastersheet/boq/fence/update/{type?}', [BOQConfigController::class, 'storeOrUpdateFenceConfig'])->name('admin_mastersheet_fence_config.update');
+        // Route::post('mastersheet/boq/fence/delete/{type?}/{id}', [BOQConfigController::class, 'deleteFenceConfig'])->name('admin_mastersheet_fence_config.delete');
+        // Route::get('mastersheet/boq/fence/get-last-id/{type?}', [BOQConfigController::class, 'getLastId']);
+        // Route::post('mastersheet/boq/fence/check-code/{type?}', [BOQConfigController::class, 'checkCodeExists']);
+
+        // BOQ Basket Configuration
+
+        // Route::get('boq_fences_config', [BOQConfigController::class, 'BOQFencesConfig'])->name('admin_boq_fences_config.index');
+        // Route::get('mastersheet/boq/basket/{type?}', [BOQConfigController::class, 'BOQbasketsConfig']);
+        // Route::post('mastersheet/boq/basket/update/{type?}', [BOQConfigController::class, 'storeOrUpdatebasketConfig'])->name('admin_mastersheet_basket_config.update');
+        // Route::post('mastersheet/boq/basket/delete/{type?}/{id}', [BOQConfigController::class, 'deletebasketConfig'])->name('admin_mastersheet_basket_config.delete');
+        // Route::get('mastersheet/boq/basket/get-last-id/{type?}', [BOQConfigController::class, 'getLastId']);
+        // Route::post('mastersheet/boq/basket/check-code/{type?}', [BOQConfigController::class, 'checkCodeExists']);
+        Route::get('mastersheet/boq/{boqtype}/{type?}', [BOQConfigController::class, 'BOQConfig']);
+        Route::post('mastersheet/boq/{boqtype}/update/{type?}', [BOQConfigController::class, 'storeOrUpdateConfig'])->name('admin_mastersheet_config.update');
+        Route::post('mastersheet/boq/{boqtype}/delete/{type?}/{id}', [BOQConfigController::class, 'deleteConfig'])->name('admin_mastersheet_config.delete');
+        Route::get('mastersheet/boq/{boqtype}/get-last-id/{type?}', [BOQConfigController::class, 'getLastId']);
+        Route::post('mastersheet/boq/{boqtype}/check-code/{type?}', [BOQConfigController::class, 'checkCodeExists']);
+
 
 //===============Products for Category==============
 Route::get('products/{catid}',[ProductController::class,'index'])->name('products.index');

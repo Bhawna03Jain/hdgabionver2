@@ -19,7 +19,9 @@ return new class extends Migration
             $table->decimal('discount_per', 8, 2)->default(0); // Country-specific margin factor
             $table->unique('country_id'); // Ensures country_id is unique
             $table->integer('cost')->default(0);
-            $table->foreignId('boq_config_id')->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig
+            $table->string('product_type')->default('product');//product,boq
+            $table->integer('product_type_id');
+            // $table->foreignId('boq_config_id')->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig
 
             $table->softDeletes(); // Adds deleted_at column for soft delete
             $table->timestamps(); // Adds created_at and updated_at columns
