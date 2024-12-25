@@ -9,6 +9,14 @@ use App\Repositories\Contracts\TaxesConfigRepositoryInterface;
 
 class TaxesConfigRepository implements TaxesConfigRepositoryInterface
 {
+    public function getByBoqConfigAndCode($boqConfigId,$code){
+
+        $config = TaxesConfig::withTrashed()
+                    ->where('boq_config_id', $boqConfigId)
+                                     ->where('code', $code)
+                                     ->first();
+        return $config;
+        }
 
     public function getByBoqConfigAndId($boqConfigId,$id){
 
@@ -67,9 +75,11 @@ class TaxesConfigRepository implements TaxesConfigRepositoryInterface
         return $lastId;
     }
     public function getCode($request){
-        $exist = TaxesConfig::where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code])->exists();
+        // $exist = TaxesConfig::where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code])->exists();
+        $record = TaxesConfig::withTrashed()->where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code]);
+// dd($record);
+        return $record;
 
-        return $exist;
 
     }
 }

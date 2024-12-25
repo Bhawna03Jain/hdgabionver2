@@ -29,4 +29,8 @@ public function transactions()
 {
     return $this->hasMany(Transaction::class);
 }
+public function marginfactors()
+{
+    return $this->hasMany(MarginFactorConfig::class);
+}
 }

@@ -80,4 +80,27 @@ public function restore($id){
         })->with('attributes') // Load product attributes if necessary
           ->get();
     }
+    public function isProductByNameExist($name)
+    {
+        $exists = Product::where('name', $name)->exists();
+
+        return $exists;
+    }
+    public function isProductByArticleExist($article)
+    {
+        $exists = Product::where('article_no', $article)->exists();
+
+        return $exists;
+    }
+    public function isProductByHSCodeExist($hs_code)
+    {
+        $exists = Product::where('hs_code', $hs_code)->exists();
+
+        return $exists;
+    }
+    public function getLastNo($column){
+        $lastArticleNo =  Product::max($column);
+        return $lastArticleNo;
+    }
+
 }

@@ -152,13 +152,13 @@
                 <ul>
                     <li class="li">
                         <div class="baseline-main headerHelpMenu ">
-                            <a href="{{ route('home') }}" >Home</a>
+                            <a href="{{ route('home') }}" class="menuLink">Home</a>
 
                         </div>
                     </li>
                     <li class="li">
                         <div class="baseline-main headerHelpMenu">
-                            <a href="{{ route('front.about') }}" >About Us</a>
+                            <a href="{{ route('front.about') }}" class="menuLink">About Us</a>
 
                         </div>
                     </li>
@@ -512,13 +512,13 @@
                     </li>
                     <li class="li ">
                         <div class="baseline-main headerHelpMenu " style="font-size: 1.6rem;font-weight: 700;line-height: 6.2rem;">
-                            <a href="{{ route('front.gallery') }}" >Gallery</a>
+                            <a href="{{ route('front.gallery') }}" class="menuLink">Gallery</a>
 
                         </div>
                     </li>
                     <li class="li">
                         <div class="baseline-main headerHelpMenu">
-                            <a href="{{ route('front.gallery') }}" >Blog</a>
+                            <a href="{{ route('front.gallery') }}" class="menuLink">Blog</a>
 
                         </div>
                     </li>

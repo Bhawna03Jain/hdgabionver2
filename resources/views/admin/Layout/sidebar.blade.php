@@ -141,7 +141,7 @@ $categories=App\Models\Category::all();
 
                 <li class="nav-header">Master Sheet BOQ</li>
  {{-- *************All***************** --}}
- <li class="nav-item">
+ {{-- <li class="nav-item">
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-copy"></i>
         <p>
@@ -166,7 +166,7 @@ $categories=App\Models\Category::all();
                 <p>Materials</p>
             </a>
         </li> --}}
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ url('/admin/mastersheet/boq/all/manufacturing') }}" class="nav-link">
 
                 <i class="far fa-circle nav-icon"></i>
@@ -186,7 +186,77 @@ $categories=App\Models\Category::all();
                 <i class="far fa-circle nav-icon"></i>
                 <p>Margin Factors</p>
             </a>
+        </li> --}}
+        {{-- <li class="nav-item">
+            <a href="{{ route('categories.index') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>Margin</p>
+            </a>
         </li>
+    </ul>
+</li> --}}
+  {{-- *************Baskets***************** --}}
+  <li class="nav-item">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-copy"></i>
+        <p>
+           Baskets
+            <i class="fas fa-angle-left right"></i>
+
+        </p>
+    </a>
+
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>2.5m basket BOQ</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>BOQ Setting</p>
+            </a>
+        </li>
+        {{-- <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>Materials</p>
+            </a>
+        </li> --}}
+        {{-- <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket/materials') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>Materials</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket/manufacturing') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>Manufacturing</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket/taxes') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>Taxes</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ url('/admin/mastersheet/boq/basket/margin-factors') }}" class="nav-link">
+
+                <i class="far fa-circle nav-icon"></i>
+                <p>Margin Factors</p>
+            </a>
+        </li> --}}
         {{-- <li class="nav-item">
             <a href="{{ route('categories.index') }}" class="nav-link">
 
@@ -253,69 +323,9 @@ $categories=App\Models\Category::all();
                     </ul>
                 </li>
 
-                 {{-- *************Baskets***************** --}}
-                 <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-copy"></i>
-                        <p>
-                           Baskets
-                            <i class="fas fa-angle-left right"></i>
 
-                        </p>
-                    </a>
 
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/boq/basket') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>2.5m basket BOQ</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/boq/basket/materials') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Materials</p>
-                            </a>
-                        </li>
-                        {{-- <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/boq/basket/materials') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Materials</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/boq/basket/manufacturing') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Manufacturing</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/boq/basket/taxes') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Taxes</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url('/admin/mastersheet/boq/basket/margin-factors') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Margin Factors</p>
-                            </a>
-                        </li> --}}
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('categories.index') }}" class="nav-link">
-
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Margin</p>
-                            </a>
-                        </li> --}}
-                    </ul>
-                </li>
+                <li class="nav-header">Miscellaneous</li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-cog"></i>

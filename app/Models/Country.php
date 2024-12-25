@@ -21,6 +21,6 @@ class Country extends Model
     //    }
     public function marginFactors()
     {
-        return $this->hasOne(MarginFactorConfig::class);
+        return $this->hasMany(MarginFactorConfig::class);
     }
 }

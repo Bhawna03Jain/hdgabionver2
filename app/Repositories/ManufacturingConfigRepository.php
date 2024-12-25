@@ -78,9 +78,10 @@ $result=ManufacturingConfig::create($data);
         return $lastId;
     }
     public function getCode($request){
-        $exist = ManufacturingConfig::where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code])->exists();
 
-        return $exist;
+        $record = ManufacturingConfig::withTrashed()->where(['boq_config_id'=>$request->boqConfigId,'code'=> $request->code]);
+        // dd($record);
+        return $record;
 
     }
 }

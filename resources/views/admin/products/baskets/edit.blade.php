@@ -1,15 +1,78 @@
 @extends('admin.Layout.layout')
 @section('style')
-<style>
-    .note-editable{
-        height: 209.614px;
-    background-color: white;
-    color: black;
-    }
-    .modal-body{
-        padding: 0!important;
-    }
-</style>
+    <style>
+        .note-editable {
+            height: 209.614px;
+            background-color: white;
+            color: black;
+        }
+
+        .modal-body {
+            padding: 0 !important;
+        }
+    </style>
+    <style>
+        .card-body {
+            padding: 0px;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 0 8px;
+            /* margin-bottom: 20px; */
+            border-radius: 5px;
+            margin: 1rem;
+
+        }
+
+        /* fieldset fieldset .form-group {
+                                                                                            margin-bottom: 0.5rem;
+                                                                                        }
+
+                                                                                        */
+        fieldset .form-group label,
+        fieldset th,
+        fieldset td {
+            font-size: 0.85rem;
+        }
+
+        fieldset legend {
+            font-weight: bold;
+            width: auto;
+            padding: 0rem;
+            font-size: 0.9rem;
+        }
+
+        /* fieldset .table td,
+                                                                                        fieldset .table th {
+                                                                                            padding: 5px 0;
+                                                                                            text-align: center;
+
+                                                                                        }
+
+                                                                                        fieldset .form-control {
+                                                                                            padding: 0;
+                                                                                            text-align: center;
+                                                                                            font-size: 13px;
+                                                                                            height: calc(1.65rem + 2px);
+                                                                                            border: none;
+                                                                                        } */
+
+        /* input:-internal-autofill-selected {
+                                                                                                background-color: transparent !important;
+                                                                                            } */
+    </style>
+    <style>
+        .input-error {
+            border: 2px solid red !important;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
 @endsection
 @section('content')
 
@@ -20,7 +83,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>{{ $category->category_name }}</h1>
+                        <h1>Edit {{ $category->category_name }}</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -36,9 +99,9 @@
         <section class="content">
             <div class="container-fluid">
 
-                <div class="card card-default">
+                <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Product-{{ $category->category_name }}</h3>
+                        <h3 class="card-title">Category-{{ $category->category_name }}</h3>
 
                         <div class="card-tools">
 
@@ -63,42 +126,33 @@
                                 <!-- form start -->
                                 <p class="reset-errors"></p>
                                 <p id="reset-success"></p>
-                                <form id="productEditForm" method="POST" action="{{ route('products.update',$product->id) }}"
-                                    enctype="multipart/form-data">
-                                    @csrf
+                            </div>
+                        </div>
+                        <form id="productEditForm" method="POST" action="{{ route('products.update', $product->id) }}"
+                            enctype="multipart/form-data">
+                            @csrf
 
-                                    {{-- <div class="modal-header">
+                            {{-- <div class="modal-header">
                                         <h5 class="modal-title" id="createProductModalLabel">
                                             Edit Product </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div> --}}
-                                    <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <fieldset>
+                                        <legend>Detail</legend>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-12">
                                                 <input type="hidden" name="category_id" id="cat_id"
                                                     value="{{ $category->id }}">
                                                 <input type="hidden" name="product_id" id="product_id"
                                                     value="{{ $product->id }}">
-                                                    <input type="hidden" name="sku" id="sku"
+                                                <input type="hidden" name="sku" id="sku"
                                                     value="{{ $product->sku }}">
-                                                <div class="form-group">
-                                                    <label for="category_id">Category</label>
-                                                    <input type="text" class="form-control" id="cat_name"
-                                                        name="cat_name" value="{{ $category->category_name }}" readonly>
-                                                    {{-- <select class="form-control" id="category_id" name="category_id">
-                                                        @foreach ($categories as $category)
-                                                            <option value="{{ $category->id }}">
-                                                                {{ $category->category_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select> --}}
-                                                </div>
                                             </div>
-
-
-                                            <div class="col-md-3">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="name">Product Name*</label>
                                                     <input type="text" class="form-control" id="name" name="name"
@@ -106,15 +160,16 @@
                                                 </div>
                                                 <p class="reset-name"></p>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="article_no">Article No*</label>
-                                                    <input type="text" class="form-control" id="article_no" name="article_no"
-                                                        value="{{ old('name', $product->article_no) }}" required>
+                                                    <input type="text" class="form-control" id="article_no"
+                                                        name="article_no" value="{{ old('name', $product->article_no) }}"
+                                                        required>
                                                 </div>
                                                 <p class="reset-article_no"></p>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="hs_code">HS Code*</label>
                                                     <input type="text" class="form-control" id="hs_code" name="hs_code"
@@ -123,79 +178,95 @@
                                                 <p class="reset-hs_code"></p>
                                             </div>
                                         </div>
-
+                                    </fieldset>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <fieldset>
+                                        <legend>Dimension</legend>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="length">Length*</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="length"
                                                         name="attributes[length]" value="" required> --}}
-                                                        <select class="form-control" id="length" name="attributes[length]">
-                                                            {{-- <option value="">Select Length</option> --}}
-                                                            <option value="30"  {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '30' ? 'selected' : '' }}>
+                                                    <select class="form-control" id="length" name="attributes[length]">
+                                                        {{-- <option value="">Select Length</option> --}}
+                                                        <option value="30"
+                                                            {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '30' ? 'selected' : '' }}>
 
-                                                                30</option>
-                                                            <option value="50"  {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '50' ? 'selected' : '' }}>
+                                                            30</option>
+                                                        <option value="50"
+                                                            {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '50' ? 'selected' : '' }}>
 
-                                                                50</option>
-                                                            <option value="100"  {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '100' ? 'selected' : '' }}>
+                                                            50</option>
+                                                        <option value="100"
+                                                            {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '100' ? 'selected' : '' }}>
 
-                                                                100</option>
-                                                        </select>
+                                                            100</option>
+                                                    </select>
                                                 </div>
                                                 <p class="reset-length"></p>
                                             </div>
 
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="depth">Width</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="depth"
                                                         name="attributes[depth]" value="" required> --}}
-                                                        <select class="form-control" id="width" name="attributes[width]">
-                                                            <option value="">Select Width</option>
-                                                            <option value="20" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '20' ? 'selected' : '' }}>
-                                                                20</option>
-                                                            <option value="30" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '30' ? 'selected' : '' }}>
-                                                                30</option>
-                                                            <option value="50" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '50' ? 'selected' : '' }}>
-                                                                50</option>
-                                                                <option value="70" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '70' ? 'selected' : '' }}>
-                                                                    70</option>
-                                                                <option value="100" {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '100' ? 'selected' : '' }}>
-                                                                    100</option>
-                                                        </select>
+                                                    <select class="form-control" id="width" name="attributes[width]">
+                                                        <option value="">Select Width</option>
+                                                        <option value="20"
+                                                            {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '20' ? 'selected' : '' }}>
+                                                            20</option>
+                                                        <option value="30"
+                                                            {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '30' ? 'selected' : '' }}>
+                                                            30</option>
+                                                        <option value="50"
+                                                            {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '50' ? 'selected' : '' }}>
+                                                            50</option>
+                                                        <option value="70"
+                                                            {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '70' ? 'selected' : '' }}>
+                                                            70</option>
+                                                        <option value="100"
+                                                            {{ old('width', $product->attributes->where('name', 'width')->first()->value ?? '') == '100' ? 'selected' : '' }}>
+                                                            100</option>
+                                                    </select>
                                                 </div>
                                                 <p class="reset-width"></p>
                                             </div>
 
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="height">Height</label>
                                                     {{-- <input type="number" step="any" class="form-control" id="height"
                                                         name="attributes[height]" value="" required> --}}
-                                                        <select class="form-control" id="height" name="attributes[height]">
-                                                            <option value="">Select Height</option>
+                                                    <select class="form-control" id="height" name="attributes[height]">
+                                                        <option value="">Select Height</option>
 
-                                                            <option value="30" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '30' ? 'selected' : '' }}>
-                                                                30</option>
-                                                            <option value="50" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '50' ? 'selected' : '' }}>
-                                                                50</option>
-                                                                <option value="70" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '70' ? 'selected' : '' }}>
-                                                                    70</option>
-                                                                <option value="100" {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '100' ? 'selected' : '' }}>
-                                                                    100</option>
-                                                        </select>
+                                                        <option value="30"
+                                                            {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '30' ? 'selected' : '' }}>
+                                                            30</option>
+                                                        <option value="50"
+                                                            {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '50' ? 'selected' : '' }}>
+                                                            50</option>
+                                                        <option value="70"
+                                                            {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '70' ? 'selected' : '' }}>
+                                                            70</option>
+                                                        <option value="100"
+                                                            {{ old('height', $product->attributes->where('name', 'height')->first()->value ?? '') == '100' ? 'selected' : '' }}>
+                                                            100</option>
+                                                    </select>
                                                 </div>
                                                 <p class="reset-height"></p>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="maze">Maze Size</label>
                                                     <select class="form-control" id="maze" name="attributes[maze]">
                                                         <option value="">Select Maze Size</option>
                                                         <option value="10x5"
                                                             {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '10x5' ? 'selected' : '' }}>
-                                                        10x5
+                                                            10x5
                                                         </option>
                                                         <option value="10x10"
                                                             {{ old('maze', $product->attributes->where('name', 'maze')->first()->value ?? '') == '10x10' ? 'selected' : '' }}>
@@ -210,130 +281,95 @@
                                                 <p class="reset-maze"></p>
                                             </div>
                                         </div>
-                                            {{-- <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="length">Length</label>
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="length" name="attributes[length]"
-                                                            value="{{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') }}"
-                                                            required>
-                                                    </div>
-                                                    <p class="reset-length"></p>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="depth">Depth</label>
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="depth" name="attributes[depth]"
-                                                            value="{{ old('attributes.depth', $product->attributes->where('name', 'depth')->first()->value ?? '') }}"
-                                                            required>
-                                                    </div>
-                                                    <p class="reset-depth"></p>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="height">Height</label>
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="height" name="attributes[height]"
-                                                            value="{{ old('attributes.height', $product->attributes->where('name', 'height')->first()->value ?? '') }}"
-                                                            required>
-                                                    </div>
-                                                    <p class="reset-height"></p>
-                                                </div>
-                                            </div> --}}
-                                        {{-- <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="main_image">Description</label>
-                                                    <textarea class="form-control" id="description" name="description">
-                                                    </textarea>
-                                                </div>
-                                                <p class="reset-description"></p>
+                                    </fieldset>
+                                </div>
+                            </div>
+                                <fieldset>
+                                    <legend>Description</legend>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="short_description">Short Description*</label>
+                                                <textarea class="form-control" id="short_description" name="attributes[short_description]" required>
+                                                                    {{ old('short_description', $product->attributes->where('name', 'short_description')->first()->value ?? '') }}
+                                                                </textarea>
                                             </div>
-                                        </div> --}}
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="short_description">Short Description</label>
-                                                    <textarea class="form-control" id="short_description" name="attributes[short_description]">
-                                                        {{ old('short_description', $product->attributes->where('name', 'short_description')->first()->value ?? '')}}
-                                                    </textarea>
-                                                </div>
-                                                <p class="reset-short_description"></p>
-                                            </div>
+                                            <p class="reset-short_description text-danger"></p>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="card card-outline card-info">
-                                                    <div class="card-header">
-                                                        <h3 class="card-title">
-                                                            Full Description
-                                                        </h3>
-                                                    </div>
-                                                    <!-- /.card-header -->
-                                                    <div class="card-body">
-                                                        <textarea id="summernote" name="attributes[full_description]" style="display: none;">                Place &lt;em&gt;some&lt;/em&gt; &lt;u&gt;text&lt;/u&gt; &lt;strong&gt;here&lt;/strong&gt;
-                                                            {{ old('full_description', $product->attributes->where('name', 'full_description')->first()->value ?? '')}}
-                                                        </textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="fullt_description"> Full Description</label>
 
-
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            <div class="card-footer">
-
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <input type="hidden" class="form-control" id="main_image" name="main_image" value="{{$product->main_image?$product->main_image:""  }}">
-
-                                                    <label for="main_image">Main Image</label>
-                                                    <input type="file" class="form-control" id="main_image" name="main_image">
-                                                    {{-- Display existing main image if available --}}
-                                                    <div id="main_image_box">
-                                                        @if(isset($product) && $product->main_image)
-                                                            <img src="{{ asset($product->main_image) }}" alt="Main Image" width="100">
-                                                        @endif
-                                                    </div>
-                                                    {{-- @if (isset($product) && $product->main_image) --}}
-                                                </div>
-                                                <p class="reset-main_image"></p>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="relevant_images">Relevant Images</label>
-                                                    <input type="hidden" class="form-control" id="relevant_images_hidden" name="relevant_images" value="{{ $product->relevant_images?$product->relevant_images:"" }}">
-                                                    <input type="file" class="form-control" id="relevant_images" name="relevant_images[]" multiple>
-                                                    {{-- Display existing relevant images if available --}}
-                                                    <div id="rel_image_box">
-                                                        @if(isset($product) && $product->relevant_images)
-                                                            @foreach(json_decode($product->relevant_images) as $image)
-                                                                <img src="{{ asset($image) }}" alt="Relevant Image" width="100">
-                                                            @endforeach
-                                                            {{-- @foreach($product->relevant_images as $image)
-                                                            <img src="{{ asset($image) }}" alt="Relevant Image" width="100">
-                                                        @endforeach --}}
-                                                        @endif
-                                                    </div>
-                                                    {{-- @if (isset($product) && $product->relevant_images) --}}
-                                                </div>
-                                                <p class="reset-relevant_images"></p>
+                                                <textarea id="summernote" name="attributes[full_description]" style="display: none;">                Place &lt;em&gt;some&lt;/em&gt; &lt;u&gt;text&lt;/u&gt; &lt;strong&gt;here&lt;/strong&gt;
+                                                                        {{ old('full_description', $product->attributes->where('name', 'full_description')->first()->value ?? '') }}
+                                                                    </textarea>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary" id="save-product">Save
-                                            Product</button>
+
+
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Images</legend>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <input type="hidden" class="form-control" id="main_image"
+                                                    name="main_image"
+                                                    value="{{ $product->main_image ? $product->main_image : '' }}"
+                                                    required>
+
+                                                <label for="main_image">Main Image</label>
+                                                <input type="file" class="form-control" id="main_image"
+                                                    name="main_image">
+                                                {{-- Display existing main image if available --}}
+                                                <div id="main_image_box">
+                                                    @if (isset($product) && $product->main_image)
+                                                        <img src="{{ asset($product->main_image) }}" alt="Main Image"
+                                                            width="100">
+                                                    @endif
+                                                </div>
+                                                {{-- @if (isset($product) && $product->main_image) --}}
+                                            </div>
+                                            <p class="reset-main_image text-danger"></p>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="relevant_images">Relevant Images</label>
+                                                <input type="hidden" class="form-control" id="relevant_images_hidden"
+                                                    name="relevant_images"
+                                                    value="{{ $product->relevant_images ? $product->relevant_images : '' }}">
+                                                <input type="file" class="form-control" id="relevant_images"
+                                                    name="relevant_images[]" multiple>
+                                                {{-- Display existing relevant images if available --}}
+                                                <div id="rel_image_box">
+                                                    @if (isset($product) && $product->relevant_images)
+                                                        @foreach (json_decode($product->relevant_images) as $image)
+                                                            <img src="{{ asset($image) }}" alt="Relevant Image"
+                                                                width="100">
+                                                        @endforeach
+                                                        {{-- @foreach ($product->relevant_images as $image)
+                                                                        <img src="{{ asset($image) }}" alt="Relevant Image" width="100">
+                                                                    @endforeach --}}
+                                                    @endif
+                                                </div>
+                                                {{-- @if (isset($product) && $product->relevant_images) --}}
+                                            </div>
+                                            <p class="reset-relevant_images text-danger"></p>
+                                        </div>
                                     </div>
-                                </form>
-                                {{-- <form method="post" action="javascript:;" id="categoryCreateForm" name="categoryForm"
+                                </fieldset>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="save-product">Update
+                                        Product</button>
+                                </div>
+                        </form>
+                        {{-- <form method="post" action="javascript:;" id="categoryCreateForm" name="categoryForm"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="card-body">
@@ -460,24 +496,17 @@
                                         </div>
                                     </div>
                                 </form> --}}
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
                     </div>
-                    <!-- /.card-body -->
-
+                    <!-- /.col -->
                 </div>
-                <!-- /.card -->
-
-
+                <!-- /.row -->
             </div>
-            <!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+            <!-- /.card-body -->
+
+    </section>
+    <!-- /.content -->
     </div>
 
-    </div>
 
 @endsection
 

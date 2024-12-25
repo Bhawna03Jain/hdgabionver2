@@ -26,17 +26,34 @@ $(document).ready(function () {
     //     input.value = value;
     //     form.appendChild(input);
     // }
+// Function to validate required fields
 
+$.ajax({
+    headers: {
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    },
+    type: "post",
+    url: "/admin/products/getlastno/article_no", // Your endpoint to fetch form data
+    success: function (response) {
+        console.log("Form data loaded:", response.no);
+        if (response.no) {
+            $("#article_no").val(parseInt(response.no) + 1);
+        }
+        // Add any other form field pre-fills here
+
+        // Enable/disable form fields if necessary
+    },
+    error: function () {
+        console.error("Error loading form data.");
+    },
+});
     $("#productCreateForm").submit(function (event) {
         event.preventDefault(); // Prevent default form submission
-        // appendImageToForm(form, 'main_image', existingMainImage);
-        // document.querySelectorAll('#rel_image_box img').forEach(img => {
-        //     appendImageToForm(form, 'relevant_images[]', img.src);
-        // });
-        // // Show loader
+        // Validate required fields
+        if (!validateRequiredFields($("#productCreateForm"))) {
+            return; // Stop submission if validation fails
+        }
         $("#loader").show();
-        // $('.overlay').show();
-        // Set form data and handle file upload
         var isFileUpload = true;
         var formData = new FormData(this);
 
@@ -104,7 +121,9 @@ $(document).ready(function () {
         //     appendImageToForm(form, 'relevant_images[]', img.src);
         // });
         var url = $(this).attr("action");
-
+        if (!validateRequiredFields($("#productEditForm"))) {
+            return; // Stop submission if validation fails
+        }
         // Show loader
         $("#loader").show();
         // $('.overlay').show();
@@ -185,29 +204,30 @@ $(document).ready(function () {
     //         }
     //     });
     // });
-    document.querySelectorAll(".show-product-images-btn").forEach(function (link) {
-        link.addEventListener("click", function (e) {
-            e.preventDefault(); // Prevent default behavior
-            var productId = document.querySelector('#relevantImagesModal-{{ $product->id }}').dataset.productId;
+    document
+        .querySelectorAll(".show-product-images-btn")
+        .forEach(function (link) {
+            link.addEventListener("click", function (e) {
+                e.preventDefault(); // Prevent default behavior
+                var productId = document.querySelector(
+                    "#relevantImagesModal-{{ $product->id }}"
+                ).dataset.productId;
 
-            console.log(productId);
-                    $('[data-fancybox="gallery"]').fancybox({
-                        buttons: [
-                            "slideShow",
-                            // "thumbs",
-                            "zoom",
-                            "fullScreen",
-                            // "share",
-                            "close"
-                        ],
-                        loop: false,
-                        protect: true
-                    });
-
+                console.log(productId);
+                $('[data-fancybox="gallery"]').fancybox({
+                    buttons: [
+                        "slideShow",
+                        // "thumbs",
+                        "zoom",
+                        "fullScreen",
+                        // "share",
+                        "close",
+                    ],
+                    loop: false,
+                    protect: true,
+                });
+            });
         });
-    });
-
-
 
     // document.querySelectorAll(".view-description").forEach((link) => {
     //     link.addEventListener("click", function (e) {
@@ -673,7 +693,6 @@ $(document).ready(function () {
         }
     });
     $("#productEditForm #relevant_images").on("change", function (event) {
-
         if (relevantImageInput) {
             // Check if the element exists
             const files = event.target.files; // Get all selected files
@@ -738,6 +757,86 @@ $(document).ready(function () {
             console.error('Element with ID "main_image" not found.');
         }
     });
+    // ****************Check Product name exist or not************
+
+    // function checkIfExists(inputSelector, messageSelector, url, dataKey) {
+    //     $(inputSelector).on('input', function () {
+    //           var $input = $(this);
+    //         var inputValue = $(this).val();
+
+    //         // Clear previous message
+    //         $(messageSelector).text('');
+    //         $input.removeClass('input-error');
+    //         if (inputValue.length > 0) {
+    //             $.ajax({
+    //                 headers: {
+    //                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    //                 },
+    //                 url: url,
+    //                 method: 'POST',
+    //                 data: {
+    //                     [dataKey]: inputValue,
+    //                 },
+    //                 success: function (response) {
+    //                     if (response.exists) {
+    //                         $(messageSelector).text(`This ${dataKey.replace('_', ' ')} already exists.`);
+    //                         $input.addClass('input-error');
+    //                     }
+
+    //                 },
+    //                 error: function () {
+    //                     console.error(`Error checking ${dataKey.replace('_', ' ')}.`);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
+
+    // Check for duplicate product name
+    checkIfExists(
+        "#productCreateForm #name",
+        ".reset-name",
+        "/admin/isProductByNameExist",
+        "name"
+    );
+
+    // Check for duplicate article number
+    checkIfExists(
+        "#productCreateForm #article_no",
+        ".reset-article_no",
+        "/admin/isProductByArticleExist",
+        "article_no"
+    );
+
+    // Check for duplicate HS code
+    checkIfExists(
+        "#productCreateForm #hs_code",
+        ".reset-hs_code",
+        "/admin/isProductByHsCodeExist",
+        "hs_code"
+    );
+    checkIfExists(
+        "#productEditForm #name",
+        ".reset-name",
+        "/admin/isProductByNameExist",
+        "name"
+    );
+
+    // Check for duplicate article number
+    checkIfExists(
+        "#productEditForm #article_no",
+        ".reset-article_no",
+        "/admin/isProductByArticleExist",
+        "article_no"
+    );
+
+    // Check for duplicate HS code
+    checkIfExists(
+        "#productEditForm #hs_code",
+        ".reset-hs_code",
+        "/admin/isProductByHsCodeExist",
+        "hs_code"
+    );
     // document.getElementById('relevant_images').addEventListener('change', function(event) {
     //     const files = event.target.files; // Get all selected files
     //     const relImageBox = document.getElementById('rel_image_box'); // Container to display images
@@ -908,18 +1007,16 @@ $(document).ready(function () {
     // });
 
     // Listen for changes on the main_image input within the #producteditForm
-    $('#relevantImagesModal-{{ $product->id }}').on('shown.bs.modal', function () {
-        var productId = $(this).data('productId');
-        console.log(productId);
-        $('[data-fancybox="gallery-' + productId + '"]').fancybox({
-            buttons: [
-                "slideShow",
-                "zoom",
-                "fullScreen",
-                "close"
-            ],
-            loop: true,
-            protect: true
-        });
-    })
+    // $("#relevantImagesModal-{{ $product->id }}").on(
+    //     "shown.bs.modal",
+    //     function () {
+    //         var productId = $(this).data("productId");
+    //         console.log(productId);
+    //         $('[data-fancybox="gallery-' + productId + '"]').fancybox({
+    //             buttons: ["slideShow", "zoom", "fullScreen", "close"],
+    //             loop: true,
+    //             protect: true,
+    //         });
+    //     }
+    // );
 });

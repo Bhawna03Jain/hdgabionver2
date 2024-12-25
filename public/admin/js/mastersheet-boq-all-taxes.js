@@ -1,14 +1,20 @@
 $(document).ready(function () {
     // Get the "Edit" and "Update" buttons
     const editButton = document.getElementById("edit-all-taxes-Button");
-    const updateButton = document.getElementById("update-all-taxes-Button");
-    const deleteButton = document.getElementById("delete-all-taxes-Button");
-
+    const updateButton = document.getElementById(
+        "update-all-taxes-Button"
+    );
+    const deleteButton = document.getElementById(
+        "delete-all-taxes-Button"
+    );
+    let firstCodeExistField = null;
+    let isValid = true;
     // Flag to track whether the form is in edit mode
     let isEditable = false;
 
     // Function to toggle between read-only and editable fields
     function toggleEdit() {
+        // alert("Edit Mode On");
         const inputs = document.querySelectorAll(".editable-field");
         isEditable = !isEditable;
 
@@ -31,14 +37,16 @@ $(document).ready(function () {
     let isError = false;
     // let isCodeExist = false; // Flag to track if the form is valid
     const boqConfigId = $("#boqconfigid").val();
+    // console.log(boqConfigId);
     function validateInput(input) {
         const value = input.value.trim(); // Use trim() to remove leading and trailing spaces
 
-        if (value === "") {
-            if ($(input).attr("required") !== undefined) {
-                isError = true;
-            }
-        } else if (parseFloat(value) < 0) {
+        // if (value === "") {
+        //     if ($(input).attr("required") !== undefined) {
+        //         isError = true;
+        //     }
+        // } else
+        if (parseFloat(value) < 0) {
             isError = true;
         } else {
             isError = false;
@@ -47,9 +55,12 @@ $(document).ready(function () {
         // Return error status
         return isError;
     }
+    // Check if the entered code value exists
+
     async function checkCodeExists(input) {
         const codeValue = $(input).val().trim();
-
+        console.log(codeValue);
+        // console.log(boqConfigId);
         if (codeValue !== "" && boqConfigId) {
             try {
                 const response = await $.ajax({
@@ -62,25 +73,35 @@ $(document).ready(function () {
                     },
                     data: { code: codeValue, boqConfigId: boqConfigId },
                 });
+                if (response.exists==='trashed') {
 
-                if (response.exists) {
+                    isCodeExist = "It has been already Trashed. It can not be created again.";
+                }
+                else if (response.exists) {
+
                     isCodeExist = true;
+
                     const existingValues = [];
                     $('.taxes-input[name*="[code]"]').each(function () {
                         if ($(this).val().trim() !== "") {
                             existingValues.push($(this).val().trim());
                         }
                     });
-                    const codeCount = existingValues.filter(value => value === codeValue).length;
+
+                    const codeCount = existingValues.filter(
+                        (value) => value.toLowerCase() === codeValue.toLowerCase()
+                    ).length;
                     if (codeCount > 1) {
                         isCodeExist = true; // If exists more than once, set true
+                    } else {
+                        isCodeExist = false;
                     }
-                    else{
-                        isCodeExist=false;
-                    }
+                    console.log(isCodeExist);
+                    isCodeExist = "Code already exist.";
                 } else {
                     isCodeExist = false;
                 }
+
             } catch (error) {
                 console.log("Error checking the code:", error);
             }
@@ -91,6 +112,7 @@ $(document).ready(function () {
     }
     $(document).on("input", ".taxes-input", async function () {
         let hasError = validateInput(this);
+        console.log(hasError);
         if (hasError) {
             showError(
                 this,
@@ -102,8 +124,10 @@ $(document).ready(function () {
 
         if ($(this).attr("name").includes("[code]")) {
             let isCodeExist = await checkCodeExists(this); // Use await here
-            if (isCodeExist) {
-                showError(this, "This code already exists.");
+            console.log(isCodeExist);
+            if (isCodeExist==='trashed'|| isCodeExist) {
+                // showError(this, "This code already exists.");
+                showError(this, isCodeExist);
             } else if (!isCodeExist && !hasError) {
                 removeError(this);
             }
@@ -111,15 +135,15 @@ $(document).ready(function () {
     });
 
     let totrow = 0; // Ensure totrow is initialized correctly
-    // Dynamic Row Addition with AJAX Fetch for Last ID
-    $("#addRowButton").click(function () {
+
+    $("#addTaxesRowButton").click(function () {
         // Make AJAX call to fetch the last ID from the database
         $.ajax({
             url: "/admin/mastersheet/boq/all/get-last-id/taxes", // Endpoint to get the last ID
             method: "GET",
             success: function (response) {
                 const lastId = response.lastId || 0; // Get last ID from the response (default to 0 if not found)
-                const newRowId = lastId + 1 + totrow; // Increment to get the new row's ID
+                const newRowId = lastId +  ++totrow; // Increment to get the new row's ID
 
                 const tableexist = $("#taxes tbody");
                 const rowCountexist = tableexist.children().length;
@@ -128,26 +152,45 @@ $(document).ready(function () {
 
                 const newRow = $("<tr>");
                 const readonlyAttribute = !isEditable ? "readonly" : "";
-
                 newRow.html(`
-                <td><input type="text" name="extra_taxes[${newRowId}][code]" class="form-control taxes-input editable-field" required ${readonlyAttribute}></td>
-                <td><input type="text" name="extra_taxes[${newRowId}][name]" class="form-control taxes-input editable-field" required ${readonlyAttribute}></td>
-                <td><input type="number" name="extra_taxes[${newRowId}][percentage]" class="form-control taxes-input editable-field" required ${readonlyAttribute}></td>
-                <td><button type="button" class="btn btn-danger btn-delete-row"><i class="fas fa-trash"></i></button></td>
-            `);
+                        <td><input type="text" name="extra_taxes[${newRowId}][code]" class="form-control taxes-input editable-field" required ${readonlyAttribute}></td>
+                        <td><input type="text" name="extra_taxes[${newRowId}][name]" class="form-control taxes-input editable-field" required ${readonlyAttribute}></td>
+                        <td><input type="number" name="extra_taxes[${newRowId}][percentage]" class="form-control taxes-input editable-field" required ${readonlyAttribute}></td>
+                        <td><button type="button" class="btn btn-danger btn-delete-row"><i class="fas fa-trash"></i></button></td>
+                    `);
 
                 table.append(newRow);
+                totrow++;
 
                 // Add validation for new row inputs
-                newRow.find(".taxes-input").each(function () {
-                    $(this)
-                        .on("blur", function () {
-                            validateInput(this);
-                        })
-                        .on("input", function () {
-                            validateInput(this);
-                        });
-                });
+        //         newRow.find(".taxes-input").on("input", function () {
+        //             alert("hi1");
+        //             // const input = $(this);
+        //             // validateInput(input); // Validate input
+        //             // if (input.attr("name").includes("[code]")) {
+        //             //     checkCodeExists(input); // Check for code existence
+        //             // }
+        //             let hasError = validateInput(this);
+        // console.log(hasError);
+        // if (hasError) {
+        //     showError(
+        //         this,
+        //         "Cannot insert negative number or cannot leave blank"
+        //     );
+        // } else {
+        //     removeError(this);
+        // }
+
+        // if ($(this).attr("name").includes("[code]")) {
+        //     let isCodeExist = checkCodeExists(this); // Use await here
+        //     if (isCodeExist) {
+        //         // showError(this, "This code already exists.");
+        //         showError(this, isCodeExist);
+        //     } else if (!isCodeExist && !hasError) {
+        //         removeError(this);
+        //     }
+        // }
+        //         });
 
                 // Delete row event
                 newRow.find(".btn-delete-row").click(function () {
@@ -163,26 +206,29 @@ $(document).ready(function () {
             },
         });
     });
-
     if (updateButton) {
-        updateButton.addEventListener("click", function (event) {
+        updateButton.addEventListener("click", async function (event) {
             event.preventDefault(); // Prevent the default form submission
+            if (
+                !validateRequiredFields($("#masterSheetAlltaxesForm"))
+            ) {
+                return; // Stop submission if validation fails
+            }
             isValid = true;
             const invalidFields = document.querySelectorAll(".is-invalid");
-            const requiredFields = document.querySelectorAll("[required]");
+            // const requiredFields = document.querySelectorAll("[required]");
 
-            requiredFields.forEach(function (field) {
-                if (field.value.trim() === "") {
-                    isValid = false;
-                    field.classList.add("is-invalid"); // You can define this class to show a red border or message
-                    showError(field, "It is required Filed");
-                }
-            });
+            // requiredFields.forEach(function (field) {
+            //     if (field.value.trim() === "") {
+            //         isValid = false;
+            //         field.classList.add("is-invalid"); // You can define this class to show a red border or message
+            //         showError(field, "It is required Filed");
+            //     }
+            // });
             if (invalidFields.length > 0) {
                 isValid = false;
             }
 
-            // If all required fields are valid, you can submit the form or proceed with the update
             if (!isValid) {
                 alert("Form is invalid, fix the errors!");
                 console.log("Form is invalid, fix the errors!");
@@ -190,30 +236,18 @@ $(document).ready(function () {
                 console.log("Form is valid, proceeding with the update...");
                 if (confirm("Do you want to update the data?")) {
                     ajaxFormSubmit(
-                        "#masterSheetAllTaxesForm", // Form ID
+                        "#masterSheetAlltaxesForm", // Form ID
                         "#update-all-taxes-Button", // Submit button ID
-                        "/admin/mastersheet/boq/all/update/taxes/", // URL for the store action
+                        "/admin/mastersheet/boq/all/update/taxes", // URL for the store action
                         "post",
-                        "taxes Detail For all has been Configured Succcessfully." // Success message
+                        "taxes Detail has been Configured Successfully." // Success message
                     );
                 } else {
                     return false;
                 }
             }
         });
-        // Handle form submission (Update button)
-        // updateButton.addEventListener('click', function () {
-        //     // Confirmation dialog before updating
-        //     if (confirm('Do you want to update the data?')) {
-        //         // Perform the form submission (e.g., AJAX or normal form submit)
-        //         document.getElementById('masterSheetallTaxesForm').submit();
-        //     } else {
-        //         // Do nothing if the user cancels
-        //         return false;
-        //     }
-        // });
     }
-
     function showError(input, message) {
         let errorMessage = input.nextElementSibling;
         if (
@@ -229,17 +263,21 @@ $(document).ready(function () {
     }
 
     // Remove error message
-    function removeError(input) {
+    function    removeError(input) {
         const errorMessage = input.nextElementSibling;
+        console.log(errorMessage);
         if (errorMessage && errorMessage.classList.contains("error-message")) {
             errorMessage.remove();
             $(input).css("border", "none").removeClass("is-invalid");
         }
+        $(input).css("border", "none").removeClass("is-invalid");
     }
-    $(document).on("click", ".delete-all-taxes-Button", function (e) {
+    $(document).on("click", "#delete-all-taxes-Button", function (e) {
         e.preventDefault();
+
         const row = $(this).closest("tr");
         const itemId = $(this).data("id");
+        alert(itemId);
         const url = `/admin/mastersheet/boq/all/delete/taxes/${itemId}`;
 
         if (confirm("Are you sure you want to delete this item?")) {
@@ -257,15 +295,24 @@ $(document).ready(function () {
                 success: function (resp) {
                     $(".overlay").hide();
 
-                    if (resp.status === "success") {
+                    if (resp.status === "success" && resp.type === "success") {
+                        alert("1");
                         row.remove();
                         window.location.href =
                             resp.message +
                             "?successMessage=" +
                             encodeURIComponent("Row Deleted  Successfully.");
                         //  toastr.success(resp.message || "Row Deleted  Successfully.");
-                    } else {
-                        toastr.error(resp.message || "Error deleting item.");
+                    } else if (
+                        resp.status === "fail" &&
+                        resp.type === "trashed"
+                    ) {
+                        alert("resp.message");
+                        window.location.href = resp.message;
+                        toastr.error(resp.msg || "Error deleting item.");
+                    } else if (resp.status === "fail" && resp.type === "fail") {
+                        alert("3");
+                        toastr.error(resp.msg || "Error deleting item.");
                     }
                 },
                 error: function (xhr) {
@@ -284,85 +331,3 @@ $(document).ready(function () {
         }
     });
 });
-    //     function validateInput(input) {
-    //     const value = input.value.trim(); // Use trim() to remove leading and trailing spaces
-
-    //     // Check if the value is empty
-    //     if (value === "") {
-    //         $("#invalid_no").html("Cannot be blank");
-    //         $("#invalid_no").css("color", "red");
-    //         $("#invalid_no").css("display", "block");
-    //         $(input).css("border", "1px solid red");
-    //     } else if (parseFloat(value) < 0) {
-    //         // Check if the value is a negative number
-    //         $("#invalid_no").html("Cannot insert negative number");
-    //         $("#invalid_no").css("color", "red");
-    //         $("#invalid_no").css("display", "block");
-    //         $(input).css("border", "1px solid red");
-
-    //     } else {
-    //         // If valid input, clear the error messages
-    //         $(input).css("border", "none");
-    //         $("#invalid_no").html("");
-    //         $(input).removeClass("is-invalid");
-
-    //         let errorMessage = $(input).next(".error-message");
-    //     if (errorMessage.length) {
-    //         errorMessage.remove();  // Remove the error message element
-    //     }
-    //     }
-    // }
-
-    // Add event listeners to all material input fields
-    // document.querySelectorAll(".taxes-input").forEach((input) => {
-    //     // Check value on input change or when focus is lost
-    //     input.addEventListener("blur", function () {
-    //         validateInput(this);
-    //     });
-
-    //     // Optional: Validate on input change (while typing)
-    //     input.addEventListener("input", function () {
-    //         validateInput(this);
-    //     });
-    // });
-
-    // Attach a click event listener to all delete buttons
-    // $(document).on('click', '.delete-all-taxes-Button', function () {
-    //     const row = $(this).closest('tr'); // Get the row containing the delete button
-    //     const itemId = $(this).data('id'); // Get the ID of the item to delete
-    //     const url = `/admin/mastersheet/boq/all/taxes/delete/${itemId}`; // Update with your route
-
-    //     // Confirmation dialog before deleting
-    //     if (confirm('Are you sure you want to delete this item?')) {
-    //         $.ajax({
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
-    //             },
-    //             type: 'POST', // Use POST or DELETE based on your route
-    //             url: url,
-    //             data: { _method: 'DELETE' }, // Simulate DELETE method
-    //             success: function (response) {
-    //                 if (response.success) {
-    //                     alert('Item deleted successfully.');
-    //                     row.remove(); // Remove the row from the table
-    //                 } else {
-    //                     alert(response.message || 'Error deleting item.');
-    //                 }
-    //             },
-    //             error: function (xhr) {
-    //                 alert('An unexpected error occurred.');
-    //                 console.error(xhr.responseText);
-    //             }
-    //         });
-    //     }
-    // });
-
-    // ajaxFormSubmit(
-    //     null, // formId is not applicable here since no form is involved
-    //     ".delete-all-taxes-Button", // Button selector
-    //     null, // URL will be dynamically passed
-    //     "POST", // Simulate DELETE method
-    //     "Item deleted successfully." // Success message
-    // );
-
-

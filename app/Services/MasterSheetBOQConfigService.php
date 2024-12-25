@@ -30,7 +30,10 @@ class MasterSheetBOQConfigService
         $this->marginFactorsConfigRepository = $marginFactorsConfigRepository;
         $this->productService = $productService;
     }
-
+    public function getByBoqId($boqid)
+    {
+        return $this->boqConfigRepository->find($boqid);
+    }
     public function getIdByType($boqtype)
     {
         return $this->boqConfigRepository->getIdByType($boqtype);
@@ -38,66 +41,31 @@ class MasterSheetBOQConfigService
 
     public function updateOrCreateAllManufacturing($boqConfigId, Request $request)
     {
-        // Start a database transaction to ensure data integrity
-        // dd( $boqConfigId);
+        // dd($request->all());
         DB::beginTransaction();
 
         try {
-            // dd($request->all());
-            // $boqConfigId = $request->input('boqconfigid'); // Get boqconfigid
-
-            // Loop through the 'manufacturing' data and update each record
             if ($request->input('manufacturing')) {
                 foreach ($request->input('manufacturing') as $key => $data) {
                     // dd($key);
-                    $existingRecord = $this->manufacturingConfigRepository->getByBoqConfigAndId($boqConfigId, $key);
-                    // dd($existingRecord);
+                    $existingRecord = $this->manufacturingConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
                     if ($existingRecord && $existingRecord->trashed()) {
-                        // Restore soft-deleted record
-                        $existingRecord->restore();
-
-                        $this->manufacturingConfigRepository->update($key, $data);
-
-                    }
-                    // elseif (!$existingRecord) {
-                    //     $data['boq_config_id'] = $boqConfigId;
-
-                    //     $this->manufacturingConfigRepository->create($data);
-
-                    // }
-                    else {
+                        return "trashed";
+                    } else {
 
                         $this->manufacturingConfigRepository->update($key, $data);
                     }
-
-
                 }
             }
             if ($request->input('extra_manufacturing')) {
                 foreach ($request->input('extra_manufacturing') as $key => $data) {
-                    // dd($data['code']);
                     $existingRecord = $this->manufacturingConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
-
-                    // if ($existingRecord && $existingRecord->trashed()) {
-                    //     // Restore soft-deleted record
-                    //     $existingRecord->restore();
-
-                    //     $this->manufacturingConfigRepository->update($key, $data);
-
-                    // }
-                    // else
-                    if (!$existingRecord) {
+                    if ($existingRecord && $existingRecord->trashed()) {
+                        return "trashed";
+                    } elseif (!$existingRecord) {
                         $data['boq_config_id'] = $boqConfigId;
-                        // dd($data);
                         $this->manufacturingConfigRepository->create($data);
-                        // dd($existingRecord);
                     }
-                    // else {
-
-                    //     $this->manufacturingConfigRepository->update($key, $data);
-                    // }
-
-
                 }
             }
             // Commit the transaction if all updates are successful
@@ -112,11 +80,11 @@ class MasterSheetBOQConfigService
         }
     }
 
-    public function updateOrCreateMaterials($boqtype, $boqConfigId, Request $request)
+    public function updateOrCreateAllMaterials($boqtype, $boqConfigId, Request $request)
     {
-        // dd($request);
+        dd($request->all());
 
-        // dd($request->input('material_configs'));
+        // dd($request->input('extra_material_configs'));
         DB::beginTransaction();
 
         // try {
@@ -180,7 +148,7 @@ class MasterSheetBOQConfigService
 
                                     $data['item_code'] = 'top_bottom_rods_length';
                                     $parts = explode('_', $data['item_code']);
-
+                                    // dd($parts);
                                     // Combine the first two parts with 'And'
                                     if (count($parts) >= 2) {
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
@@ -188,7 +156,7 @@ class MasterSheetBOQConfigService
                                     $data['sides'] = $sides;
 
 
-
+                                    break;
 
                                 case 2:
                                     $data['item_code'] = 'top_bottom_rods_width';
@@ -266,7 +234,7 @@ class MasterSheetBOQConfigService
 
                         if (!$existingRecord) {
                             $data['boq_config_id'] = $boqConfigId;
-                            dd($data);
+                            // dd($data);
                             $this->materialConfigRepository->create($data);
 
                         }
@@ -303,79 +271,40 @@ class MasterSheetBOQConfigService
 
         // }
     }
-
-
     public function updateOrCreateAllTaxes($boqConfigId, Request $request)
     {
         // Start a database transaction to ensure data integrity
-
+// dd($request);
         DB::beginTransaction();
-        // dd($request->all());
         // try {
-        // $boqConfigId = $request->input('boqconfigid'); // Get boqconfigid
+            if ($request->input('taxes')) {
+                foreach ($request->input('taxes') as $key => $data) {
+                    // dd($key);
+                    $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
+                    if ($existingRecord && $existingRecord->trashed()) {
+                        return "trashed";
+                    } else {
 
-        // Loop through the 'manufacturing' data and update each record
-        if ($request->input('taxes')) {
-            foreach ($request->input('taxes') as $key => $data) {
-
-                // $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndId($boqConfigId, $key);
-                $existingRecord = $this->manufacturingConfigRepository->getByBoqConfigAndId($boqConfigId, $key);
-
-                if ($existingRecord && $existingRecord->trashed()) {
-                    // Restore soft-deleted record
-                    $existingRecord->restore();
-
-                    $this->taxesConfigRepository->update($key, $data);
-
+                        $this->taxesConfigRepository->update($key, $data);
+                    }
                 }
-                // elseif (!$existingRecord) {
-                //     $data['boq_config_id'] = $boqConfigId;
-
-                //     $this->taxesConfigRepository->create($data);
-
-                // }
-                else {
-
-                    $this->taxesConfigRepository->update($key, $data);
-                }
-
-
             }
-        }
-        if ($request->input('extra_taxes')) {
-            foreach ($request->input('extra_taxes') as $key => $data) {
-
-                // $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndId($boqConfigId, $key);
-                $existingRecord = $this->manufacturingConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
-                // dd($existingRecord);
-                // if ($existingRecord && $existingRecord->trashed()) {
-                //     // Restore soft-deleted record
-                //     $existingRecord->restore();
-
-                //     $this->taxesConfigRepository->update($key, $data);
-
-                // }
-                if (!$existingRecord) {
-                    $data['boq_config_id'] = $boqConfigId;
-
-                    $this->taxesConfigRepository->create($data);
-
+            if ($request->input('extra_taxes')) {
+                foreach ($request->input('extra_taxes') as $key => $data) {
+                    $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
+                    if ($existingRecord && $existingRecord->trashed()) {
+                        return "trashed";
+                    } elseif (!$existingRecord) {
+                        $data['boq_config_id'] = $boqConfigId;
+                        $this->taxesConfigRepository->create($data);
+                    }
                 }
-                // else {
-
-                //     $this->taxesConfigRepository->update($key, $data);
-                // }
-
-
             }
-        }
-        // dd("done");
-        // Commit the transaction if all updates are successful
-        DB::commit();
+            // Commit the transaction if all updates are successful
+            DB::commit();
 
-        return true;
-        // }
-        // catch (\Exception $e) {
+            return true;
+        // } catch (\Exception $e) {
         //     // Rollback the transaction if something goes wrong
         //     DB::rollBack();
         //     return false;
@@ -437,7 +366,29 @@ class MasterSheetBOQConfigService
         }
     }
 
+    public function UpdateItem($type, $boqConfigId, Request $request)
+    {
+        $repositories = [
+            'manufacturing' => $this->manufacturingConfigRepository,
+            'materials' => $this->materialConfigRepository,
+            'taxes' => $this->taxesConfigRepository,
+        ];
+        if (array_key_exists($type, $repositories)) {
+            try {
+                // Attempt to delete the item using the appropriate repository
+                $item = $repositories[$type]->update($boqConfigId, $request);
 
+                // Return true if the deletion was successful
+                return $item ? true : false;
+            } catch (\Exception $e) {
+                // Log or handle the exception as needed
+                return false;
+            }
+        }
+
+        // Return false if the type is not recognized
+        return false;
+    }
     public function deleteItem($type, $id)
     {
         // Define a mapping of types to their respective repositories
@@ -483,13 +434,58 @@ class MasterSheetBOQConfigService
 
         if ($type === "manufacturing") {
 
-            return $this->manufacturingConfigRepository->getCode($request);
+            $existingRecord = $this->manufacturingConfigRepository->getCode($request)->first();
+            if (!$existingRecord) {
+                return false;
+            }
+            if ($existingRecord && $existingRecord->trashed()) {
+                // Restore soft-deleted record
+                // $existingRecord->restore();
+
+                // $this->marginFactorsConfigRepository->update($existingRecord->id, $data);
+                return "trashed";
+            } else {
+                return true;
+            }
+
         }
         if ($type === "taxes") {
-            return $this->taxesConfigRepository->getCode($request);
+            // dd($type);
+            $existingRecord = $this->taxesConfigRepository->getCode($request)->first();
+            // dd($existingRecord);
+            if (!$existingRecord) {
+
+                return false;
+            }
+            if ($existingRecord && $existingRecord->trashed()) {
+
+                // Restore soft-deleted record
+                // $existingRecord->restore();
+
+                // $this->marginFactorsConfigRepository->update($existingRecord->id, $data);
+                return "trashed";
+            } else {
+
+                return true;
+            }
+            //    $existingRecord= $this->taxesConfigRepository->getCode($request);
+            //    if ($existingRecord && $existingRecord->trashed()) {
+            //                 // Restore soft-deleted record
+            //                 // $existingRecord->restore();
+
+            //                 // $this->marginFactorsConfigRepository->update($existingRecord->id, $data);
+
+            //             }
         }
         if ($type === "materials") {
-            return $this->materialConfigRepository->getCode($request);
+            //    $existingRecord= $this->materialConfigRepository->getCode($request);
+            //    if ($existingRecord && $existingRecord->trashed()) {
+            //                 // Restore soft-deleted record
+            //                 // $existingRecord->restore();
+
+            //                 // $this->marginFactorsConfigRepository->update($existingRecord->id, $data);
+
+            //             }
         }
     }
 

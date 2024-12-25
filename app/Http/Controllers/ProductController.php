@@ -84,12 +84,14 @@ class ProductController extends Controller
     {
 
         $data = $request->all();
+// dd($data);
         $category = $this->categoryService->getCategoryById($data['category_id']);
         $cat_code = $category->code;
 
         if ($cat_code) {
             switch ($cat_code) {
                 case 'baskets':
+                    // dd($data);
                     $rules = [
                         'category_id' => 'exists:categories,id',
                         'name' => [
@@ -132,6 +134,7 @@ class ProductController extends Controller
                         'attributes.height.min' => 'The height must be at least 0.',
                         'attributes.short_description.required' => 'The short description is required.',
                     ];
+                    break;
                 case 'parts':
                     $rules = [
                         'category_id' => 'exists:categories,id',
@@ -216,6 +219,7 @@ class ProductController extends Controller
             switch ($cat_code) {
                 case 'baskets':
                     $sku = $this->productService->generateSku($data, $cat_code);
+break;
                 case 'parts':
                     $sku = 'parts-' . $data['article_no'];
             }
@@ -247,7 +251,13 @@ class ProductController extends Controller
                     ]);
                 }
             } else {
-
+   // Remove any null values from the 'attributes' array
+   if (isset($data['attributes']) && is_array($data['attributes'])) {
+    $data['attributes'] = array_filter($data['attributes'], function($value) {
+        return $value !== null;
+    });
+}
+// dd($data);
                 if ($this->productService->createProduct($data)) {
                     return response()->json([
                         'status' => 'success',
@@ -360,7 +370,7 @@ class ProductController extends Controller
                         'attributes.short_description.required' => 'The short description is required.',
 
                     ];
-
+break;
                 case 'parts':
 
                     $rules = [
@@ -419,6 +429,7 @@ class ProductController extends Controller
                         'attributes.short_description.required' => 'The short description is required.',
 
                     ];
+                    break;
                 case 'others':
 
 
@@ -446,7 +457,8 @@ class ProductController extends Controller
             switch ($cat_code) {
                 case 'baskets':
                     $sku = $this->productService->generateSku($data, $cat_code);
-                case 'parts':
+                break;
+                    case 'parts':
                     $sku = 'parts-' . $data['article_no'];
             }
         }
@@ -581,5 +593,28 @@ class ProductController extends Controller
             // dd($query);
         }
 
+    }
+
+    public function isProductByNameExist(Request $request)
+    {
+        $exists = $this->productService->isProductByNameExist($request->name);
+        return response()->json(['exists' => $exists]);
+    }
+    public function isProductByArticleExist(Request $request)
+    {
+        $exists = $this->productService->isProductByArticleExist($request->article_no);
+        return response()->json(['exists' => $exists]);
+    }
+    public function isProductByHSCodeExist(Request $request)
+    {
+        $exists = $this->productService->isProductByHSCodeExist($request->hs_code);
+        return response()->json(['exists' => $exists]);
+    }
+    public function getLastNo($column)
+    {
+
+       $no = $this->productService->getLastNo($column);
+
+        return response()->json(['no' => $no]);
     }
 }

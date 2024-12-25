@@ -30,7 +30,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(ExchangeRateSeeder::class);
          $this->call(ManufacturingConfigSeeder::class);
         $this->call(TaxesConfigSeeder::class);
-        // $this->call(MaterialConfigSeeder::class);
+
         $this->call(MarginFactorsConfigSeeder::class);
+            // $this->call(MaterialConfigSeeder::class);
     }
 }

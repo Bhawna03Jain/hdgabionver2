@@ -18,12 +18,21 @@ class MarginFactorConfig extends Model
         'country_id',
         'margin_factor',
         'discount_per',
-        'boq_config_id'
+        'boq_config_id',
+         'product_id'
     ];
 
     // Define relationships
     public function country()
     {
         return $this->belongsTo(Country::class); // Assuming the Country model exists
+    }
+    public function product()
+    {
+        return $this->belongsTo(product::class); // Assuming the Country model exists
+    }
+    public function boqconfig()
+    {
+        return $this->belongsTo(BoqConfig::class); // Assuming the Country model exists
     }
 }

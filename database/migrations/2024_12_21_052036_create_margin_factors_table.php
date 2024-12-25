@@ -12,16 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('margin_factors', function (Blueprint $table) {
-
             $table->id(); // Auto-incrementing ID
             $table->foreignId('country_id')->constrained('countries')->onDelete('cascade'); // Foreign key to countries table
             $table->decimal('margin_factor', 8, 2)->nullable(); // Country-specific margin factor
             $table->decimal('discount_per', 8, 2)->default(0); // Country-specific margin factor
-            $table->unique('country_id'); // Ensures country_id is unique
+            // $table->unique('country_id','boq_config_id'); // Ensures country_id is unique
+            // $table->unique('country_id','product_id'); // Ensures country_id is unique
             $table->integer('cost')->default(0);
             $table->string('product_type')->default('product');//product,boq
-            $table->integer('product_type_id');
-            // $table->foreignId('boq_config_id')->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig
+            // $table->integer('product__id');
+            // $table->integer('product__id');
+            $table->foreignId('boq_config_id')->nullable()->constrained('boq_configs')->onDelete('cascade'); // Relation to boqconfig
+            $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade'); // Relation to boqconfig
 
             $table->softDeletes(); // Adds deleted_at column for soft delete
             $table->timestamps(); // Adds created_at and updated_at columns

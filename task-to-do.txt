@@ -1,0 +1,3 @@
+admin->sidebar->all products
+when click on edit button then fields highlight which can be edited
+calcuate price as unit price filled in basket , basket boq extra material

@@ -1,0 +1,3535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Electro - HTML Ecommerce Template</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="icon" type="image/x-icon" sizes="40x40" href="/images/logo/favicon-40x40.svg ">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <title> Home-HD Gabion
+    </title>
+    <!-- ========== Bootstrap ========== -->
+    <link rel="stylesheet" href="/front/css/normalization.css">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <!-- ==========Font awesome ========== -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Slick -->
+    <!-- <link type="text/css" rel="stylesheet" href="css/slick.css"/>
+		<link type="text/css" rel="stylesheet" href="css/slick-theme.css"/> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.css" />
+    <!-- nouislider -->
+    <!-- <link type="text/css" rel="stylesheet" href="css/nouislider.min.css"/> -->
+
+    <!-- Font Awesome Icon -->
+    <!-- <link rel="stylesheet" href="css/font-awesome.min.css"> -->
+
+    <!-- Custom stlylesheet -->
+    <!-- <link type="text/css" rel="stylesheet" href="css/style.css"/> -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+    <style>
+        /*=========================================================
+	01 -> GENERAL
+===========================================================*/
+
+        /*----------------------------*\
+	Typography
+\*----------------------------*/
+        html {
+            font-size: 62.5%;
+            width: 100%;
+            height: 100%;
+        }
+
+        * {
+
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            color: #333;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: #2B2D42;
+            font-weight: 700;
+            margin: 0 0 10px;
+        }
+
+        a {
+            color: #2B2D42;
+            font-weight: 500;
+            -webkit-transition: 0.2s color;
+            transition: 0.2s color;
+            text-decoration: none;
+            outline: none;
+        }
+
+        a:hover,
+        a:focus {
+            color: #D10024;
+            text-decoration: none;
+            outline: none;
+        }
+
+        ul,
+        ol {
+            margin: 0;
+            padding: 0;
+            list-style: none
+        }
+
+        /*----------------------------*\
+	Buttons
+\*----------------------------*/
+
+        .primary-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #D10024;
+            border: none;
+            border-radius: 40px;
+            color: #FFF;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-align: center;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .primary-btn:hover,
+        .primary-btn:focus {
+            opacity: 0.9;
+            color: #FFF;
+        }
+
+        /*----------------------------*\
+	Inputs
+\*----------------------------*/
+
+        /*-- Text input --*/
+
+        .input {
+            height: 40px;
+            padding: 0px 15px;
+            border: 1px solid #E4E7ED;
+            background-color: #FFF;
+            width: 100%;
+        }
+
+        textarea.input {
+            padding: 15px;
+            min-height: 90px;
+        }
+
+        /*-- Number input --*/
+
+        .input-number {
+            position: relative;
+        }
+
+        .input-number input[type="number"]::-webkit-inner-spin-button,
+        .input-number input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-number input[type="number"] {
+            -moz-appearance: textfield;
+            height: 40px;
+            width: 100%;
+            border: 1px solid #E4E7ED;
+            background-color: #FFF;
+            padding: 0px 35px 0px 15px;
+        }
+
+        .input-number .qty-up,
+        .input-number .qty-down {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #E4E7ED;
+            background-color: #FFF;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .input-number .qty-up {
+            right: 0;
+            top: 0;
+            border-bottom: 0px;
+        }
+
+        .input-number .qty-down {
+            right: 0;
+            bottom: 0;
+        }
+
+        .input-number .qty-up:hover,
+        .input-number .qty-down:hover {
+            background-color: #E4E7ED;
+            color: #D10024;
+        }
+
+        /*-- Select input --*/
+
+        .input-select {
+            padding: 0px 15px;
+            background: #FFF;
+            border: 1px solid #E4E7ED;
+            height: 40px;
+        }
+
+        /*-- checkbox & radio input --*/
+
+        .input-radio,
+        .input-checkbox {
+            position: relative;
+            display: block;
+        }
+
+        .input-radio input[type="radio"]:not(:checked),
+        .input-radio input[type="radio"]:checked,
+        .input-checkbox input[type="checkbox"]:not(:checked),
+        .input-checkbox input[type="checkbox"]:checked {
+            position: absolute;
+            margin-left: -9999px;
+            visibility: hidden;
+        }
+
+        .input-radio label,
+        .input-checkbox label {
+            font-weight: 500;
+            min-height: 20px;
+            padding-left: 20px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .input-radio input[type="radio"]+label span,
+        .input-checkbox input[type="checkbox"]+label span {
+            position: absolute;
+            left: 0px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #E4E7ED;
+            background: #FFF;
+        }
+
+        .input-radio input[type="radio"]+label span {
+            border-radius: 50%;
+        }
+
+        .input-radio input[type="radio"]+label span:after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%) scale(0);
+            -ms-transform: translate(-50%, -50%) scale(0);
+            transform: translate(-50%, -50%) scale(0);
+            background-color: #FFF;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            opacity: 0;
+            -webkit-transition: all 0.2s;
+            transition: all 0.2s;
+        }
+
+        .input-checkbox input[type="checkbox"]+label span:after {
+            content: '✔';
+            position: absolute;
+            top: -2px;
+            left: 1px;
+            font-size: 10px;
+            color: #FFF;
+            opacity: 0;
+            -webkit-transform: scale(0);
+            -ms-transform: scale(0);
+            transform: scale(0);
+            -webkit-transition: all 0.2s;
+            transition: all 0.2s;
+        }
+
+        .input-radio input[type="radio"]:checked+label span,
+        .input-checkbox input[type="checkbox"]:checked+label span {
+            background-color: #D10024;
+            border-color: #D10024;
+        }
+
+        .input-radio input[type="radio"]:checked+label span:after {
+            opacity: 1;
+            -webkit-transform: translate(-50%, -50%) scale(1);
+            -ms-transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .input-checkbox input[type="checkbox"]:checked+label span:after {
+            opacity: 1;
+            -webkit-transform: scale(1);
+            -ms-transform: scale(1);
+            transform: scale(1);
+        }
+
+        .input-radio .caption,
+        .input-checkbox .caption {
+            margin-top: 5px;
+            max-height: 0;
+            overflow: hidden;
+            -webkit-transition: 0.3s max-height;
+            transition: 0.3s max-height;
+        }
+
+        .input-radio input[type="radio"]:checked~.caption,
+        .input-checkbox input[type="checkbox"]:checked~.caption {
+            max-height: 800px;
+        }
+
+        /*----------------------------*\
+	Section
+\*----------------------------*/
+
+        .section {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 30px;
+            margin-top: 15px;
+        }
+
+        .section-title .title {
+            display: inline-block;
+            text-transform: uppercase;
+            margin: 0px;
+        }
+
+        .section-title .section-nav {
+            float: right;
+        }
+
+        .section-title .section-nav .section-tab-nav {
+            display: inline-block;
+        }
+
+        .section-tab-nav li {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .section-tab-nav li:last-child {
+            margin-right: 0px;
+        }
+
+        .section-tab-nav li a {
+            font-weight: 700;
+            color: #8D99AE;
+        }
+
+        .section-tab-nav li a:after {
+            content: "";
+            display: block;
+            width: 0%;
+            height: 2px;
+            background-color: #D10024;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .section-tab-nav li.active a {
+            color: #D10024;
+        }
+
+        .section-tab-nav li a:hover:after,
+        .section-tab-nav li a:focus:after,
+        .section-tab-nav li.active a:after {
+            width: 100%;
+        }
+
+        .section-title .section-nav .products-slick-nav {
+            top: 0px;
+            right: 0px;
+        }
+
+        /*----------------------------*\
+	Breadcrumb
+\*----------------------------*/
+
+        #breadcrumb {
+            padding: 30px 0px;
+            background: #FBFBFC;
+            border-bottom: 1px solid #E4E7ED;
+            margin-bottom: 30px;
+        }
+
+        #breadcrumb .breadcrumb-header {
+            display: inline-block;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-right: 15px;
+            text-transform: uppercase;
+        }
+
+        #breadcrumb .breadcrumb-tree {
+            display: inline-block;
+        }
+
+        #breadcrumb .breadcrumb-tree li {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        #breadcrumb .breadcrumb-tree li+li {
+            margin-left: 10px;
+        }
+
+        #breadcrumb .breadcrumb-tree li+li:before {
+            content: '/';
+            display: inline-block;
+            color: #8D99AE;
+            margin-right: 10px;
+        }
+
+        #breadcrumb .breadcrumb-tree li a {
+            color: #8D99AE;
+        }
+
+        #breadcrumb .breadcrumb-tree li a:hover {
+            color: #D10024;
+        }
+
+        /*=========================================================
+	02 -> HEADER
+===========================================================*/
+
+        /*----------------------------*\
+	Top header
+\*----------------------------*/
+
+        #top-header {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #1E1F29;
+        }
+
+        .header-links li {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 12px;
+        }
+
+        .header-links li:last-child {
+            margin-right: 0px;
+        }
+
+        .header-links li a {
+            color: #FFF;
+        }
+
+        .header-links li a:hover {
+            color: #D10024;
+        }
+
+        .header-links li i {
+            color: #D10024;
+            margin-right: 5px;
+        }
+
+        /*----------------------------*\
+	Logo
+\*----------------------------*/
+
+        #header {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #15161D;
+        }
+
+        .header-logo {
+            float: left;
+        }
+
+        .header-logo .logo img {
+            display: block;
+            width: 100%;
+            max-height: 80px;
+        }
+
+
+        /*----------------------------*\
+	Search
+\*----------------------------*/
+
+        .header-search {
+            padding: 15px 0px;
+        }
+
+        .header-search form {
+            position: relative;
+        }
+
+        .header-search form .input-select {
+            margin-right: -4px;
+            border-radius: 40px 0px 0px 40px;
+        }
+
+        .header-search form .input {
+            width: calc(100% - 260px);
+            margin-right: -4px;
+        }
+
+        .header-search form .search-btn {
+            height: 40px;
+            width: 100px;
+            background: #D10024;
+            color: #FFF;
+            font-weight: 700;
+            border: none;
+            border-radius: 0px 40px 40px 0px;
+        }
+
+        /*----------------------------*\
+	Cart
+\*----------------------------*/
+
+        .header-ctn {
+            /* float: right; */
+            padding: 15px 0px;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+        }
+
+        .header-ctn>div {
+            display: inline-block;
+        }
+
+        .header-ctn>div+div {
+            margin-left: 15px;
+        }
+
+        .header-ctn>div>a {
+            display: block;
+            position: relative;
+            /* width: 90px; */
+            text-align: center;
+            color: #FFF;
+        }
+
+        .header-ctn>div>a>i {
+            display: block;
+            font-size: 18px;
+        }
+
+        .header-ctn>div>a>span {
+            font-size: 12px;
+        }
+
+        .header-ctn>div>a>.qty {
+            position: absolute;
+            right: 15px;
+            top: -10px;
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #FFF;
+            background-color: #D10024;
+        }
+
+        .header-ctn .menu-toggle {
+            display: none;
+        }
+
+        #addtocart {
+            background-color: transparent;
+            border: none;
+        }
+
+        .cart-dropdown {
+            position: absolute;
+            width: 300px;
+            background: #FFF;
+            padding: 15px;
+            -webkit-box-shadow: 0px 0px 0px 2px #E4E7ED;
+            box-shadow: 0px 0px 0px 2px #E4E7ED;
+            z-index: 99;
+            right: 0;
+            /* opacity: 0; */
+            /* visibility: hidden; */
+        }
+
+        .dropdown.open>.cart-dropdown {
+            /* opacity: 1;
+			visibility: visible; */
+        }
+
+        .cart-dropdown .cart-list {
+            max-height: 180px;
+            overflow-y: scroll;
+            margin-bottom: 15px;
+        }
+
+        .cart-dropdown .cart-list .product-widget {
+            padding: 0px;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-dropdown .cart-list .product-widget:last-child {
+            margin-bottom: 0px;
+        }
+
+        .cart-dropdown .cart-list .product-widget .product-img {
+            left: 0px;
+            top: 0px;
+        }
+
+        .cart-dropdown .cart-list .product-widget .product-body .product-price {
+            color: #2B2D42;
+        }
+
+        .cart-dropdown .cart-btns {
+            margin: 0px -17px -17px;
+            display: flex;
+        }
+
+        .cart-dropdown .cart-btns>a {
+            display: inline-block;
+            width: calc(50% - 0px);
+            padding: 12px;
+            background-color: #D10024;
+            color: #FFF;
+            text-align: center;
+            font-weight: 700;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .cart-dropdown .cart-btns>a:first-child {
+            margin-right: -4px;
+            background-color: #1e1f29;
+        }
+
+        .cart-dropdown .cart-btns>a:hover {
+            opacity: 0.9;
+        }
+
+        .cart-dropdown .cart-summary {
+            border-top: 1px solid #E4E7ED;
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+
+        .cart-dropdown .cart-summary h5 {
+            border-top: 1px solid #E4E7ED;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        /*=========================================================
+	03 -> Navigation
+===========================================================*/
+.nav-link{
+    font-size: 1.3rem;
+    color: black;
+}
+        #navigation {
+            background: #FFF;
+            border-bottom: 2px solid #E4E7ED;
+            border-top: 3px solid #D10024;
+        }
+
+        /*----------------------------*\
+	Main nav
+\*----------------------------*/
+        .main-nav1 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .main-nav1>li>a:hover,
+        .main-nav1>li>a:focus,
+        .main-nav1>li.active>a {
+            color: #D10024;
+            background-color: transparent;
+        }
+
+        .main-nav1>li:not(.dropdown)>a:after {
+            content: "";
+            display: block;
+            width: 0%;
+            height: 2px;
+            background-color: #D10024;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .main-nav1>li:not(.dropdown)>a:hover:after,
+        .main-nav1>li:not(.dropdown)>a:focus:after,
+        .main-nav1>li:not(.dropdown).active>a:after {
+            width: 100%;
+        }
+
+        .main-nav {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .main-nav>li+li {
+            margin-left: 30px
+        }
+
+        .main-nav>li>a {
+            padding: 20px 0px;
+        }
+
+        .main-nav>li>a:hover,
+        .main-nav>li>a:focus,
+        .main-nav>li.active>a {
+            color: #D10024;
+            background-color: transparent;
+        }
+
+        .main-nav>li>a:after {
+            content: "";
+            display: block;
+            width: 0%;
+            height: 2px;
+            background-color: #D10024;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .main-nav>li>a:hover:after,
+        .main-nav>li>a:focus:after,
+        .main-nav>li.active>a:after {
+            width: 100%;
+        }
+
+        .header-ctn li.nav-toggle {
+            display: none;
+        }
+
+
+
+        /*----------------------------*\
+	responsive nav
+\*----------------------------*/
+
+        @media only screen and (max-width: 991px) {
+            .header-ctn .menu-toggle {
+                display: inline-block;
+            }
+
+            #responsive-nav {
+                position: fixed;
+                left: 0;
+                top: 0;
+                background: #15161D;
+                height: 100vh;
+                max-width: 250px;
+                width: 0%;
+                overflow: hidden;
+                z-index: 22;
+                padding-top: 60px;
+                -webkit-transform: translateX(-100%);
+                -ms-transform: translateX(-100%);
+                transform: translateX(-100%);
+                -webkit-transition: 0.2s all;
+                transition: 0.2s all;
+            }
+
+            #responsive-nav.active {
+                -webkit-transform: translateX(0%);
+                -ms-transform: translateX(0%);
+                transform: translateX(0%);
+                width: 100%;
+            }
+
+            .main-nav {
+                margin: 0px;
+                float: none;
+
+
+            }
+
+            .main-nav>li {
+                display: block;
+                float: none;
+            }
+
+            .main-nav>li+li {
+                margin-left: 0px;
+            }
+
+            .main-nav>li>a {
+                padding: 15px;
+                color: #FFF;
+            }
+        }
+
+        /*=========================================================
+	04 -> CATEGORY SHOP
+===========================================================*/
+
+        .shop {
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0px;
+        }
+
+        .shop:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0px;
+            width: 60%;
+            background: #D10024;
+            opacity: 0.9;
+            -webkit-transform: skewX(-45deg);
+            -ms-transform: skewX(-45deg);
+            transform: skewX(-45deg);
+        }
+
+        .shop:after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 1px;
+            width: 100%;
+            background: #D10024;
+            opacity: 0.9;
+            -webkit-transform: skewX(-45deg) translateX(-100%);
+            -ms-transform: skewX(-45deg) translateX(-100%);
+            transform: skewX(-45deg) translateX(-100%);
+        }
+
+        .shop .shop-img {
+            position: relative;
+            background-color: #E4E7ED;
+            z-index: -1;
+        }
+
+        .shop .shop-img>img {
+            width: 100%;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .shop:hover .shop-img>img {
+            -webkit-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+            transform: scale(1.1);
+        }
+
+        .shop .shop-body {
+            position: absolute;
+            top: 0;
+            width: 75%;
+            padding: 30px;
+            z-index: 10;
+        }
+
+        .shop .shop-body h3 {
+            color: #FFF;
+        }
+
+        .shop .shop-body .cta-btn {
+            color: #FFF;
+            text-transform: uppercase;
+        }
+
+        /*=========================================================
+	06 -> PRODUCT
+===========================================================*/
+
+        /*----------------------------*\
+	product
+\*----------------------------*/
+
+        .product {
+            position: relative;
+            margin: 15px 0px;
+            -webkit-box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
+            box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .product:hover {
+            -webkit-box-shadow: 0px 0px 6px 0px #E4E7ED, 0px 0px 0px 2px #D10024;
+            box-shadow: 0px 0px 6px 0px #E4E7ED, 0px 0px 0px 2px #D10024;
+        }
+
+        .product .product-img {
+            position: relative;
+        }
+
+        .product .product-img>img {
+            width: 100%;
+        }
+
+        .product .product-img .product-label {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .product .product-img .product-label>span {
+            border: 2px solid;
+            padding: 2px 10px;
+            font-size: 12px;
+        }
+
+        .product .product-img .product-label>span.sale {
+            background-color: #FFF;
+            border-color: #D10024;
+            color: #D10024;
+        }
+
+        .product .product-img .product-label>span.new {
+            background-color: #D10024;
+            border-color: #D10024;
+            color: #FFF;
+        }
+
+        .product .product-body {
+            position: relative;
+            padding: 15px;
+            background-color: #FFF;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .product .product-body .product-category {
+            text-transform: uppercase;
+            font-size: 12px;
+            color: #8D99AE;
+        }
+
+        .product .product-body .product-name {
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .product .product-body .product-name>a {
+            font-weight: 700;
+        }
+
+        .product .product-body .product-name>a:hover,
+        .product .product-body .product-name>a:focus {
+            color: #D10024;
+        }
+
+        .product .product-body .product-price {
+            color: #D10024;
+            font-size: 18px;
+        }
+
+        .product .product-body .product-price .product-old-price {
+            font-size: 70%;
+            font-weight: 400;
+            color: #8D99AE;
+        }
+
+        .product .product-body .product-rating {
+            position: relative;
+            margin: 15px 0px 10px;
+            height: 20px;
+        }
+
+        .product .product-body .product-rating>i {
+            position: relative;
+            width: 14px;
+            margin-right: -4px;
+            background: #FFF;
+            color: #E4E7ED;
+            z-index: 10;
+        }
+
+        .product .product-body .product-rating>i.fa-star {
+            color: #ef233c;
+        }
+
+        .product .product-body .product-rating:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            height: 1px;
+            background-color: #E4E7ED;
+        }
+
+        .product .product-body .product-btns>button {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background: transparent;
+            border: none;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .product .product-body .product-btns>button:hover {
+            background-color: #E4E7ED;
+            color: #D10024;
+            border-radius: 50%;
+        }
+
+        .product .product-body .product-btns>button .tooltipp {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -15px);
+            -ms-transform: translate(-50%, -15px);
+            transform: translate(-50%, -15px);
+            width: 150px;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 10px;
+            background: #1e1f29;
+            color: #FFF;
+            text-transform: uppercase;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .product .product-body .product-btns>button:hover .tooltipp {
+            opacity: 1;
+            visibility: visible;
+            -webkit-transform: translate(-50%, -5px);
+            -ms-transform: translate(-50%, -5px);
+            transform: translate(-50%, -5px);
+        }
+
+        .product .add-to-cart {
+            position: absolute;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            padding: 15px;
+            background: #1e1f29;
+            text-align: center;
+            -webkit-transform: translateY(0%);
+            -ms-transform: translateY(0%);
+            transform: translateY(0%);
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+            z-index: 2;
+        }
+
+        .product:hover .add-to-cart {
+            -webkit-transform: translateY(100%);
+            -ms-transform: translateY(100%);
+            transform: translateY(100%);
+        }
+
+        .product .add-to-cart .add-to-cart-btn {
+            position: relative;
+            border: 2px solid transparent;
+            height: 40px;
+            padding: 0 30px;
+            background-color: #ef233c;
+            color: #FFF;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-radius: 40px;
+            -webkit-transition: 0.2s all;
+            transition: 0.2s all;
+        }
+
+        .product .add-to-cart .add-to-cart-btn>i {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            line-height: 38px;
+            color: #D10024;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .product .add-to-cart .add-to-cart-btn:hover {
+            background-color: #FFF;
+            color: #D10024;
+            border-color: #D10024;
+            padding: 0px 30px 0px 50px;
+        }
+
+        .product .add-to-cart .add-to-cart-btn:hover>i {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /*----------------------------*\
+	Widget product
+\*----------------------------*/
+
+        .product-widget {
+            position: relative;
+        }
+
+        .product-widget+.product-widget {
+            margin: 30px 0px;
+        }
+
+        .product-widget .product-img {
+            /* position: absolute;
+			left: 0px;
+			top: 0px; */
+            /* width: 60px; */
+        }
+
+        .product-widget .product-img>img {
+            width: 100%;
+        }
+
+        .product-widget .product-body {
+            /* padding-left: 75px; */
+            min-height: 60px;
+        }
+
+        .product-widget .product-body .product-category {
+            text-transform: uppercase;
+            font-size: 10px;
+            color: #8D99AE;
+        }
+
+        .product-widget .product-body .product-name {
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .product-widget .product-body .product-name>a {
+            font-weight: 700;
+        }
+
+        .product-widget .product-body .product-name>a:hover,
+        .product-widget .product-body .product-name>a:focus {
+            color: #D10024;
+        }
+
+        .product-widget .product-body .product-price {
+            font-size: 14px;
+            color: #D10024;
+        }
+
+        .product-widget .product-body .product-price .product-old-price {
+            font-size: 70%;
+            font-weight: 400;
+            color: #8D99AE;
+        }
+
+        .product-widget .product-body .product-price .qty {
+            font-weight: 400;
+            margin-right: 10px;
+        }
+
+        .product-widget .delete {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 14px;
+            width: 14px;
+            text-align: center;
+            font-size: 10px;
+            padding: 0;
+            background: #1e1f29;
+            border: none;
+            color: #FFF;
+        }
+
+        /*----------------------------*\
+	Products slick
+\*----------------------------*/
+
+        .products-slick .slick-list {
+            padding-bottom: 60px;
+            margin-bottom: -60px;
+            z-index: 2;
+        }
+
+        .products-slick .product.slick-slide {
+            margin: 15px;
+        }
+
+        .products-tabs>.tab-pane {
+            display: block;
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+            overflow-y: hidden;
+            padding-bottom: 60px;
+            margin-bottom: -60px;
+        }
+
+        .products-tabs>.tab-pane.active {
+            opacity: 1;
+            visibility: visible;
+            height: auto;
+        }
+
+        .products-slick-nav {
+            position: absolute;
+            right: 15px;
+            z-index: 10;
+        }
+
+        .products-slick-nav .slick-prev,
+        .products-slick-nav .slick-next {
+            position: static;
+            -webkit-transform: none;
+            -ms-transform: none;
+            transform: none;
+            width: 20px;
+            height: 20px;
+            display: inline-block !important;
+            margin: 0px 2px;
+        }
+
+        .products-slick-nav .slick-prev:before,
+        .products-slick-nav .slick-next:before {
+            font-size: 14px;
+        }
+    </style>
+    <style>
+        /* Navigation */
+        .header-navigation {
+            /* font: 19px "PT Sans Narrow", sans-serif; */
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .header-navigation>ul>li>a {
+            color: #767f88;
+            padding: 12px;
+        }
+
+        .header-navigation ul>li.active>a,
+        .header-navigation ul>li>a:hover,
+        .header-navigation ul>li>a:focus,
+        .header-navigation ul>li.open>a,
+        .header-navigation ul>li.open>a:hover,
+        .header-navigation ul>li.open>a:focus {
+            color: #e02222;
+        }
+
+        .header-navigation .dropdown-menu>li>a:hover,
+        .header-navigation .dropdown-menu>li.active>a,
+        .header-navigation .header-navigation-content .header-navigation-col li>a:hover,
+        .header-navigation .header-navigation-content .header-navigation-col li.active>a {
+            color: #fff;
+        }
+
+        .header-navigation ul>li.active>a {
+            /*border-bottom: 2px solid #E44F00;*/
+            border-bottom: none !important;
+        }
+
+        .header-navigation>ul>li>.dropdown-menu {
+            margin-top: -3px;
+        }
+
+        .reduce-header .header-navigation>ul>li>.dropdown-menu {
+            margin-top: -3px;
+        }
+
+        .reduce-header .header-navigation>ul>li.dropdown:hover>a:after {
+            bottom: 0;
+        }
+
+        /* nav brands */
+        .nav-brands {
+            clear: both;
+            margin: -20px -15px;
+            padding: 20px 0 0;
+            width: auto;
+        }
+
+        .nav-brands ul {
+            margin: 0;
+            padding: 10px 0;
+            list-style: none;
+            background: #fff;
+            width: 100%;
+            overflow: hidden;
+            border-top: solid 1px #f0f0f0;
+        }
+
+        .nav-brands li {
+            float: none;
+            margin-right: 0 !important;
+            border: none !important;
+            display: inline-block;
+        }
+
+        .nav-brands img {
+            width: auto;
+            height: 70px;
+        }
+
+        .nav-brands a {
+            padding: 0 !important;
+        }
+
+        .nav-brands a:hover {
+            background: #fff;
+            color: #fff;
+        }
+#header-wrapper{
+    max-height: 60px;
+}
+        #header-wrapper.scrolled {
+            /* background-color: #d35a22; */
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+            /* Ensures it stays above other elements */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Optional: Add shadow for better visibility */
+
+        }
+
+        .header-navigation .main-nav1 .dropdown .dropdown-menu {
+            min-width: 160px;
+        }
+
+        .header-navigation .main-nav1 .dropdown .dropdown-menu.show {
+            border-top: 3px solid red;
+            box-shadow: 1px -1px 3px 1px rgba(91, 91, 91, 0.2);
+
+        }
+
+        .header-navigation .dropdown-menu li {
+            /* padding: 0; */
+            /* margin: 0; */
+            border-bottom: solid 1px;
+            padding: 6px 0px;
+        }
+
+        .header-navigation .dropdown-menu li.active {
+            background-color: #D21737;
+            /* color: white; */
+        }
+
+        .header-navigation .main-nav1 .dropdown .dropdown-menu li a {
+            padding: 10px 15px;
+            font-weight: 400;
+            color: #767f88;
+
+        }
+
+        .header-navigation .main-nav1 .dropdown .dropdown-menu li.active a {
+
+            color: white;
+        }
+
+        /* .header-navigation .main-nav1 .dropdown .dropdown-menu.show::before {
+            content: "";
+            width: 2rem;
+            height: 2rem;
+            background-color: rgb(163, 18, 18);
+            position: absolute;
+            bottom: -13px;
+            left: 30%;
+            transform: rotate(45deg);
+        } */
+    </style>
+
+    <style>
+        /* BEGIN min width 1025px */
+        @media (min-width: 1025px) {
+            .header .header-navigation {
+                /* display: block !important; */
+            }
+        }
+
+        /* END min width 1025px */
+
+        /* BEGIN min width 1025px max width 1205 */
+        @media (min-width: 1025px) and (max-width: 1205px) {
+            body.page-header-fixed {
+                /* padding-top: 121px !important; height of the header */
+            }
+
+            .header .header-navigation {
+                /* display: block !important;
+		clear: both;
+		margin-top: -10px;
+		float: left !important; */
+            }
+
+            .reduce-header .header-navigation {
+                /* margin-top: -6px; */
+            }
+
+            .header .header-navigation>ul>li {
+                margin-right: 27px;
+            }
+
+            .header .header-navigation>ul>li>a {
+                /* padding: 5px 0 18px; */
+            }
+
+            .reduce-header .header-navigation>ul>li>a {
+                /* padding-bottom: 13px; */
+            }
+
+            .header .header-navigation>ul>li.active>a,
+            .header .header-navigation>ul>li>a:hover,
+            .header .header-navigation>ul>li>a:focus,
+            .header .header-navigation>ul>li.open>a,
+            .header .header-navigation>ul>li.open>a:hover,
+            .header .header-navigation>ul>li.open>a:focus {
+                /* background: none; */
+            }
+
+            .header-navigation>ul>li.dropdown:hover>a:after {
+                /* margin-left: 10px; */
+            }
+
+            .dropdown-fix-right .dropdown-menu {
+                /* left: 0;
+		right: auto; */
+            }
+
+            .header .header-navigation li.menu-search {
+                /* top: 1px;
+		margin-left: -20px; */
+            }
+
+            .header .header-navigation li.menu-search {
+                /* top: 2px; */
+            }
+
+            .header .header-navigation li.menu-search span.sep {
+                /* top: 2px;
+		margin-right: 26px; */
+            }
+
+            .header .header-navigation li.menu-search i {
+                /* top: -4px; */
+            }
+        }
+
+        /* END min width 1025px max width 1205 */
+
+        /* BEGIN max width 1024px */
+        @media (max-width: 1024px) {
+            body.page-header-fixed {
+                /* padding-top: 107px !important; height of the header */
+            }
+
+            .header .mobi-toggler {
+                /* display: block; */
+            }
+
+            .header .header-navigation {
+                /* float: none !important;
+		display: none;
+		clear: both;
+		background: #F9F9F9;
+		padding: 0 20px;
+		margin: 0 -20px 25px;
+		font-size: 16px; */
+            }
+
+            .header .header-navigation li {
+                /* float: none;
+		padding: 0;
+		clear: both; */
+            }
+
+            /* .header .header-navigation li > a,
+	.header .dropdown.open .dropdown-toggle,
+	.header .header-navigation li.open > a {
+		border-bottom: 1px solid #efefef !important;
+		padding: 8px 10px 9px;
+		margin: 0 -10px;
+		position: relative;
+		color: #666 !important;
+		background: none !important;
+	} */
+            .header .header-navigation li>a,
+            .header .dropdown.open .dropdown-toggle,
+            .header .header-navigation li.open>a {
+                /* padding: 12px 10px 9px; */
+            }
+
+            .header .header-navigation li>a:hover,
+            .header .header-navigation li.active>a,
+            .header .header-navigation li.open>a:hover {
+                /* border-bottom: 1px solid #efefef !important;
+		background: none !important;
+		color: #dd4632 !important;
+		text-decoration: none; */
+            }
+
+            .header-navigation>ul>li.dropdown:hover>a:after {
+                /* border: none; */
+            }
+
+            .header-navigation>ul>li>a>i.fa-angle-down {
+                /* display: block;
+		float: right;
+		margin: 3px 0 0; */
+            }
+
+            /* dropdown menu */
+            .header-navigation .dropdown-menu,
+            .header-navigation>ul>li>.dropdown-menu {
+                /* position: static;
+		width: 100%;
+		margin: 0;
+		border: none;
+		box-shadow: none;
+		background: none;
+		margin-top: 0;
+		border-top: none;
+		z-index: 22; */
+            }
+
+            .header-navigation .dropdown-menu li {
+                /* border: none !important;
+		margin-left: 20px; */
+            }
+
+            .header-navigation .dropdown-menu li>a {
+                /* padding: 10px 10px 9px;
+		z-index: 999;
+		position: relative; */
+            }
+
+            .header-navigation .dropdown-menu li>a>i {
+                /* display: none; */
+            }
+
+            .header-navigation .dropdown-menu .dropdown-menu {
+                /* display: block; */
+            }
+
+            .header-navigation .header-navigation-content {
+                /* border: none; */
+            }
+
+            .dropdown-megamenu .header-navigation-content {
+                /* padding: 5px 0 0;
+		margin-left: -20px; */
+            }
+
+            .dropdown-megamenu .header-navigation-content .row {
+                /* margin: 0; */
+            }
+
+            .dropdown-megamenu .header-navigation-content .header-navigation-col {
+                /* padding: 0;
+		float: none;
+		width: 100%; */
+            }
+
+            .dropdown-megamenu .header-navigation-content h4 {
+                /* font-size: 13px;
+		padding: 10px 10px 9px;
+		margin: 0 -10px 0 10px; */
+            }
+
+            .header-navigation .dropdown-megamenu .header-navigation-content li>a {
+                /* padding: 10px 10px 9px; */
+            }
+
+            .header-navigation-content-ext {
+                /* background: none; */
+            }
+
+            .header-navigation-description {
+                /* height: auto !important;
+		background: none;
+		box-shadow: none;
+		padding: 0;
+		margin: 0 10px; */
+            }
+
+            .header-navigation-content-ext .col-md-6,
+            .header-navigation-content-ext .col-md-3 {
+                /* float: none;
+		width: 100%; */
+            }
+
+            .dropdown-megamenu .header-navigation-content-ext .col-md-3 h4 {
+                /* border-bottom: 1px solid #EFEFEF; */
+            }
+
+            .header-navigation .dropdown-menu .header-navigation-content-ext li>a {
+                /* display: block; */
+            }
+
+            .header-navigation-content-ext .col-md-3,
+            .header-navigation-content-ext .col-md-6 {
+                /* padding: 0; */
+            }
+
+            .header-navigation-content-ext .col-md-6 {
+                /* margin-left: 10px; */
+            }
+
+            .header-navigation-content-ext .col-md-6 h4 {
+                /* margin-left: 0; */
+                /* padding-left: 0; */
+            }
+
+            .header .nav-brands {
+                /* margin: 15px 10px; */
+                /* padding: 0;
+		width: 100%;
+		background: #fff; */
+            }
+
+            .header .nav-brands ul {
+                /* border: 1px solid #F0F0F0;
+		padding: 10px; */
+            }
+
+            .header .nav-brands li {
+                /* max-width: 50%;
+		display: inline-block;
+		border: none;
+		margin-left: 0 */
+            }
+
+            .header .nav-brands li a,
+            .header .nav-brands li a:hover {
+                /* border: none !important;
+		margin: 0 !important; */
+            }
+
+            .nav-catalogue .dropdown-menu>li {
+                /* margin-left: 0; */
+            }
+
+            .nav-catalogue .header-navigation-content {
+                /* padding: 20px 0 0; */
+            }
+
+            .nav-catalogue .product-item {
+                /* margin-bottom: 20px; */
+            }
+
+            .header-navigation li.menu-search,
+            .header-navigation li.menu-search {
+                /* top: 0;
+		padding: 20px 0 10px;
+		position: relative; */
+            }
+
+            .header-navigation li.menu-search span.sep {
+                /* display: none; */
+            }
+
+            .header-navigation .search-box {
+                /* position: relative;
+		right: auto;
+		left: 0; */
+            }
+
+            .header-navigation .search-box:after {
+                /* right: auto;
+		left: 0; */
+            }
+
+            .top-cart-block {
+                /* margin-top: 3px; */
+            }
+
+            .page-header-fixed .header-navigation {
+                /* height: 300px;
+		overflow: auto; */
+            }
+        }
+
+        @media (max-width:991px) {
+            .header-navigation .main-nav1 {
+                flex-direction: column;
+            }
+
+            .header-navigation .main-nav1 li {
+                width: 100%;
+                padding: 0.5rem 1rem;
+                border-bottom: 1px solid #1c1b1b;
+            }
+
+            .header-navigation>ul>li>a {
+
+                padding: 10px 12px 10px;
+            }
+
+            .dropdown-toggle::after {
+
+                position: absolute;
+                right: 10%;
+                top: 50%;
+                transform: translateY(-50%);
+                transform: rotate(-90deg);
+            }
+
+            /* .header-navigation li > a,
+	.dropdown.open .dropdown-toggle,
+	.header-navigation li.open > a {
+		border-bottom: 1px solid #efefef !important;
+		padding: 8px 10px 9px;
+		margin: 0 -10px;
+		position: relative;
+		color: #666 !important;
+		background: none !important;
+	} */
+            .header-navigation .dropdown-menu {
+                position: static !important;
+                inset: 0px !important;
+                transform: none !important;
+                z-index: 1000;
+                min-width: 10rem;
+                padding: .5rem 0;
+                margin: 0;
+                font-size: 1rem;
+                color: #212529;
+                text-align: left;
+                list-style: none;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid rgba(0, 0, 0, .15);
+                border-radius: .25rem;
+                max-height: 0;
+                /* Start collapsed */
+                overflow: hidden;
+                /* Hide overflowing content */
+                opacity: 1;
+                /* Invisible by default */
+                transition: max-height 1s ease-in-out;
+                /* , opacity 1s ease-in-out; Smooth transition for height and opacity */
+
+                padding: 0;
+                /* Remove padding initially */
+            }
+
+
+
+            .header-navigation .dropdown:hover .dropdown-menu {
+                max-height: 500px;
+                /* Adjust height to fit content */
+                opacity: 1;
+                /* Fully visible */
+                pointer-events: auto;
+                /* Allow interaction */
+            }
+        }
+
+        /* *************************megamenu********************** */
+        .header-navigation-content {
+            padding: 10px;
+            min-width: 600px;
+            width: 90vw;
+        }
+
+        .product-item {
+            /* padding: 12px 12px 16px; */
+            background: #fff;
+            position: relative;
+
+            .pi-img-wrapper {
+                position: relative;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+figure{
+    height: 120px;
+    min-height: 120px;
+}
+                img {
+                    width: 100%;
+                    height: ;
+                }
+            }
+
+            h3 {
+                text-align: center !important;
+
+                a {
+                    text-align: center !important;
+                    padding: 3rem 0rem !important;
+                    font-weight: 700 !important;
+
+                    color: black !important;
+                }
+            }
+        }
+
+        /*.header-navigation .dropdown:hover .dropdown-menu,
+  /* .header-navigation .dropdown.show .dropdown-menu {
+    display: block;
+  } */
+
+        /* } */
+        /* END max width 1024px */
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <!-- TOP HEADER -->
+        <div id="top-header">
+            <div class="container" style="display: flex;justify-content: space-between;">
+                <ul class="header-links">
+                    <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                </ul>
+                <ul class="header-links">
+                    <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+                    <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- /TOP HEADER -->
+
+        <!-- MAIN HEADER -->
+        <div id="header-wrapper">
+            <div id="header">
+                <!-- container -->
+                <div class="container-fluid ps-5 pe-5">
+                    <!-- row -->
+                    <div class="row">
+                        <!-- LOGO -->
+                        <div class="col-md-3">
+                            <div class="header-logo">
+                                <a href="#" class="logo">
+                                    <img src="/public/images/logo/logo.webp" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <!-- /LOGO -->
+
+                        <!-- SEARCH BAR -->
+                        <div class="col-md-6">
+                            <div class="header-search">
+                                <form>
+                                    <select class="input-select">
+                                        <option value="0">All Categories</option>
+                                        <option value="1">Category 01</option>
+                                        <option value="1">Category 02</option>
+                                    </select>
+                                    <input class="input" placeholder="Search here">
+                                    <button class="search-btn">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- /SEARCH BAR -->
+
+                        <!-- ACCOUNT -->
+                        <div class="col-md-3 ">
+                            <div class="header-ctn">
+                                <!-- Wishlist -->
+                                <!-- <div>
+									<a href="#">
+										<i class="fa fa-heart-o"></i>
+										<span>Your Wishlist</span>
+										<div class="qty">2</div>
+									</a>
+								</div> -->
+                                <!-- /Wishlist -->
+                                <div class="dropdown ">
+                                    <a class="btn btn-secondary dropdown-toggle" type="button" id="addtocart"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <!-- <a class="dropdown-toggle" href="#" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="cart-menu-dropdown"> -->
+                                        <i class="fa fa-shopping-cart"></i>
+                                        <span>Your Cart</span>
+                                        <div class="qty">3</div>
+                                        <!-- </a> -->
+                                    </a>
+                                    <ul class="dropdown-menu cart-dropdown" aria-labelledby="addtocart">
+                                        <li><a class="dropdown-item " href="#">
+                                                <div class="cart-list">
+                                                    <div class="product-widget">
+                                                        <div class="product-img">
+                                                            <img src="./img/product01.png" alt="">
+                                                        </div>
+                                                        <div class="product-body">
+                                                            <h3 class="product-name"><a href="#">product name goes
+                                                                    here</a>
+                                                            </h3>
+                                                            <h4 class="product-price"><span class="qty">1x</span>$980.00
+                                                            </h4>
+                                                        </div>
+                                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                                    </div>
+
+                                                    <div class="product-widget">
+                                                        <div class="product-img">
+                                                            <img src="./img/product02.png" alt="">
+                                                        </div>
+                                                        <div class="product-body">
+                                                            <h3 class="product-name"><a href="#">product name goes
+                                                                    here</a>
+                                                            </h3>
+                                                            <h4 class="product-price"><span class="qty">3x</span>$980.00
+                                                            </h4>
+                                                        </div>
+                                                        <button class="delete"><i class="fa fa-close"></i></button>
+                                                    </div>
+                                                </div>
+                                            </a></li>
+                                        <li><a class="dropdown-item" href="#">
+                                                <div class="cart-summary">
+                                                    <small>3 Item(s) selected</small>
+                                                    <h5>SUBTOTAL: $2940.00</h5>
+                                                </div>
+                                            </a></li>
+                                        <li><a class="dropdown-item" href="#">
+                                                <div class="cart-btns">
+                                                    <a href="#">View Cart</a>
+                                                    <a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                                </div>
+                                            </a></li>
+                                    </ul>
+                                </div>
+                                <!-- <div class="dropdown">
+								<a class="dropdown-toggle" href="#" type="button" data-bs-toggle="dropdown"
+									aria-expanded="false" id="cart-menu-dropdown">
+									<i class="fa fa-shopping-cart"></i>
+									<span>Your Cart</span>
+									<div class="qty">3</div>
+								</a>
+								<div class="dropdown-menu cart-dropdown" aria-labelledby="cart-menu-dropdown">
+									<li>
+										<a class="dropdown-item" href="#">
+											<div class="cart-list">
+												<div class="product-widget">
+													<div class="product-img">
+														<img src="./img/product01.png" alt="">
+													</div>
+													<div class="product-body">
+														<h3 class="product-name"><a href="#">product name goes here</a>
+														</h3>
+														<h4 class="product-price"><span class="qty">1x</span>$980.00
+														</h4>
+													</div>
+													<button class="delete"><i class="fa fa-close"></i></button>
+												</div>
+
+												<div class="product-widget">
+													<div class="product-img">
+														<img src="./img/product02.png" alt="">
+													</div>
+													<div class="product-body">
+														<h3 class="product-name"><a href="#">product name goes here</a>
+														</h3>
+														<h4 class="product-price"><span class="qty">3x</span>$980.00
+														</h4>
+													</div>
+													<button class="delete"><i class="fa fa-close"></i></button>
+												</div>
+											</div>
+										</a>
+									</li>
+									<li>
+										<div class="cart-summary">
+											<small>3 Item(s) selected</small>
+											<h5>SUBTOTAL: $2940.00</h5>
+										</div>
+									</li>
+									<li>
+										<div class="cart-btns">
+											<a href="#">View Cart</a>
+											<a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+										</div>
+									</li>
+								</div>
+							</div> -->
+
+                                <!-- Cart -->
+                                <!-- <div class="dropdown">
+									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+										<i class="fa fa-shopping-cart"></i>
+										<span>Your Cart</span>
+										<div class="qty">3</div>
+									</a>
+									<div class="cart-dropdown">
+										<div class="cart-list">
+											<div class="product-widget">
+												<div class="product-img">
+													<img src="./img/product01.png" alt="">
+												</div>
+												<div class="product-body">
+													<h3 class="product-name"><a href="#">product name goes here</a></h3>
+													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+												</div>
+												<button class="delete"><i class="fa fa-close"></i></button>
+											</div>
+
+											<div class="product-widget">
+												<div class="product-img">
+													<img src="./img/product02.png" alt="">
+												</div>
+												<div class="product-body">
+													<h3 class="product-name"><a href="#">product name goes here</a></h3>
+													<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+												</div>
+												<button class="delete"><i class="fa fa-close"></i></button>
+											</div>
+										</div>
+										<div class="cart-summary">
+											<small>3 Item(s) selected</small>
+											<h5>SUBTOTAL: $2940.00</h5>
+										</div>
+										<div class="cart-btns">
+											<a href="#">View Cart</a>
+											<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+										</div>
+									</div>
+								</div> -->
+                                <!-- /Cart -->
+
+                                <!-- Menu Toogle -->
+                                <div class="menu-toggle">
+                                    <a href="#">
+                                        <i class="fa fa-bars"></i>
+                                        <span>Menu</span>
+                                    </a>
+                                </div>
+                                <!-- /Menu Toogle -->
+                            </div>
+                        </div>
+                        <!-- /ACCOUNT -->
+                    </div>
+                    <!-- row -->
+                </div>
+                <!-- container -->
+            </div>
+            <!-- /MAIN HEADER -->
+            <nav id="navigation">
+                <!-- container -->
+                <div class="container">
+                    <!-- responsive-nav -->
+                    <div class="header-navigation" id="responsive-nav">
+                        <ul class="main-nav1">
+                            <li class="active nav-item"><a href="#" class="nav-link">Home</a></li>
+                            <li class="nav-item"><a href="#" class="nav-link">About Us</a></li>
+                            <li class=" nav-item dropdown dropdown100 nav-catalogue">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarnewDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Products
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarnewDropdown">
+                                    <li>
+                                        <div class="header-navigation-content">
+                                            <div class="row">
+                                                <div class="col-12 col-md-3">
+                                                    <div class="product-item">
+                                                        <div class="pi-img-wrapper">
+                                                            <a href="shop-item.html">
+                                                                <figure>
+                                                                    <div> <img
+                                                                            src="/public/front/images/basket_orig/Basket 2.178.png"
+                                                                            alt="" srcset="" class="img-thumbnail ">
+                                                                    </div>
+                                                                    <figcaption>Compressor</figcaption>
+                                                                </figure>
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <div class="product-item">
+                                                        <div class="pi-img-wrapper">
+                                                            <a href="shop-item.html">
+                                                                <figure>
+                                                                    <div> <img
+                                                                            src="/public/front/images/AITool/fence1-wobg.png"
+                                                                            alt="" srcset="" class="img-thumbnail ">
+                                                                    </div>
+                                                                    <figcaption>Compressor</figcaption>
+                                                                </figure>
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                </div> <div class="col-12 col-md-3">
+                                                    <div class="product-item">
+                                                        <div class="pi-img-wrapper">
+                                                            <a href="shop-item.html">
+                                                                <figure>
+                                                                    <div> <img
+                                                                            src="/public/images/basket_orig/basket-100x100x100-10x10.png"
+                                                                            alt="" srcset="" class="img-thumbnail ">
+                                                                    </div>
+                                                                    <figcaption>Compressor</figcaption>
+                                                                </figure>
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                </div> <div class="col-12 col-md-3">
+                                                    <div class="product-item">
+                                                        <div class="pi-img-wrapper">
+                                                            <a href="shop-item.html">
+                                                                <figure>
+                                                                    <div> <img
+                                                                            src="/public/images/basket_orig/basket-100x100x100-10x10.png"
+                                                                            alt="" srcset="" class="img-thumbnail ">
+                                                                    </div>
+                                                                    <figcaption>Compressor</figcaption>
+                                                                </figure>
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- <li class=" nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarpagesDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                              Info
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="navbarpagesDropdown">
+                                <li><a href="index.html">Company Tour</a></li>
+                                <li><a href="index.html">Certificates</a></li>
+
+                                <li><a href="shop-faq.html">FAQ</a></li>
+                                <li><a href="shop-privacy-policy.html">Privacy Policy</a></li>
+                                <li><a href="shop-terms-conditions-page.html">Terms &amp; Conditions</a></li>
+                            </ul>
+                        </li> -->
+                            <!-- <li class="nav-item"><a href="#" class="nav-link">How To Order</a></li> -->
+                            <li class=" nav-item dropdown dropdown-megamenu">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarmanDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Miscellaneous
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarmanDropdown">
+                                    <li>
+                                        <div class="header-navigation-content">
+                                            <div class="row">
+                                                <div class="col-md-4 header-navigation-col">
+                                                    <h4>Info</h4>
+                                                    <ul>
+                                                        <li><a href="index.html">Company Tour</a></li>
+                                                        <li><a href="index.html">Certificates</a></li>
+                                                        <li><a href="shop-terms-conditions-page.html">Transportation and
+                                                                Payments</a></li>
+
+                                                        <li><a href="shop-faq.html">FAQ</a></li>
+
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-4 header-navigation-col">
+                                                    <h4>Downloads</h4>
+                                                    <ul>
+                                                        <li><a href="shop-privacy-policy.html">Privacy Policy</a></li>
+                                                        <li><a href="shop-terms-conditions-page.html">Terms &amp;
+                                                                Conditions</a></li>
+
+
+                                                        <li><a href="shop-product-list.html">Gilets</a></li>
+                                                        <li><a href="shop-product-list.html">Golf Tops</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-4 header-navigation-col">
+                                                    <h4>Assembly Instructions</h4>
+                                                    <ul>
+                                                        <li><a href="shop-product-list.html">Gabion Baskets</a></li>
+                                                        <li><a href="shop-product-list.html">Gabion Fences</a></li>
+                                                    </ul>
+
+                                                    <h4 class="mt-4">Clearance</h4>
+                                                    <ul>
+                                                        <li><a href="shop-product-list.html">Jackets</a></li>
+                                                        <li><a href="shop-product-list.html">Bottoms</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-12 nav-brands">
+                                                    <ul>
+                                                        <li><a href="shop-product-list.html"><img title="esprit"
+                                                                    alt="esprit"
+                                                                    src="assets/pages/img/brands/esprit.jpg"></a></li>
+                                                        <li><a href="shop-product-list.html"><img title="gap" alt="gap"
+                                                                    src="assets/pages/img/brands/gap.jpg"></a></li>
+                                                        <li><a href="shop-product-list.html"><img title="next"
+                                                                    alt="next"
+                                                                    src="assets/pages/img/brands/next.jpg"></a></li>
+                                                        <li><a href="shop-product-list.html"><img title="puma"
+                                                                    alt="puma"
+                                                                    src="assets/pages/img/brands/puma.jpg"></a></li>
+                                                        <li><a href="shop-product-list.html"><img title="zara"
+                                                                    alt="zara"
+                                                                    src="assets/pages/img/brands/zara.jpg"></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item"><a href="#" class="nav-link">Gallery</a></li>
+
+                            <li class="nav-item"><a href="#" class="nav-link">Blog</a></li>
+
+                            <li class="nav-item"><a href="#" class="nav-link">Contact Us</a></li>
+
+
+
+                            <!-- BEGIN TOP SEARCH -->
+                            <!-- <li class="menu-search">
+                            <span class="sep"></span>
+                            <i class="fa fa-search search-btn"></i>
+                            <div class="search-box">
+                                <form action="#">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Search" class="form-control">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="submit">Search</button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </li> -->
+                            <!-- END TOP SEARCH -->
+                        </ul>
+                    </div>
+
+
+                    <!-- /responsive-nav -->
+                </div>
+                <!-- /container -->
+            </nav>
+        </div>
+    </header>
+    <!-- /HEADER -->
+
+
+
+    <!-- SECTION -->
+    <div class="section" style="margin-top:50px">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- shop -->
+                <div class="col-md-4 col-6">
+                    <div class="shop">
+                        <div class="shop-img">
+                            <img src="./img/shop01.png" alt="">
+                        </div>
+                        <div class="shop-body">
+                            <h3>Laptop<br>Collection</h3>
+                            <a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /shop -->
+
+                <!-- shop -->
+                <div class="col-md-4 col-6">
+                    <div class="shop">
+                        <div class="shop-img">
+                            <img src="./img/shop03.png" alt="">
+                        </div>
+                        <div class="shop-body">
+                            <h3>Accessories<br>Collection</h3>
+                            <a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /shop -->
+
+                <!-- shop -->
+                <div class="col-md-4 col-6">
+                    <div class="shop">
+                        <div class="shop-img">
+                            <img src="./img/shop02.png" alt="">
+                        </div>
+                        <div class="shop-body">
+                            <h3>Cameras<br>Collection</h3>
+                            <a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /shop -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <!-- section title -->
+                <div class="col-md-12">
+                    <div class="section-title">
+                        <h3 class="title">New Products</h3>
+                        <div class="section-nav">
+                            <ul class="section-tab-nav tab-nav">
+                                <li class="active"><a data-toggle="tab" href="#tab1">Laptops</a></li>
+                                <li><a data-toggle="tab" href="#tab1">Smartphones</a></li>
+                                <li><a data-toggle="tab" href="#tab1">Cameras</a></li>
+                                <li><a data-toggle="tab" href="#tab1">Accessories</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section title -->
+
+                <!-- Products tab & slick -->
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="products-tabs">
+                            <!-- tab -->
+                            <div id="tab1" class="tab-pane active">
+                                <div class="products-slick" data-nav="#slick-nav-1">
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product01.png" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-30%</span>
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product02.png" alt="">
+                                            <div class="product-label">
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star-o"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product03.png" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-30%</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product04.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product05.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+                                </div>
+                                <div id="slick-nav-1" class="products-slick-nav"></div>
+                            </div>
+                            <!-- /tab -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Products tab & slick -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <!-- HOT DEAL SECTION -->
+    <div id="hot-deal" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="hot-deal">
+                        <ul class="hot-deal-countdown">
+                            <li>
+                                <div>
+                                    <h3>02</h3>
+                                    <span>Days</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <h3>10</h3>
+                                    <span>Hours</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <h3>34</h3>
+                                    <span>Mins</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <h3>60</h3>
+                                    <span>Secs</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <h2 class="text-uppercase">hot deal this week</h2>
+                        <p>New Collection Up to 50% OFF</p>
+                        <a class="primary-btn cta-btn" href="#">Shop now</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /HOT DEAL SECTION -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <!-- section title -->
+                <div class="col-md-12">
+                    <div class="section-title">
+                        <h3 class="title">Top selling</h3>
+                        <div class="section-nav">
+                            <ul class="section-tab-nav tab-nav">
+                                <li class="active"><a data-toggle="tab" href="#tab2">Laptops</a></li>
+                                <li><a data-toggle="tab" href="#tab2">Smartphones</a></li>
+                                <li><a data-toggle="tab" href="#tab2">Cameras</a></li>
+                                <li><a data-toggle="tab" href="#tab2">Accessories</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section title -->
+
+                <!-- Products tab & slick -->
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="products-tabs">
+                            <!-- tab -->
+                            <div id="tab2" class="tab-pane fade in active">
+                                <div class="products-slick" data-nav="#slick-nav-1">
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product06.png" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-70%</span>
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product07.png" alt="">
+                                            <div class="product-label">
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star-o"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product08.png" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-30%</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product09.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product01.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+                                </div>
+                                <div id="slick-nav-1" class="products-slick-nav"></div>
+                            </div>
+                            <!-- /tab -->
+                            <!-- tab -->
+                            <div id="tab2" class="tab-pane fade in ">
+                                <div class="products-slick" data-nav="#slick-nav-2">
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product06.png" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-30%</span>
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product07.png" alt="">
+                                            <div class="product-label">
+                                                <span class="new">NEW</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star-o"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product08.png" alt="">
+                                            <div class="product-label">
+                                                <span class="sale">-30%</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product09.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+
+                                    <!-- product -->
+                                    <div class="product">
+                                        <div class="product-img">
+                                            <img src="./img/product01.png" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <p class="product-category">Category</p>
+                                            <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                            <h4 class="product-price">$980.00 <del
+                                                    class="product-old-price">$990.00</del></h4>
+                                            <div class="product-rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product-btns">
+                                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span
+                                                        class="tooltipp">add to wishlist</span></button>
+                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span
+                                                        class="tooltipp">add to compare</span></button>
+                                                <button class="quick-view"><i class="fa fa-eye"></i><span
+                                                        class="tooltipp">quick view</span></button>
+                                            </div>
+                                        </div>
+                                        <div class="add-to-cart">
+                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to
+                                                cart</button>
+                                        </div>
+                                    </div>
+                                    <!-- /product -->
+                                </div>
+                                <div id="slick-nav-2" class="products-slick-nav"></div>
+                            </div>
+                            <!-- /tab -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /Products tab & slick -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-4 col-6">
+                    <div class="section-title">
+                        <h4 class="title">Top selling</h4>
+                        <div class="section-nav">
+                            <div id="slick-nav-3" class="products-slick-nav"></div>
+                        </div>
+                    </div>
+
+                    <div class="products-widget-slick" data-nav="#slick-nav-3">
+                        <div>
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product07.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product08.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product09.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- product widget -->
+                        </div>
+
+                        <div>
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product01.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product02.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product03.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- product widget -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-6">
+                    <div class="section-title">
+                        <h4 class="title">Top selling</h4>
+                        <div class="section-nav">
+                            <div id="slick-nav-4" class="products-slick-nav"></div>
+                        </div>
+                    </div>
+
+                    <div class="products-widget-slick" data-nav="#slick-nav-4">
+                        <div>
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product04.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product05.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product06.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- product widget -->
+                        </div>
+
+                        <div>
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product07.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product08.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product09.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- product widget -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="clearfix visible-sm visible-xs"></div> -->
+
+                <div class="col-md-4 col-6">
+                    <div class="section-title">
+                        <h4 class="title">Top selling</h4>
+                        <div class="section-nav">
+                            <div id="slick-nav-5" class="products-slick-nav"></div>
+                        </div>
+                    </div>
+
+                    <div class="products-widget-slick" data-nav="#slick-nav-5">
+                        <div>
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product01.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product02.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product03.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- product widget -->
+                        </div>
+
+                        <div>
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product04.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product05.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- /product widget -->
+
+                            <!-- product widget -->
+                            <div class="product-widget">
+                                <div class="product-img">
+                                    <img src="./img/product06.png" alt="">
+                                </div>
+                                <div class="product-body">
+                                    <p class="product-category">Category</p>
+                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                    <h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+                                </div>
+                            </div>
+                            <!-- product widget -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+    <!-- NEWSLETTER -->
+    <div id="newsletter" class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="newsletter">
+                        <p>Sign Up for the <strong>NEWSLETTER</strong></p>
+                        <form>
+                            <input class="input" type="email" placeholder="Enter Your Email">
+                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+                        </form>
+                        <ul class="newsletter-follow">
+                            <li>
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /NEWSLETTER -->
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <!-- top footer -->
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-3 col-6">
+                        <div class="footer">
+                            <h3 class="footer-title">About Us</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                incididunt ut.</p>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                                <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Categories</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">Hot deals</a></li>
+                                <li><a href="#">Laptops</a></li>
+                                <li><a href="#">Smartphones</a></li>
+                                <li><a href="#">Cameras</a></li>
+                                <li><a href="#">Accessories</a></li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- <div class="clearfix visible-xs"></div> -->
+
+                    <div class="col-md-3 col-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Information</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Orders and Returns</a></li>
+                                <li><a href="#">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Service</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="#">View Cart</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                                <li><a href="#">Track My Order</a></li>
+                                <li><a href="#">Help</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /top footer -->
+
+        <!-- bottom footer -->
+        <div id="bottom-footer" class="section">
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <ul class="footer-payments">
+                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                        </ul>
+                        <span class="copyright">
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> All rights reserved | This
+                            template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a
+                                href="https://colorlib.com" target="_blank">Colorlib</a>
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        </span>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /bottom footer -->
+    </footer>
+    <!-- /FOOTER -->
+
+    <!-- jQuery Plugins -->
+    <!-- ========== Bootstrap ========== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+    <!-- <script src="js/jquery.min.js"></script> -->
+    <!-- <script src="js/bootstrap.min.js"></script> -->
+    <!-- <script src="js/slick.min.js"></script> -->
+    <!-- <script src="js/nouislider.min.js"></script> -->
+    <!-- <script src="js/jquery.zoom.min.js"></script> -->
+    <!-- <script src="js/main.js"></script> -->
+
+    <script>
+        $('.menu-toggle > a').on('click', function (e) {
+            e.preventDefault();
+            $('#responsive-nav').toggleClass('active');
+        })
+
+        // Fix cart dropdown from closing
+        $('.cart-dropdown').on('click', function (e) {
+            e.stopPropagation();
+        });
+    </script>
+    <script>
+        /////////////////////////////////////////
+
+        // Products Slick
+        $('.products-slick').each(function () {
+            var $this = $(this),
+                $nav = $this.attr('data-nav');
+
+            $this.slick({
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                autoplay: true,
+                infinite: true,
+                speed: 300,
+                dots: false,
+                arrows: true,
+                appendArrows: $nav ? $nav : false,
+                responsive: [{
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                    }
+                },
+                ]
+            });
+        });
+
+        // Products Widget Slick
+        $('.products-widget-slick').each(function () {
+            var $this = $(this),
+                $nav = $this.attr('data-nav');
+
+            $this.slick({
+                infinite: true,
+                autoplay: true,
+                speed: 300,
+                dots: false,
+                arrows: true,
+                appendArrows: $nav ? $nav : false,
+            });
+        });
+
+        /////////////////////////////////////////
+
+        // Product Main img Slick
+        $('#product-main-img').slick({
+            infinite: true,
+            speed: 300,
+            dots: false,
+            arrows: true,
+            fade: true,
+            asNavFor: '#product-imgs',
+        });
+
+        // Product imgs Slick
+        $('#product-imgs').slick({
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            arrows: true,
+            centerMode: true,
+            focusOnSelect: true,
+            centerPadding: 0,
+            vertical: true,
+            asNavFor: '#product-main-img',
+            responsive: [{
+                breakpoint: 991,
+                settings: {
+                    vertical: false,
+                    arrows: false,
+                    dots: true,
+                }
+            },
+            ]
+        });
+
+    </script>
+    <script>
+        window.addEventListener('scroll', function () {
+            const nav = document.getElementById('header-wrapper');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+    </script>
+</body>
+
+</html>

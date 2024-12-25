@@ -53,7 +53,7 @@ function handleFormValidation(
                             $(successMessageSelector).hide();
                         }, 4000);
                         $(formId).closest(".modal").modal("hide");
-  console.log("Redirecting to: " + resp.message);
+                        console.log("Redirecting to: " + resp.message);
                         window.location.href =
                             resp.message +
                             "?successMessage=" +
@@ -85,6 +85,37 @@ function handleFormValidation(
         });
     });
 }
+
+// write   if (!validateRequiredFields($("#productCreateForm"))) {
+//     return; // Stop submission if validation fails
+// } in form submit section
+
+function validateRequiredFields(form) {
+    let isValid = true;
+
+    // Clear previous error messages and styles
+    form.find(".form-control").removeClass("input-error");
+    form.find(".error-message").remove();
+
+    // Loop through required fields and validate
+    form.find(".form-control[required]").each(function () {
+        const $field = $(this);
+        if ($field.val().trim() === "") {
+            isValid = false;
+            // Add red border
+            $field.addClass("input-error");
+            // Add error message
+            $field.after('<p class="error-message">This field is required.</p>');
+        }
+    });
+
+    return isValid;
+}
+
+$(document).on("input", ".form-control", function () {
+    $(this).removeClass("input-error");
+    $(this).next(".error-message").remove();
+});
 // ********For Create and Update**********
 function ajaxFormSubmit(
     formId,
@@ -140,7 +171,22 @@ function ajaxFormSubmit(
                     resp.status === "false"
                 ) {
                     toastr.error(resp.emailmessage || "Action failed.");
-                } else {
+                }  else if (resp.status === "fail" && resp.type==="trashed") {
+                    // toastr.error(resp.msg|| "Error deleting item.");
+                    window.location.href =
+                    resp.message +
+                    "?errorMessage=" +
+                    encodeURIComponent(resp.msg);
+                    // window.location.href =
+                    //     resp.message;
+
+                } else if (resp.status === "fail" && resp.type==="fail") {
+                    window.location.href =
+                    resp.message +
+                    "?errorMessage=" +
+                    encodeURIComponent(resp.msg);
+
+                }   else {
                     toastr.error(resp.message || "Action failed.");
                 }
             },
@@ -234,6 +280,39 @@ function ajaxFetchFormData(
                 console.log("An error occurred during the AJAX request");
             },
         });
+    });
+}
+
+function checkIfExists(inputSelector, messageSelector, url, dataKey) {
+    $(inputSelector).on('input', function () {
+          var $input = $(this);
+        var inputValue = $(this).val();
+
+        // Clear previous message
+        $(messageSelector).text('');
+        $input.removeClass('input-error');
+        if (inputValue.length > 0) {
+            $.ajax({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
+                url: url,
+                method: 'POST',
+                data: {
+                    [dataKey]: inputValue,
+                },
+                success: function (response) {
+                    if (response.exists) {
+                        $(messageSelector).text(`This ${dataKey.replace('_', ' ')} already exists.`);
+                        $input.addClass('input-error');
+                    }
+
+                },
+                error: function () {
+                    console.error(`Error checking ${dataKey.replace('_', ' ')}.`);
+                }
+            });
+        }
     });
 }
 /**

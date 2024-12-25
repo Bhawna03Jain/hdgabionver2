@@ -110,6 +110,11 @@ Route::post('products/store',[ProductController::class,'store'])->name('products
 Route::post('products/{productId}/update',[ProductController::class,'update'])->name('products.update');
 
 
+Route::post('/isProductByNameExist', [ProductController::class, 'isProductByNameExist'])->name('check.product.name');
+Route::post('/isProductByArticleExist', [ProductController::class, 'isProductByArticleExist'])->name('check.product.article');
+Route::post('/isProductByHsCodeExist', [ProductController::class, 'isProductByHsCodeExist'])->name('check.product.hscode');
+Route::post('products/getlastno/{column}', [ProductController::class, 'getLastNo'])->name('product.getlastno');
+
 });
 });
 
@@ -120,7 +125,9 @@ Route::post('products/{productId}/update',[ProductController::class,'update'])->
 Route::get('/', function () {
     return view('front.comingsoon');
 })->name('');
-
+Route::get('/welcome', function () {
+    return view('welcome');
+})->name('');
 Route::get('/home', function () {
     return view('front.index');
 })->name('home');
@@ -146,7 +153,13 @@ Route::get('/baskets2', function () {
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 
-
+// ***********************Extra********************
+Route::get('/shop', function () {
+    return view('front.shop');
+})->name('shop');
+Route::get('/checkout', function () {
+    return view('front.checkout');
+})->name('checkout');
 
 // **************************cart**************************
 

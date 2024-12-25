@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
+    @apply text-normal; or class you choose
+  } */
+   .active{
+    @apply text-red;
+   }
+   .active span{
+    @apply w-full;
+   }

@@ -128,316 +128,316 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($products as $product)
-                                            <tr>
-                                                <td>{{ $product->id }}</td>
-                                                <td>{{ $product->article_no }}</td>
-                                                <td>{{ $product->hs_code }}</td>
-                                                {{-- <td>{{ $product->sku }}</td> --}}
-                                                <td>{{ $product->name }}</td>
-                                                <td>@php
-                                                    $Attribute = $product->attributes->firstWhere('name', 'length');
-                                                @endphp
-                                                    @if ($Attribute)
-                                                        {{ $Attribute->value }}
-                                                    @endif
-                                                </td>
-                                                <td>@php
-                                                    $Attribute = $product->attributes->firstWhere('name', 'width');
-                                                @endphp
-                                                    @if ($Attribute)
-                                                        {{ $Attribute->value }}
-                                                    @endif
-                                                </td>
-                                                <td>@php
-                                                    $Attribute = $product->attributes->firstWhere('name', 'height');
-                                                @endphp
-                                                    @if ($Attribute)
-                                                        {{ $Attribute->value }}
-                                                    @endif
-                                                </td>
-                                                <td>@php
-                                                    $Attribute = $product->attributes->firstWhere('name', 'maze');
-                                                @endphp
-                                                    @if ($Attribute)
-                                                        {{ $Attribute->value }}
-                                                    @endif
-                                                </td>
-                                                <td>{{ $product->total_price }}</td>
-                                                <td>
-                                                    @php
-                                                        $Attribute = $product->attributes->firstWhere(
-                                                            'name',
-                                                            'short_description',
-                                                        );
+                                            @forelse ($products as $product)
+                                                <tr>
+                                                    <td>{{ $product->id }}</td>
+                                                    <td>{{ $product->article_no }}</td>
+                                                    <td>{{ $product->hs_code }}</td>
+                                                    {{-- <td>{{ $product->sku }}</td> --}}
+                                                    <td>{{ $product->name }}</td>
+                                                    <td>@php
+                                                        $Attribute = $product->attributes->firstWhere('name', 'length');
                                                     @endphp
-                                                    @if ($Attribute)
-                                                        {{ $Attribute->value }}
-                                                    @endif
-                                                </td>
+                                                        @if ($Attribute)
+                                                            {{ $Attribute->value }}
+                                                        @endif
+                                                    </td>
+                                                    <td>@php
+                                                        $Attribute = $product->attributes->firstWhere('name', 'width');
+                                                    @endphp
+                                                        @if ($Attribute)
+                                                            {{ $Attribute->value }}
+                                                        @endif
+                                                    </td>
+                                                    <td>@php
+                                                        $Attribute = $product->attributes->firstWhere('name', 'height');
+                                                    @endphp
+                                                        @if ($Attribute)
+                                                            {{ $Attribute->value }}
+                                                        @endif
+                                                    </td>
+                                                    <td>@php
+                                                        $Attribute = $product->attributes->firstWhere('name', 'maze');
+                                                    @endphp
+                                                        @if ($Attribute)
+                                                            {{ $Attribute->value }}
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $product->total_price }}</td>
+                                                    <td>
+                                                        @php
+                                                            $Attribute = $product->attributes->firstWhere(
+                                                                'name',
+                                                                'short_description',
+                                                            );
+                                                        @endphp
+                                                        @if ($Attribute)
+                                                            {{ $Attribute->value }}
+                                                        @endif
+                                                    </td>
 
-                                                <td>
-                                                    {{-- <a href="#" class="view-description"
-                                                        data-id="{{ $product->id }}">View Full Description</a>
-                                                    <!-- Modal Structure --> --}}
-                                                    <a href="#" class="view-description" data-toggle="modal"
-                                                        data-target="#productDescriptionModal-{{ $product->id }}">
-                                                        View Full Description
-                                                    </a>
-                                                    <!-- Modal Structure -->
-                                                    <div id="productDescriptionModal-{{ $product->id }}"
-                                                        class="modal fade" tabindex="-1" role="dialog"
-                                                        aria-labelledby="productDescriptionLabel" aria-hidden="true">
-                                                        <div class="modal-dialog" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="productDescriptionLabel">
-                                                                        Product Full Description</h5>
-                                                                    <button type="button" class="close"
-                                                                        data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body"
-                                                                    id="modalContent-{{ $product->id }}">
-                                                                    @php
-                                                                        $Attribute = $product->attributes->firstWhere(
-                                                                            'name',
-                                                                            'full_description',
-                                                                        );
-                                                                    @endphp
-                                                                    @if ($Attribute)
-                                                                        <div class="description-content"
-                                                                            style="width: 100vw;">
-                                                                            {!! $Attribute->value !!}
-                                                                        </div>
-                                                                    @else
-                                                                        <p>No Detailed Description</p>
-                                                                    @endif
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-dismiss="modal">Close</button>
+                                                    <td>
+                                                        {{-- <a href="#" class="view-description"
+                                                            data-id="{{ $product->id }}">View Full Description</a>
+                                                        <!-- Modal Structure --> --}}
+                                                        <a href="#" class="view-description" data-toggle="modal"
+                                                            data-target="#productDescriptionModal-{{ $product->id }}">
+                                                            View Full Description
+                                                        </a>
+                                                        <!-- Modal Structure -->
+                                                        <div id="productDescriptionModal-{{ $product->id }}"
+                                                            class="modal fade" tabindex="-1" role="dialog"
+                                                            aria-labelledby="productDescriptionLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="productDescriptionLabel">
+                                                                            Product Full Description</h5>
+                                                                        <button type="button" class="close"
+                                                                            data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body"
+                                                                        id="modalContent-{{ $product->id }}">
+                                                                        @php
+                                                                            $Attribute = $product->attributes->firstWhere(
+                                                                                'name',
+                                                                                'full_description',
+                                                                            );
+                                                                        @endphp
+                                                                        @if ($Attribute)
+                                                                            <div class="description-content"
+                                                                                style="width: 100vw;">
+                                                                                {!! $Attribute->value !!}
+                                                                            </div>
+                                                                        @else
+                                                                            <p>No Detailed Description</p>
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Close</button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                </td>
-                                                <td>
-                                                    @if ($product->main_image)
-                                                        <img src="{{ asset($product->main_image) }}" alt="Main Image"
-                                                            width="50">
-                                                    @else
-                                                        <p>No Image</p>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    {{-- <a href="javascript:void(0)" class="text-warning edit-product-btn" data-id="{{ $product->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </a> --}}
-                                                    <a href="{{ route('products.edit', $product->id) }}"
-                                                        class="text-warning edit-product-btn"
-                                                        data-id="{{ $product->id }}">
+                                                    </td>
+                                                    <td>
+                                                        @if ($product->main_image)
+                                                            <img src="{{ asset($product->main_image) }}" alt="Main Image"
+                                                                width="50">
+                                                        @else
+                                                            <p>No Image</p>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        {{-- <a href="javascript:void(0)" class="text-warning edit-product-btn" data-id="{{ $product->id }}">
                                                         <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="#" class="view-description" data-toggle="modal"
-                                                        data-target="#relevantImagesModal-{{ $product->id }}">
-                                                        <i class="fas fa-eye icon-white" data-toggle="tooltip"
-                                                            title="Show Images"></i>
-                                                    </a>
-                                                    {{-- <a href="javascript:void(0)"
-                                                        class="text-primary show-product-images-btn"
-                                                        data-id="{{ $product->id }}">
-                                                        <i class="fas fa-eye icon-white" data-toggle="tooltip"
-                                                            title="Show Images"></i>
                                                     </a> --}}
-                                                    <!-- Modal Structure -->
-                                                    <div id="relevantImagesModal-{{ $product->id }}"
-                                                        class="modal fade modal-fullscreen  lightbox-modal" tabindex="-1"
-                                                        role="dialog" aria-labelledby="relevantImagesLabel"
-                                                        aria-hidden="true">
-                                                        <div class="modal-dialog  modal-dialog-centered modal-fullscreen"
-                                                            role="document">
-                                                            <div class="modal-content bg-white">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="relevantImagesLabel">
-                                                                        Images</h5>
-                                                                    <button type="button" class="close"
-                                                                        data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                {{-- <div class="modal-body">
+                                                        <a href="{{ route('products.edit', $product->id) }}"
+                                                            class="text-warning edit-product-btn"
+                                                            data-id="{{ $product->id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="#" class="view-description" data-toggle="modal"
+                                                            data-target="#relevantImagesModal-{{ $product->id }}">
+                                                            <i class="fas fa-eye icon-white" data-toggle="tooltip"
+                                                                title="Show Images"></i>
+                                                        </a>
+                                                        {{-- <a href="javascript:void(0)"
+                                                            class="text-primary show-product-images-btn"
+                                                            data-id="{{ $product->id }}">
+                                                            <i class="fas fa-eye icon-white" data-toggle="tooltip"
+                                                                title="Show Images"></i>
+                                                        </a> --}}
+                                                        <!-- Modal Structure -->
+                                                        <div id="relevantImagesModal-{{ $product->id }}"
+                                                            class="modal fade modal-fullscreen  lightbox-modal" tabindex="-1"
+                                                            role="dialog" aria-labelledby="relevantImagesLabel"
+                                                            aria-hidden="true">
+                                                            <div class="modal-dialog  modal-dialog-centered modal-fullscreen"
+                                                                role="document">
+                                                                <div class="modal-content bg-white">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="relevantImagesLabel">
+                                                                            Images</h5>
+                                                                        <button type="button" class="close"
+                                                                            data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    {{-- <div class="modal-body">
 
-                                                                    @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
-                                                                        <div class="">
-                                                                            @foreach (json_decode($product->relevant_images) as $image)
-                                                                                <a href="{{ asset($image) }}"
-                                                                                    data-fancybox="product-images">
-                                                                                    <img src="{{ asset($image) }}"
-                                                                                        class="img-fluid mb-2"
-                                                                                        alt="Relevant Image">
-                                                                                </a>
-                                                                            @endforeach
-                                                                        </div>
-                                                                    @else
-                                                                        <p>No additional images</p>
-                                                                    @endif
-                                                                </div> --}}
-                                                                {{-- ******Carousal******* --}}
-                                                                {{-- <div class="modal-body">
-                                                                    @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
-                                                                        <div id="carouselExampleIndicators-{{ $product->id }}" class="carousel slide" data-ride="carousel">
-                                                                            <ol class="carousel-indicators">
-                                                                                @foreach (json_decode($product->relevant_images) as $key => $image)
-                                                                                    <li data-target="#carouselExampleIndicators-{{ $product->id }}" data-slide-to="{{ $key }}" class="{{ $key === 0 ? 'active' : '' }}"></li>
-                                                                                @endforeach
-                                                                            </ol>
-                                                                            <div class="carousel-inner">
-                                                                                @foreach (json_decode($product->relevant_images) as $key => $image)
-                                                                                    <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                                                                        <img src="{{ asset($image) }}" class="d-block w-100" alt="Relevant Image">
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            </div>
-                                                                            <a class="carousel-control-prev" href="#carouselExampleIndicators-{{ $product->id }}" role="button" data-slide="prev">
-                                                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                                                <span class="sr-only">Previous</span>
-                                                                            </a>
-                                                                            <a class="carousel-control-next" href="#carouselExampleIndicators-{{ $product->id }}" role="button" data-slide="next">
-                                                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                                                <span class="sr-only">Next</span>
-                                                                            </a>
-                                                                        </div>
-                                                                    @else
-                                                                        <p>No additional images</p>
-                                                                    @endif
-                                                                </div> --}}
-
-                                                                {{-- <div class="modal-body"
-                                                                    id="modalContent-{{ $product->id }}">
-                                                                    <section class="photo-gallery ">
-                                                                        <div class="container">
-                                                                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 gallery-grid">
-                                                                                @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                                        @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                                            <div class="">
                                                                                 @foreach (json_decode($product->relevant_images) as $image)
-                                                                                <div class="col">
-                                                                                    <a class="gallery-item" href="{{ asset($image) }}">
-
-                                                                                        <img src="{{ asset($image) }}" class="img-fluid" alt="Relevant Image">
+                                                                                    <a href="{{ asset($image) }}"
+                                                                                        data-fancybox="product-images">
+                                                                                        <img src="{{ asset($image) }}"
+                                                                                            class="img-fluid mb-2"
+                                                                                            alt="Relevant Image">
                                                                                     </a>
-                                                                                </div>
                                                                                 @endforeach
-                                                                                @else
-                                                                                    <p>No additional images</p>
-                                                                                @endif
                                                                             </div>
-                                                                        </div>
-                                                                    </section>
-                                                                    {{-- @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
-                                                                        @foreach (json_decode($product->relevant_images) as $image)
-                                                                            <img src="{{ asset($image) }}"
-                                                                                alt="Relevant Image" width="100">
-                                                                        @endforeach
-                                                                    @else
-                                                                        <p>No additional images</p>
-                                                                    @endif--
-                                                                </div> --}}
-                                                                <div class="modal-body"
-                                                                    id="modalContent-{{ $product->id }}">
-                                                                    <main class="main">
-                                                                        <div class="container">
-                                                                            @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
-                                                                                @foreach (json_decode($product->relevant_images) as $image)
-                                                                                    <div class="card">
-                                                                                        <div class="card-image">
-                                                                                            <a href="{{ asset($image) }}"
-                                                                                                data-fancybox="gallery-{{ $product->id }}"
-                                                                                                data-caption="Caption Images 1">
-                                                                                                <img src="{{ asset($image) }}"
-                                                                                                    class="img-fluid"
-                                                                                                    alt="Relevant Image">
-                                                                                            </a>
+                                                                        @else
+                                                                            <p>No additional images</p>
+                                                                        @endif
+                                                                    </div> --}}
+                                                                    {{-- ******Carousal******* --}}
+                                                                    {{-- <div class="modal-body">
+                                                                        @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                                            <div id="carouselExampleIndicators-{{ $product->id }}" class="carousel slide" data-ride="carousel">
+                                                                                <ol class="carousel-indicators">
+                                                                                    @foreach (json_decode($product->relevant_images) as $key => $image)
+                                                                                        <li data-target="#carouselExampleIndicators-{{ $product->id }}" data-slide-to="{{ $key }}" class="{{ $key === 0 ? 'active' : '' }}"></li>
+                                                                                    @endforeach
+                                                                                </ol>
+                                                                                <div class="carousel-inner">
+                                                                                    @foreach (json_decode($product->relevant_images) as $key => $image)
+                                                                                        <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                                                                            <img src="{{ asset($image) }}" class="d-block w-100" alt="Relevant Image">
                                                                                         </div>
+                                                                                    @endforeach
+                                                                                </div>
+                                                                                <a class="carousel-control-prev" href="#carouselExampleIndicators-{{ $product->id }}" role="button" data-slide="prev">
+                                                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                                    <span class="sr-only">Previous</span>
+                                                                                </a>
+                                                                                <a class="carousel-control-next" href="#carouselExampleIndicators-{{ $product->id }}" role="button" data-slide="next">
+                                                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                                    <span class="sr-only">Next</span>
+                                                                                </a>
+                                                                            </div>
+                                                                        @else
+                                                                            <p>No additional images</p>
+                                                                        @endif
+                                                                    </div> --}}
+
+                                                                    {{-- <div class="modal-body"
+                                                                        id="modalContent-{{ $product->id }}">
+                                                                        <section class="photo-gallery ">
+                                                                            <div class="container">
+                                                                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 gallery-grid">
+                                                                                    @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                                                    @foreach (json_decode($product->relevant_images) as $image)
+                                                                                    <div class="col">
+                                                                                        <a class="gallery-item" href="{{ asset($image) }}">
+
+                                                                                            <img src="{{ asset($image) }}" class="img-fluid" alt="Relevant Image">
+                                                                                        </a>
                                                                                     </div>
-
-                                                                                @endforeach
-                                                                            @else
-                                                                                <p>No additional images</p>
-                                                                            @endif
-
-                                                                        </div>
-                                                                    </main>
-                                                                    {{-- <section class="photo-gallery">
-                                                                        <div class="container">
-                                                                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 gallery-grid">
+                                                                                    @endforeach
+                                                                                    @else
+                                                                                        <p>No additional images</p>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        </section>
+                                                                        {{-- @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                                            @foreach (json_decode($product->relevant_images) as $image)
+                                                                                <img src="{{ asset($image) }}"
+                                                                                    alt="Relevant Image" width="100">
+                                                                            @endforeach
+                                                                        @else
+                                                                            <p>No additional images</p>
+                                                                        @endif--
+                                                                    </div> --}}
+                                                                    <div class="modal-body"
+                                                                        id="modalContent-{{ $product->id }}">
+                                                                        <main class="main">
+                                                                            <div class="container">
                                                                                 @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
                                                                                     @foreach (json_decode($product->relevant_images) as $image)
-                                                                                        <div class="col">
-                                                                                            <a class="gallery-item" href="{{ asset($image) }}" data-fancybox="product-images" data-caption="Relevant Image">
-                                                                                                <img src="{{ asset($image) }}" class="img-fluid" alt="Relevant Image">
-                                                                                            </a>
+                                                                                        <div class="card">
+                                                                                            <div class="card-image">
+                                                                                                <a href="{{ asset($image) }}"
+                                                                                                    data-fancybox="gallery-{{ $product->id }}"
+                                                                                                    data-caption="Caption Images 1">
+                                                                                                    <img src="{{ asset($image) }}"
+                                                                                                        class="img-fluid"
+                                                                                                        alt="Relevant Image">
+                                                                                                </a>
+                                                                                            </div>
                                                                                         </div>
+
                                                                                     @endforeach
                                                                                 @else
                                                                                     <p>No additional images</p>
                                                                                 @endif
-                                                                            </div>
-                                                                        </div>
-                                                                    </section> --}}
-                                                                </div>
 
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
-                                                                        data-dismiss="modal">Close</button>
+                                                                            </div>
+                                                                        </main>
+                                                                        {{-- <section class="photo-gallery">
+                                                                            <div class="container">
+                                                                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 gallery-grid">
+                                                                                    @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                                                        @foreach (json_decode($product->relevant_images) as $image)
+                                                                                            <div class="col">
+                                                                                                <a class="gallery-item" href="{{ asset($image) }}" data-fancybox="product-images" data-caption="Relevant Image">
+                                                                                                    <img src="{{ asset($image) }}" class="img-fluid" alt="Relevant Image">
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        @endforeach
+                                                                                    @else
+                                                                                        <p>No additional images</p>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
+                                                                        </section> --}}
+                                                                    </div>
+
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Close</button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <!-- Image Gallery -->
+                                                    </td>
+                                                </tr>
+                                                <!-- Image Gallery -->
 
-                                            {{-- <tr class="image-gallery-row" id="image-gallery-{{ $product->id }}" style="display: none;"> --}}
+                                                {{-- <tr class="image-gallery-row" id="image-gallery-{{ $product->id }}" style="display: none;"> --}}
 
-                                            {{-- <tr class="no-datatable image-gallery-row"
-                                                id="image-gallery-{{ $product->id }}" style="display: none;">
-                                                <td colspan="10">
-                                                     @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
-                                                        @foreach (json_decode($product->relevant_images) as $image)
-                                                            <img src="{{ asset($image) }}" alt="Relevant Image"
-                                                                width="100">
-                                                        @endforeach
-                                                    @else
-                                                        <p>No additional images</p>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr class="no-datatable full-description-row"
-                                                id="full-description-{{ $product->id }}" style="display: none;">
-                                                <td colspan="10">
-                                                    @php
-                                                        $Attribute = $product->attributes->firstWhere(
-                                                            'name',
-                                                            'full_description',
-                                                        );
-                                                    @endphp
-                                                    @if ($Attribute)
-                                                        <div class="description-content" style="width: 100vw;">
-                                                            {!! $Attribute->value !!}
-                                                        </div>
-                                                    @else
-                                                        <p>No Detailed Description</p>
-                                                    @endif
-                                                </td>
-                                            </tr> --}}
+                                                {{-- <tr class="no-datatable image-gallery-row"
+                                                    id="image-gallery-{{ $product->id }}" style="display: none;">
+                                                    <td colspan="10">
+                                                        @if (!empty($product->relevant_images) && is_array(json_decode($product->relevant_images, true)))
+                                                            @foreach (json_decode($product->relevant_images) as $image)
+                                                                <img src="{{ asset($image) }}" alt="Relevant Image"
+                                                                    width="100">
+                                                            @endforeach
+                                                        @else
+                                                            <p>No additional images</p>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr class="no-datatable full-description-row"
+                                                    id="full-description-{{ $product->id }}" style="display: none;">
+                                                    <td colspan="10">
+                                                        @php
+                                                            $Attribute = $product->attributes->firstWhere(
+                                                                'name',
+                                                                'full_description',
+                                                            );
+                                                        @endphp
+                                                        @if ($Attribute)
+                                                            <div class="description-content" style="width: 100vw;">
+                                                                {!! $Attribute->value !!}
+                                                            </div>
+                                                        @else
+                                                            <p>No Detailed Description</p>
+                                                        @endif
+                                                    </td>
+                                                </tr> --}}
 
-                                        @empty
-                                            <tr>
-                                                <td colspan="10">No Products found.</td>
-                                            </tr>
-                                        @endforelse
+                                            @empty
+                                                <tr>
+                                                    <td colspan="13">No Products found.</td>
+                                                </tr>
+                                            @endforelse
 
                                     </tbody>
                                 </table>
@@ -500,8 +500,7 @@
         //         ]
         //     });
         // });
-//         var productId = document.querySelector('#relevantImagesModal-{{ $product->id }}').dataset.productId;
-
+//
 // console.log(productId);
 //         $('[data-fancybox="gallery"]').fancybox({
 //             buttons: [

@@ -477,6 +477,8 @@
             "info": true,
             scrollX: true,
             scrollY: "70vh",
+            "order": [[0, 'desc']], // Order by the first column (ID) in descending order
+
             "buttons": ["pdf","colvis"],
             // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             rowCallback: function(row, data, index) {

@@ -1,8 +1,6 @@
 $(document).ready(function () {
     // Get the "Edit" and "Update" buttons
-    const editButton = document.getElementById(
-        "edit-all-Manufacturing-Button"
-    );
+    const editButton = document.getElementById("edit-all-Manufacturing-Button");
     const updateButton = document.getElementById(
         "update-all-Manufacturing-Button"
     );
@@ -16,6 +14,7 @@ $(document).ready(function () {
 
     // Function to toggle between read-only and editable fields
     function toggleEdit() {
+        // alert("Edit Mode On");
         const inputs = document.querySelectorAll(".editable-field");
         isEditable = !isEditable;
 
@@ -38,14 +37,16 @@ $(document).ready(function () {
     let isError = false;
     // let isCodeExist = false; // Flag to track if the form is valid
     const boqConfigId = $("#boqconfigid").val();
+    // console.log(boqConfigId);
     function validateInput(input) {
         const value = input.value.trim(); // Use trim() to remove leading and trailing spaces
 
-        if (value === "") {
-            if ($(input).attr("required") !== undefined) {
-                isError = true;
-            }
-        } else if (parseFloat(value) < 0) {
+        // if (value === "") {
+        //     if ($(input).attr("required") !== undefined) {
+        //         isError = true;
+        //     }
+        // } else
+        if (parseFloat(value) < 0) {
             isError = true;
         } else {
             isError = false;
@@ -54,12 +55,11 @@ $(document).ready(function () {
         // Return error status
         return isError;
     }
-
     // Check if the entered code value exists
 
     async function checkCodeExists(input) {
         const codeValue = $(input).val().trim();
-
+        // console.log(boqConfigId);
         if (codeValue !== "" && boqConfigId) {
             try {
                 const response = await $.ajax({
@@ -72,29 +72,38 @@ $(document).ready(function () {
                     },
                     data: { code: codeValue, boqConfigId: boqConfigId },
                 });
+                if (response.exists==='trashed') {
 
-                if (response.exists) {
+                    isCodeExist = "It has been already Trashed. It can not be created again.";
+                }
+                else if (response.exists) {
+
                     isCodeExist = true;
+
                     const existingValues = [];
                     $('.manufacturing-input[name*="[code]"]').each(function () {
                         if ($(this).val().trim() !== "") {
                             existingValues.push($(this).val().trim());
                         }
                     });
-                    const codeCount = existingValues.filter(value => value === codeValue).length;
+
+                    const codeCount = existingValues.filter(
+                        (value) => value.toLowerCase() === codeValue.toLowerCase()
+                    ).length;
                     if (codeCount > 1) {
                         isCodeExist = true; // If exists more than once, set true
+                    } else {
+                        isCodeExist = false;
                     }
-                    else{
-                        isCodeExist=false;
-                    }
+                    console.log(isCodeExist);
+                    isCodeExist = "Code already exist.";
                 } else {
                     isCodeExist = false;
                 }
+
             } catch (error) {
                 console.log("Error checking the code:", error);
             }
-
         }
 
         // console.log("isCodeExist:", isCodeExist);
@@ -102,6 +111,7 @@ $(document).ready(function () {
     }
     $(document).on("input", ".manufacturing-input", async function () {
         let hasError = validateInput(this);
+        console.log(hasError);
         if (hasError) {
             showError(
                 this,
@@ -113,8 +123,10 @@ $(document).ready(function () {
 
         if ($(this).attr("name").includes("[code]")) {
             let isCodeExist = await checkCodeExists(this); // Use await here
-            if (isCodeExist) {
-                showError(this, "This code already exists.");
+            console.log(isCodeExist);
+            if (isCodeExist==='trashed'|| isCodeExist) {
+                // showError(this, "This code already exists.");
+                showError(this, isCodeExist);
             } else if (!isCodeExist && !hasError) {
                 removeError(this);
             }
@@ -123,14 +135,14 @@ $(document).ready(function () {
 
     let totrow = 0; // Ensure totrow is initialized correctly
 
-    $("#addRowButton").click(function () {
+    $("#addManufacturingRowButton").click(function () {
         // Make AJAX call to fetch the last ID from the database
         $.ajax({
             url: "/admin/mastersheet/boq/all/get-last-id/manufacturing", // Endpoint to get the last ID
             method: "GET",
             success: function (response) {
                 const lastId = response.lastId || 0; // Get last ID from the response (default to 0 if not found)
-                const newRowId = lastId + 1 + totrow; // Increment to get the new row's ID
+                const newRowId = lastId +  ++totrow; // Increment to get the new row's ID
 
                 const tableexist = $("#manufacturing tbody");
                 const rowCountexist = tableexist.children().length;
@@ -150,13 +162,34 @@ $(document).ready(function () {
                 totrow++;
 
                 // Add validation for new row inputs
-                newRow.find(".manufacturing-input").on("input", function () {
-                    const input = $(this);
-                    validateInput(input); // Validate input
-                    if (input.attr("name").includes("[code]")) {
-                        checkCodeExists(input); // Check for code existence
-                    }
-                });
+        //         newRow.find(".manufacturing-input").on("input", function () {
+        //             alert("hi1");
+        //             // const input = $(this);
+        //             // validateInput(input); // Validate input
+        //             // if (input.attr("name").includes("[code]")) {
+        //             //     checkCodeExists(input); // Check for code existence
+        //             // }
+        //             let hasError = validateInput(this);
+        // console.log(hasError);
+        // if (hasError) {
+        //     showError(
+        //         this,
+        //         "Cannot insert negative number or cannot leave blank"
+        //     );
+        // } else {
+        //     removeError(this);
+        // }
+
+        // if ($(this).attr("name").includes("[code]")) {
+        //     let isCodeExist = checkCodeExists(this); // Use await here
+        //     if (isCodeExist) {
+        //         // showError(this, "This code already exists.");
+        //         showError(this, isCodeExist);
+        //     } else if (!isCodeExist && !hasError) {
+        //         removeError(this);
+        //     }
+        // }
+        //         });
 
                 // Delete row event
                 newRow.find(".btn-delete-row").click(function () {
@@ -165,7 +198,6 @@ $(document).ready(function () {
                     } else {
                         return false;
                     }
-
                 });
             },
             error: function () {
@@ -176,17 +208,22 @@ $(document).ready(function () {
     if (updateButton) {
         updateButton.addEventListener("click", async function (event) {
             event.preventDefault(); // Prevent the default form submission
+            if (
+                !validateRequiredFields($("#masterSheetAllManufacturingForm"))
+            ) {
+                return; // Stop submission if validation fails
+            }
             isValid = true;
             const invalidFields = document.querySelectorAll(".is-invalid");
-            const requiredFields = document.querySelectorAll("[required]");
+            // const requiredFields = document.querySelectorAll("[required]");
 
-            requiredFields.forEach(function (field) {
-                if (field.value.trim() === "") {
-                    isValid = false;
-                    field.classList.add("is-invalid"); // You can define this class to show a red border or message
-                    showError(field, "It is required Filed");
-                }
-            });
+            // requiredFields.forEach(function (field) {
+            //     if (field.value.trim() === "") {
+            //         isValid = false;
+            //         field.classList.add("is-invalid"); // You can define this class to show a red border or message
+            //         showError(field, "It is required Filed");
+            //     }
+            // });
             if (invalidFields.length > 0) {
                 isValid = false;
             }
@@ -225,18 +262,22 @@ $(document).ready(function () {
     }
 
     // Remove error message
-    function removeError(input) {
+    function    removeError(input) {
         const errorMessage = input.nextElementSibling;
+        console.log(errorMessage);
         if (errorMessage && errorMessage.classList.contains("error-message")) {
             errorMessage.remove();
             $(input).css("border", "none").removeClass("is-invalid");
         }
+        $(input).css("border", "none").removeClass("is-invalid");
     }
-    $(document).on("click", ".delete-all-Manufacturing-Button", function (e) {
+    $(document).on("click", "#delete-all-Manufacturing-Button", function (e) {
         e.preventDefault();
+
         const row = $(this).closest("tr");
         const itemId = $(this).data("id");
-        const url = `/admin/mastersheet/boq/fence/delete/manufacturing/${itemId}`;
+        alert(itemId);
+        const url = `/admin/mastersheet/boq/all/delete/manufacturing/${itemId}`;
 
         if (confirm("Are you sure you want to delete this item?")) {
             $(".overlay").show();
@@ -253,15 +294,24 @@ $(document).ready(function () {
                 success: function (resp) {
                     $(".overlay").hide();
 
-                    if (resp.status === "success") {
+                    if (resp.status === "success" && resp.type === "success") {
+                        alert("1");
                         row.remove();
                         window.location.href =
                             resp.message +
                             "?successMessage=" +
                             encodeURIComponent("Row Deleted  Successfully.");
                         //  toastr.success(resp.message || "Row Deleted  Successfully.");
-                    } else {
-                        toastr.error(resp.message || "Error deleting item.");
+                    } else if (
+                        resp.status === "fail" &&
+                        resp.type === "trashed"
+                    ) {
+                        alert("resp.message");
+                        window.location.href = resp.message;
+                        toastr.error(resp.msg || "Error deleting item.");
+                    } else if (resp.status === "fail" && resp.type === "fail") {
+                        alert("3");
+                        toastr.error(resp.msg || "Error deleting item.");
                     }
                 },
                 error: function (xhr) {

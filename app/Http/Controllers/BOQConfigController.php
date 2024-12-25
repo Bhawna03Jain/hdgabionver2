@@ -20,20 +20,20 @@ class BOQConfigController extends Controller
     protected $productService;
     protected $categoryService;
 
-    public function __construct(CategoryService $categoryService,ProductService $productService,MasterSheetBOQConfigService $MasterSheetBOQConfigService,CountryService $countryService)
+    public function __construct(CategoryService $categoryService, ProductService $productService, MasterSheetBOQConfigService $MasterSheetBOQConfigService, CountryService $countryService)
     {
         // $this->MasterSheetBOQFenceService = $MasterSheetBOQFenceService;
         // $this->MasterSheetBOQBasketService = $MasterSheetBOQBasketService;
         $this->MasterSheetBOQConfigService = $MasterSheetBOQConfigService;
         $this->countryService = $countryService;
-        $this->productService=$productService;
-        $this->categoryService=$categoryService;
+        $this->productService = $productService;
+        $this->categoryService = $categoryService;
     }
 
     // ****************************Fences*******************************
     public function BOQConfig($boqtype = "", $type = "")
     {
-// dd($boqtype);
+        // dd($type);
         $boqtype = ucfirst($boqtype); // Basket,Fence
         $boqConfig = $this->MasterSheetBOQConfigService->getIdByType($boqtype);
 
@@ -44,160 +44,27 @@ class BOQConfigController extends Controller
         } else {
             $boqid = $boqConfig->id;
         }
-
-
-        switch ($type) {
-            case 'materials':
-                $commonmaterials = $boqConfig->materialConfigs->where('common', '1');
-                $extramaterials = $boqConfig->materialConfigs->where('common', '0');
-                // $allmaterials = $this->productService->getproductById($commonmaterials[0]->product_id);
-
-                // dd($commonmaterials);
-                // $cat_code='parts';
-                $cat_codes = ['parts', 'others']; // Define an array of category codes
-$allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes($cat_codes);
-                // $cat_id=$this->categoryService->getCategoryByCode($cat_code)->id;
-                // $products=$this->productService->getproductsWithAttributesByCatId($cat_id);
-            //    dd($products);
-                if ($boqtype === 'Basket') {
-                //    dd($allmaterials);
-                    return view('admin.mastersheet.boq.basket.materials', compact('boqConfig', 'commonmaterials', 'extramaterials','allmaterials'));
-                }
-                if ($boqtype === 'Fence') {
-                    return view('admin.mastersheet.boq.fence.materials', compact('boqConfig', 'commonmaterials', 'extramaterials'));
-                }
-
-
-            case 'manufacturing':
-                $manufacturing = $boqConfig->manufacturingConfigs;
-                if ($boqtype === 'All') {
-// dd($boqConfig->id);
-                    return view('admin.mastersheet.boq.all.manufacturing', compact('boqConfig', 'manufacturing'));
-                }
-                // else {
-                //     // dd("basket");
-                //     return view('admin.mastersheet.boq.basket.manufacturing', compact('boqConfig', 'manufacturing'));
-                // }
-
-            case 'taxes':
-                $taxes = $boqConfig->taxesConfigs;
-                if ($boqtype === 'All') {
-                    return view('admin.mastersheet.boq.all.taxes', compact('boqConfig', 'taxes'));
-                }
-                // else {
-                //     return view('admin.mastersheet.boq.basket.taxes', compact('boqConfig', 'taxes'));
-                // }
-            case 'margin-factors':
-
-                $basic_margin_factor = $boqConfig->margin_factor;
-                $country_margin_factors = $boqConfig->marginFactorsConfigs;
-                // dd($country_margin_factors[0]);
-                $countries = $this->countryService->getAllCountries();
-
-                if ($boqtype === 'All') {
-
-                    return view('admin.mastersheet.boq.all.marginfactors', compact('boqConfig', 'basic_margin_factor', 'country_margin_factors', 'countries'));
-                }
-                // else {
-                //     return view('admin.mastersheet.boq.basket.marginfactors', compact('boqConfig', 'basic_margin_factor', 'country_margin_factors', 'countries'));
-                // }
-            case '':
-                $commonmaterials = $boqConfig->materialConfigs->where('common', '1');
-                $extramaterials = $boqConfig->materialConfigs->where('common', '0');
-                $manufacturing = $boqConfig->manufacturingConfigs;
-                $taxes = $boqConfig->taxesConfigs;
-                $basic_margin_factor = $boqConfig->margin_factor;
-                $country_margin_factors = $boqConfig->marginFactorsConfigs;
-                // $countries = $this->countryService->getAllCountries();
-                // dd($commonmaterials);
-                // dd($boqtype);
-                if ($boqtype === 'Fence') {
-
-                    return view('admin.mastersheet.boq.fence.index', compact('boqConfig', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'basic_margin_factor', 'country_margin_factors'));
-                } elseif ($boqtype === 'Basket') {
-                    // dd('basket');
-                    $cat_code="parts";
-                    $cat_id=$this->categoryService->getCategoryByCode($cat_code)->id;
-// dd($cat_id);
-                    $allmaterials=$this->productService->getproductsWithAttributesByCatId($cat_id);
-                    //   dd($allmaterials);
-                    return view('admin.mastersheet.boq.basket.boq', compact('boqConfig','allmaterials', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'basic_margin_factor', 'country_margin_factors'));
-                }
-
-            default:
-                abort(404, 'Invalid BOQ type.');
-        }
-        // Handle different views based on the $type parameter
-        // switch ($type) {
-        //     case 'materials':
-        //         $commonmaterials = $boqConfig->materialConfigs->where('common', '1');
-        //         $extramaterials = $boqConfig->materialConfigs->where('common', '0');
-        //         if ($boqtype === 'Fence') {
-        //             return view('admin.mastersheet.boq.fence.materials', compact('boqConfig', 'commonmaterials', 'extramaterials'));
-        //         } else {
-        //             return view('admin.mastersheet.boq.basket.materials', compact('boqConfig', 'commonmaterials', 'extramaterials'));
-
-        //         }
-        //     case 'manufacturing':
-        //         $manufacturing = $boqConfig->manufacturingConfigs;
-        //         if ($boqtype === 'Fence') {
-
-        //             return view('admin.mastersheet.boq.fence.manufacturing', compact('boqConfig', 'manufacturing'));
-        //         } else {
-        //             // dd("basket");
-        //             return view('admin.mastersheet.boq.basket.manufacturing', compact('boqConfig', 'manufacturing'));
-        //         }
-
-        //     case 'taxes':
-        //         $taxes = $boqConfig->taxesConfigs;
-        //         if ($boqtype === 'Fence') {
-        //             return view('admin.mastersheet.boq.fence.taxes', compact('boqConfig', 'taxes'));
-        //         } else {
-        //             return view('admin.mastersheet.boq.basket.taxes', compact('boqConfig', 'taxes'));
-        //         }
-        //     case 'margin-factors':
-        //         $basic_margin_factor = $boqConfig->margin_factor;
-        //         $country_margin_factors = $boqConfig->marginFactorsConfigs;
-        //         // dd($country_margin_factors[0]);
-        //         $countries = $this->countryService->getAllCountries();
-        //         if ($boqtype === 'Fence') {
-
-        //             return view('admin.mastersheet.boq.fence.marginfactors', compact('boqConfig', 'basic_margin_factor', 'country_margin_factors', 'countries'));
-        //         } else {
-        //             return view('admin.mastersheet.boq.basket.marginfactors', compact('boqConfig', 'basic_margin_factor', 'country_margin_factors', 'countries'));
-        //         }
-        //     case '':
-        //         $commonmaterials = $boqConfig->materialConfigs->where('common', '1');
-        //         $extramaterials = $boqConfig->materialConfigs->where('common', '0');
-        //         $manufacturing = $boqConfig->manufacturingConfigs;
-        //         $taxes = $boqConfig->taxesConfigs;
-        //         $basic_margin_factor = $boqConfig->margin_factor;
-        //         $country_margin_factors = $boqConfig->marginFactorsConfigs;
-        //         // $countries = $this->countryService->getAllCountries();
-        //         if ($boqtype === 'Fence') {
-
-        //             return view('admin.mastersheet.boq.fence.index', compact('boqConfig', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'basic_margin_factor', 'country_margin_factors'));
-        //         } else {
-        //             return view('admin.mastersheet.boq.basket.index', compact('boqConfig', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'basic_margin_factor', 'country_margin_factors'));
-        //         }
-        //     default:
-        //         abort(404, 'Invalid BOQ type.');
-        // }
+        $commonmaterials = $boqConfig->materialConfigs->where('common', '1');
+        $extramaterials = $boqConfig->materialConfigs->where('common', '0');
+        $manufacturing = $boqConfig->manufacturingConfigs;
+        $taxes = $boqConfig->taxesConfigs;
+        $country_margin_factors = $boqConfig->marginFactorsConfigs;
+        $cat_codes = ['parts', 'others']; // Define an array of category codes
+        $allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes($cat_codes);
+        $countries = $this->countryService->getAllCountries();
+// dd($country_margin_factors);
+        return view("admin.mastersheet.boq.{$boqtype}.all", compact('boqConfig', 'allmaterials', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'country_margin_factors','countries'));
     }
 
     public function storeOrUpdateConfig($boqtype = "", $type = "", Request $request)
     {
-// dd($type);
-// dd($request->all());
-// dd($boqtype);
-        $boqtype = ucfirst($boqtype); // Basket,Fence
-        $boqConfig = $this->MasterSheetBOQConfigService->getIdByType($boqtype);
-// dd($boqConfig);
-        // Check if BoQ Config is found, else abort with 404
-        if (!$boqConfig) {
+       dd($request->all());
+    // dd($boqtype);
+        $boqConfig = $this->MasterSheetBOQConfigService->getByBoqId($request->boqconfigid);
+         if (!$boqConfig) {
             abort(404, 'BOQ Config not found');
         } else {
-            $boqid = $boqConfig->id;
+            $boqid = $request->boqconfigid;
         }
         $validationRules = [
             'materials' => [
@@ -242,15 +109,18 @@ $allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes(
         ];
 
         // If $type is empty, merge all validation rules into one
-        if (empty($type)) {
-            $combinedRules = array_merge(
-                $validationRules['materials'],
-                $validationRules['manufacturing'],
-                $validationRules['taxes'],
-                $validationRules['margin_factors']
-            );
-            $validator = Validator::make($request->all(), $combinedRules, $customMessages);
-        } elseif (array_key_exists($type, $validationRules)) {
+        // if (empty($type)) {
+        //     $combinedRules = array_merge(
+        //         $validationRules['materials'],
+        //         $validationRules['manufacturing'],
+        //         $validationRules['taxes'],
+        //         $validationRules['margin_factors']
+        //     );
+        //     $validator = Validator::make($request->all(), $combinedRules, $customMessages);
+        // } else
+
+
+        if (array_key_exists($type, $validationRules)) {
             // Run validation for the specified type
             $validator = Validator::make($request->all(), $validationRules[$type], $customMessages);
         } else {
@@ -270,52 +140,86 @@ $allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes(
                 'errors' => $validator->messages(),
             ]);
         }
+        $method = 'updateOrCreateAll' . ucfirst($type);
+        $result=$this->MasterSheetBOQConfigService->$method($boqid, $request);
+
+        // dd($type);
+        if($result==="trashed"){
+
+            return response()->json([
+                'status' => 'fail',
+                'type' => 'trashed',
+                'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/" . strtolower($boqConfig->type),
+
+                'msg' => "This code has been deleted earlier. It can not be created again.",
+
+            ], 200);
+
+        }elseif($result){
+            return response()->json([
+                'status' => 'success',
+                'type' => 'success',
+                'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/" . strtolower($boqConfig->type),
+
+            ], 200);
+        }elseif(!$result){
+            return response()->json([
+                'status' => 'fail',
+                'type' => 'fail',
+                'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/" . strtolower($boqConfig->type),
+
+                'msg' =>"Exception",
+
+            ], 200);
+        }
+
 
         // try {
-            if (!empty($type)) {
-                if ($type === 'margin_factors') {
+        // if (!empty($type)) {
+        //     // if ($type === 'margin_factors') {
 
-                    $method = 'updateOrCreateAll' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type)));
+        //     //     $method = 'updateOrCreateAll' . str_replace(' ', '', ucwords(str_replace('_', ' ', $type)));
 
-                    $this->MasterSheetBOQConfigService->$method( $boqid,$request);
+        //     //     $this->MasterSheetBOQConfigService->$method($boqid, $request);
 
-                    return response()->json([
-                        'status' => 'success',
-                        'type' => 'success',
-                        'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/{$boqtype}/margin-factors",
-                    ], 200);
-                } else  if ($type === 'materials') {
-                    // dd($request);
-                    $method = 'updateOrCreate' . ucfirst( $type);
-                    $this->MasterSheetBOQConfigService->$method( $boqtype,$boqid,$request);
-                    return response()->json([
-                        'status' => 'success',
-                        'type' => 'success',
-                        'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/{$boqtype}/{$type}",
-                    ], 200);
-                }
-                else {
-                    // dd($boqConfig->id);
-                    $method = 'updateOrCreateAll' . ucfirst( $type);
-                    $this->MasterSheetBOQConfigService->$method( $boqid,$request);
-                    return response()->json([
-                        'status' => 'success',
-                        'type' => 'success',
-                        'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/{$boqtype}/{$type}",
-                    ], 200);
-                }
+        //     //     return response()->json([
+        //     //         'status' => 'success',
+        //     //         'type' => 'success',
+        //     //         'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/{$boqtype}/margin-factors",
+        //     //     ], 200);
+        //     // } else
+        //     if ($type === 'materials') {
+        //         // dd($request->all());
+        //         $method = 'updateOrCreate' . ucfirst($type);
+        //         $this->MasterSheetBOQConfigService->$method($boqtype, $boqid, $request);
+        //         return response()->json([
+        //             'status' => 'success',
+        //             'type' => 'success',
+        //             'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/{$boqtype}/{$type}",
+        //         ], 200);
+        //     } else {
+        //         // dd($boqConfig->id);
+        //         $method = 'updateOrCreateAll' . ucfirst($type);
+        //         $this->MasterSheetBOQConfigService->$method($boqid, $request);
+        //         return response()->json([
+        //             'status' => 'success',
+        //             'type' => 'success',
+        //             'message' => empty($type) ? "/admin/mastersheet/boq/{$boqtype}" : "/admin/mastersheet/boq/" . strtolower($boqConfig->type),
 
-            } else {
-                 // Call all methods if $type is empty
+        //         ], 200);
+        //     }
 
-                 $this->MasterSheetBOQConfigService->updateOrCreateMaterials($request);
+        // } else {
+        //     // Call all methods if $type is empty
 
-                 $this->MasterSheetBOQConfigService->updateOrCreateManufacturing($request);
+        //     $this->MasterSheetBOQConfigService->updateOrCreateMaterials($request);
 
-                 $this->MasterSheetBOQConfigService->updateOrCreateTaxes($request);
+        //     $this->MasterSheetBOQConfigService->updateOrCreateManufacturing($request);
 
-                 $this->MasterSheetBOQConfigService->updateOrCreateMarginfactors($request);
-            }
+        //     $this->MasterSheetBOQConfigService->updateOrCreateTaxes($request);
+
+        //     $this->MasterSheetBOQConfigService->updateOrCreateMarginfactors($request);
+        // }
 
         // } catch (\Exception $e) {
         //     \Log::error("Fence configuration update error: " . $e->getMessage());
@@ -323,31 +227,35 @@ $allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes(
         // }
     }
 
-    public function deleteConfig($boqtype = "", $type = "", $id)
+    public function deleteConfig($boqtype = "", $type = "", $id, Request $request)
     {
-        // Define a valid types array or mapping to avoid multiple elseif checks
-        $validTypes = ['materials', 'manufacturing', 'taxes'];
 
-        // Check if the given type is valid
-        if (in_array($type, $validTypes)) {
-            try {
-                // Call the service to delete the item
-                $result = $this->MasterSheetBOQConfigService->deleteFenceItem($type, $id);
+        // $validTypes = ['materials', 'manufacturing', 'taxes'];
 
-                // Check if deletion was successful and return appropriate response
-                if ($result) {
-                    return response()->json([
-                        'status' => 'success',
-                        'type' => 'success',
-                        'message' => '/admin/mastersheet/boq/fence/' . $type,  // Use dynamic URL based on type
-                    ]);
-                } else {
-                    return response()->json(['error' => 'Something went wrong during deletion.'], 500);
-                }
-            } catch (\Exception $e) {
-                return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
+        // // Check if the given type is valid
+        // if (in_array($type, $validTypes)) {
+        try {
+            dd($request->all());
+            $result = $this->MasterSheetBOQConfigService->deleteItem($type, $id);
+            // Define a valid types array or mapping to avoid multiple elseif checks
+            dd($result);
+            //         // Call the service to delete the item
+            //         $result = $this->MasterSheetBOQConfigService->deleteFenceItem($type, $id);
+
+            //         // Check if deletion was successful and return appropriate response
+            if ($result) {
+                return response()->json([
+                    'status' => 'success',
+                    'type' => 'success',
+                    'message' => '/admin/mastersheet/boq/fence/' . $type,  // Use dynamic URL based on type
+                ]);
+            } else {
+                return response()->json(['error' => 'Something went wrong during deletion.'], 500);
             }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
         }
+
 
         // Return error response if the type is invalid
         return response()->json(['error' => 'Invalid type provided.'], 400);
@@ -377,6 +285,7 @@ $allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes(
 
         // $code = $request->code;
         $exists = $this->MasterSheetBOQConfigService->checkCodeExists($type, $request);
+
         // $exists = Manufacturing::where('code', $code)->exists();
         return response()->json(['exists' => $exists]);
     }
