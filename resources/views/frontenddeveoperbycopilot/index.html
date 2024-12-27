@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+    <style>
+        body, html { height: 100%; margin: 0; }
+        #editor { display: flex; height: 100vh; }
+        #components, #customize { width: 200px; background: #f4f4f4; padding: 10px; overflow-y: auto; }
+        #canvas { flex: 1; background: white; border-left: 1px solid #ddd; padding: 20px; position: relative; }
+        .component { cursor: pointer; margin-bottom: 10px; padding: 10px; background: white; border: 1px solid #ddd; position: relative; }
+        .delete-btn { position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer; }
+        .draggable { user-select: none; }
+        .draggable:hover { border: 1px solid #007BFF; cursor: move; }
+        #customize { display: none; }
+    </style>
+</head>
+<body>
+    <div id="editor">
+        <div id="components">
+            <button id="saveLayout" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mb-4 w-full">Save</button>
+            <button id="loadLayout" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-4 w-full">Load</button>
+            <button id="exportLayout" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 mb-4 w-full">Export</button>
+            <div class="component" draggable="true" data-content='<div class="container mx-auto px-4">Container</div>'>Container</div>
+            <div class="component" draggable="true" data-content='<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Button</button>'>Button</div>
+            <div class="component" draggable="true" data-content='<div class="max-w-sm rounded overflow-hidden shadow-lg"><img class="w-full" src="https://via.placeholder.com/150" alt="Sample image"><div class="px-6 py-4"><div class="font-bold text-xl mb-2">Card Title</div><p class="text-gray-700 text-base">Card content goes here.</p></div></div>'>Card</div>
+            <div class="component" draggable="true" data-content='<nav class="bg-gray-800 p-4"><div class="container mx-auto flex justify-between items-center"><div class="text-white">Logo</div><div class="flex space-x-4"><a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a><a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About</a><a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a></div></div></nav>'>Navbar</div>
+            <div class="component" draggable="true" data-content='<footer class="bg-gray-800 text-white py-4"><div class="container mx-auto px-4"><div class="flex justify-between"><div>&copy; 2024 MyCompany</div><div class="flex space-x-4"><a href="#" class="text-gray-300 hover:text-white px-3 py-2">Privacy</a><a href="#" class="text-gray-300 hover:text-white px-3 py-2">Terms</a></div></div></div></footer>'>Footer</div>
+            <div class="component" draggable="true" data-content='<section class="bg-blue-500 text-white py-20"><div class="container mx-auto px-4"><h1 class="text-4xl font-bold mb-4">Welcome to Our Website</h1><p class="text-lg mb-8">Create amazing websites with our drag-and-drop builder.</p><button class="bg-white text-blue-500 font-bold py-2 px-4 rounded">Get Started</button></div></section>'>Hero Section</div>
+        </div>
+        <div id="canvas" contenteditable="true"></div>
+        <div id="customize">
+            <h3 class="text-lg font-bold mb-2">Customize Component</h3>
+            <div id="customizeContent"></div>
+            <button id="updateComponent" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mt-4 w-full">Update</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+
+            const canvasDiv = document.getElementById('canvas');
+            const customizeDiv = document.getElementById('customize');
+            const customizeContentDiv = document.getElementById('customizeContent');
+            let selectedElement = null;
+
+            document.querySelectorAll('.component').forEach(component => {
+                component.addEventListener('dragstart', handleDragStart);
+            });
+
+            canvasDiv.addEventListener('dragover', handleDragOver);
+            canvasDiv.addEventListener('drop', handleDrop);
+            canvasDiv.addEventListener('click', handleCanvasClick);
+
+            document.getElementById('saveLayout').addEventListener('click', saveLayout);
+            document.getElementById('loadLayout').addEventListener('click', loadLayout);
+            document.getElementById('exportLayout').addEventListener('click', exportLayout);
+            document.getElementById('updateComponent').addEventListener('click', updateComponent);
+
+            function handleDragStart(e) {
+                e.dataTransfer.setData('text/html', e.target.getAttribute('data-content'));
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                const data = e.dataTransfer.getData('text/html');
+                const div = document.createElement('div');
+                div.classList.add('draggable');
+                div.innerHTML = data;
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = 'X';
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.addEventListener('click', () => div.remove());
+                div.appendChild(deleteBtn);
+                canvasDiv.appendChild(div);
+                socket.emit('componentUpdated', { html: canvasDiv.innerHTML });
+            }
+
+            function handleCanvasClick(e) {
+                if (e.target.classList.contains('draggable')) {
+                    selectedElement = e.target;
+                    customizeDiv.style.display = 'block';
+                    customizeContentDiv.innerHTML = generateCustomizeContent(selectedElement);
+                    attachLivePreviewListeners();
+                }
+            }
+
+            function generateCustomizeContent(element) {
+                let content = '';
+                const attributes = element.attributes;
+                for (let i = 0; i < attributes.length; i++) {
+                    const attr = attributes[i];
+                    content += `<label class="block text-gray-700 font-bold mb-2">${attr.name}:</label><input type="text" value="${attr.value}" class="block w-full px-3 py-2 mb-4 border rounded" data-attr="${attr.name}">`;
+                }
+                return content;
+            }
+
+            function attachLivePreviewListeners() {
+                const inputs = customizeContentDiv.querySelectorAll('input[data-attr]');
+                inputs.forEach(input => {
+                    input.addEventListener('input', updateLivePreview);
+                });
+            }
+
+            function updateLivePreview(e) {
+                const attr = e.target.getAttribute('data-attr');
+                const value = e.target.value;
+                selectedElement.setAttribute(attr, value);
+                socket.emit('componentUpdated', { html: canvasDiv.innerHTML });
+            }
+
+            function updateComponent() {
+                const inputs = customizeContentDiv.querySelectorAll('input[data-attr]');
+                inputs.forEach(input => {
+                    const attr = input.getAttribute('data-attr');
+                    const value = input.value;
+                    selectedElement.setAttribute(attr, value);
+                });
+                socket.emit('componentUpdated', { html: canvasDiv.innerHTML });
+            }
+
+            function saveLayout() {
+                const layout = canvasDiv.innerHTML;
+                localStorage.setItem('savedLayout', layout);
+                alert('Layout saved

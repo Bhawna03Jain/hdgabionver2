@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric.js Advanced Line Drawing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        canvas { border: 1px solid #000; }
+        .controls { margin-top: 10px; }
+        .control-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+        .control-buttons button, .control-buttons input { margin: 5px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <div class="control-buttons">
+            <button id="saveJson">Save as JSON</button>
+            <button id="saveImage">Save as Image</button>
+            <input type="file" id="uploadJson" style="display: none;">
+            <button id="loadJson">Load from JSON</button>
+            <button id="setOrigin">Set Rotation Origin</button>
+            <button id="rotateByAngle">Rotate by Angle</button>
+            <button id="resetOrigin">Reset Origin to Center</button>
+            <button id="updateOrigin">Update Origin</button>
+            <button id="detectCorners">Detect Attached Corners</button>
+            <button id="patternFill">Fill with Pattern</button>
+        </div>
+        <div class="control-buttons">
+            <input type="number" id="canvasWidth" placeholder="Width">
+            <input type="number" id="canvasHeight" placeholder="Height">
+            <button id="resizeCanvas">Resize Canvas</button>
+        </div>
+        <div class="control-buttons">
+            <button id="rotateLeft">Rotate Left 15°</button>
+            <button id="rotateRight">Rotate Right 15°</button>
+            <input type="range" id="rotationSlider" min="-180" max="180" value="0">
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+// Create a Fabric.js canvas
+var canvas = new fabric.Canvas('canvas', { selection: true });
+
+// Variables to hold drawing settings
+var currentColor = '#000000';
+var customOrigin = { x: 0, y: 0 };
+var mode = 'normal';
+
+// Save canvas as JSON with user-specified file name
+document.getElementById('saveJson').onclick = function() {
+    var fileName = prompt('Enter file name for JSON:', 'canvas.json');
+    if (fileName) {
+        var json = JSON.stringify(canvas.toJSON());
+        var blob = new Blob([json], { type: 'application/json' });
+        saveAs(blob, fileName);
+    }
+};
+
+// Save canvas as image with user-specified file name
+document.getElementById('saveImage').onclick = function() {
+    var fileName = prompt('Enter file name for image:', 'canvas.png');
+    if (fileName) {
+        var dataURL = canvas.toDataURL('image/png');
+        var link = document.createElement('a');
+        link.href = dataURL;
+        link.download = fileName;
+        link.click();
+    }
+};
+
+// Load canvas from JSON file
+document.getElementById('loadJson').onclick = function() {
+    document.getElementById('uploadJson').click();
+};
+
+document.getElementById('uploadJson').onchange = function(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var json = e.target.result;
+        canvas.loadFromJSON(json, function() {
+            canvas.renderAll();
+        });
+    };
+    reader.readAsText(file);
+};
+
+// Function to set custom origin point for rotation
+function setCustomOrigin(x, y) {
+    customOrigin = { x, y };
+    highlightCustomOrigin();
+}
+
+// Function to highlight custom origin on the canvas
+function highlightCustomOrigin() {
+    // Remove existing origin circle if any
+    canvas.getObjects('circle').forEach(function(circle) {
+        if (circle.originMarker) {
+            canvas.remove(circle);
+        }
+    });
+
+    // Add new origin circle
+    var originCircle = new fabric.Circle({
+        left: customOrigin.x - 5,
+        top: customOrigin.y - 5,
+        radius: 5,
+        fill: 'blue',
+        selectable: false,
+        evented: false,
+        originMarker: true
+    });
+    canvas.add(originCircle);
+    canvas.renderAll();
+}
+
+// Function to rotate object around custom origin
+function rotateObjectAroundOrigin(object, angle) {
+    var radians = angle * (Math.PI / 180);
+    var cos = Math.cos(radians);
+    var sin = Math.sin(radians);
+
+    var dx = object.left - customOrigin.x;
+    var dy = object.top - customOrigin.y;
+
+    var newX = cos * dx - sin * dy + customOrigin.x;
+    var newY = sin * dx + cos * dy + customOrigin.y;
+
+    object.set({
+        left: newX,
+        top: newY,
+        angle: object.angle + angle
+    });
+    object.setCoords();
+    canvas.renderAll();
+}
+
+// Function to rotate active object by specified angle
+function rotateActiveObjectByAngle(angle) {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        rotateObjectAroundOrigin(activeObject, angle);
+    }
+}
+
+// Add button and event listener for setting custom origin
+document.getElementById('setOrigin').onclick = function() {
+    mode = 'setOrigin';
+    alert('Click on the canvas to set the rotation origin.');
+};
+
+canvas.on('mouse:down', function(options) {
+    if (mode === 'setOrigin') {
+        var pointer = canvas.getPointer(options.e);
+        setCustomOrigin(pointer.x, pointer.y);
+        mode = 'normal'; // Reset mode after setting the origin
+    }
+});
+
+// Add button and event listener for rotating by angle with custom origin
+document.getElementById('rotateByAngle').onclick = function() {
+    var angle = parseInt(prompt('Enter the angle to rotate by:'));
+    if (!isNaN(angle)) {
+        rotateActiveObjectByAngle(angle);
+    }
+};
+
+// Function to reset rotation origin to object's center
+function resetOriginToCenter() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        customOrigin = { x: activeObject.left, y: activeObject.top };
+        highlightCustomOrigin();
+    }
+}
+
+// Add button and event listener for resetting origin to center
+document.getElementById('resetOrigin').onclick = resetOriginToCenter;
+
+// Function to enable user to dynamically update origin point
+canvas.on('object:moving', function(options) {
+    var activeObject = options.target;
+    if (activeObject && mode === 'updateOrigin') {
+        customOrigin = { x: activeObject.left, y: activeObject.top };
+        highlightCustomOrigin();
+    }
+});
+
+// Add button and event listener for updating origin dynamically
+document.getElementById('updateOrigin').onclick = function() {
+    mode = 'updateOrigin';
+    alert('Move an object to update the rotation origin dynamically.');
+};
+
+// Function to detect and count corners attached with other lines
+function countAttachedCorners(line) {
+    var corners = [
+        { x: line.x1, y: line.y1 },
+        { x: line.x2, y: line.y2 }
+    ];
+
+    var attachedCornersCount = 0;
+
+    canvas.getObjects('line').forEach(function(otherLine) {
+        if (line === otherLine) return;
+
+        corners.forEach(function(corner) {
+            if ((corner.x === otherLine.x1 && corner.y === otherLine.y1) ||
+                (corner.x === otherLine.x2 && corner.y === otherLine.y2)) {
+                attachedCornersCount++;
+            }
+        });
+    });
+
+    return attachedCornersCount;
+}
+
+// Function to highlight corners and show count
+function highlightCornersAndShowCount(line) {
+    var corners = [
+        { x: line.x1, y: line.y1 },
+        { x: line.x2, y: line.y2 }
+    ];
+
+    corners.forEach(function(corner) {
+        var circle = new fabric.Circle({
+            left: corner.x - 5,
+            top: corner.y - 5,
+            radius: 5,
+            fill: 'red',
+            selectable: false,
+            evented: false
+        });
+        canvas.add(circle);
+    });
+
+    var attachedCornersCount = countAttachedCorners(line);
+    alert('Attached corners count: ' + attachedCornersCount);
+}
+
+// Add button and event listener for detecting corners and counting
+document.getElementById('detectCorners').onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'line') {
+        highlightCornersAndShowCount(activeObject);
+    }
+};
+
+// Function to fill shapes with custom patterns
+function fillWithPattern(url) {
+    fabric.Image.fromURL(url, function(img) {
+        var pattern = new fabric.Pattern({
+            source: img.getElement(),
+            repeat: 'repeat'
+        });
+        var activeObject = canvas.getActiveObject();
+        if (activeObject) {
+            activeObject.set({ fill: pattern });
+            canvas.renderAll();
+        }
+    });
+}
+
+// Add button and event listener for filling with pattern
+document.getElementById('patternFill').onclick = function() {
+    var url = prompt('Enter image URL for pattern:');
+    if (url) {
+        fillWithPattern(url);
+    }
+};
+
+// Function to make an object rotatable
+function makeObjectRotatable(object) {
+    object.set({
+        hasControls: true,
+        lockRotation: false,
+        lockMovementX: false,
+        lockMovementY: false
+    });
+}
+
+// Example: Adding a rotatable line to the canvas
+var line = new fabric.Line([50, 100, 200, 200], {
+    stroke: 'black',
+    strokeWidth: 2
+});
+makeObjectRotatable(line);
+canvas.add(line);
+
+// Update rotatability for newly added objects
+canvas.on('object:added', function(options) {
+    var object = options.target;
+    if (object && object.type === 'line') {
+        makeObjectRotatable(object);
+    }
+});
+
+// Adding additional rotation controls
+
+// Function to apply precise rotation angle
+function rotateObjectByAngle(angle) {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.rotate(activeObject.angle + angle);
+        activeObject.setCoords();
+        canvas.renderAll();
+    }
+}
+
+// Add buttons and event listeners for additional rotation controls
+document.getElementById('rotateLeft').onclick = function() { rotateObjectByAngle(-15); };
+document.getElementById('rotateRight').onclick = function() { rotateObjectByAngle(15); };
+document.getElementById('rotationSlider').oninput = function() {
+    rotateObjectByAngle(parseInt(this.value) - canvas.getActiveObject().angle);
+};
+
+// Function to resize canvas
+function resizeCanvas(width, height) {
+    canvas.setWidth(width);
+    canvas.setHeight(height);
+    drawGrid(currentGridSize); // Redraw grid with current size
+}
+
+// Add button and event listener for resizing canvas
+document.getElementById('resizeCanvas').onclick = function() {
+    var width = parseInt(document.getElementById('canvasWidth').value);
+    var height = parseInt(document.getElementById('canvasHeight').value);
+    if (width && height) {
+        resizeCanvas(width, height);
+    }
+};
+
+// Function to enable keyboard navigation for objects
+function moveObject(keyCode) {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        if (keyCode === 37) { // Left arrow key
+            activeObject.left -= 10;
+        } else if (keyCode === 38) { // Up arrow key
+            activeObject.top -= 10;
+        } else if (keyCode === 39) { // Right arrow key
+            activeObject.left += 10;
+        } else if (keyCode === 40) { // Down arrow key
+            activeObject.top += 10;
+        }
+        activeObject.setCoords();
+        canvas.renderAll();
+    }
+}
+
+// Add event listener for keyboard navigation
+document.addEventListener('keydown', function(event) {
+    moveObject(event.keyCode);
+});

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D Fence Enhancements</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #enhancementsPanel { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jasonChen1982/three.interaction/build/three.interaction.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+</head>
+<body>
+    <div id="enhancementsPanel">
+        <h3>Enhancements</h3>
+        <button onclick="addClimbingPlants(currentFence)">Add Climbing Plants</button>
+        <button onclick="addLanterns(currentFence)">Add Lanterns</button>
+        <label for="colorPicker">Choose Color:</label>
+        <input type="color" id="colorPicker" onchange="changeFenceColor(this.value)">
+        <button onclick="addPlanters(currentFence)">Add Planters</button>
+        <button onclick="addDecorativePanels(currentFence)">Add Panels</button>
+        <button onclick="addLighting(currentFence)">Add Lighting</button>
+        <button onclick="addMotionSensors(currentFence)">Add Motion Sensors</button>
+        <button onclick="addFenceGate(currentFence)">Add Gate</button>
+        <button onclick="addHangingDecoration('windchime')">Wind Chime</button>
+        <button onclick="addHangingDecoration('birdhouse')">Birdhouse</button>
+        <input type="range" min="0" max="1" step="0.1" onchange="adjustFenceTransparency(this.value)">
+        <button onclick="customizeFenceSection('wood')">Wood</button>
+        <button onclick="customizeFenceSection('metal')">Metal</button>
+        <button onclick="customizeFenceSection('stone')">Stone</button>
+        <button onclick="swapFenceTexture('wood')">Wood Texture</button>
+        <button onclick="swapFenceTexture('metal')">Metal Texture</button>
+        <button onclick="swapFenceTexture('stone')">Stone Texture</button>
+        <button onclick="addSignage(currentFence)">Add Sign</button>
+        <button onclick="addInteractiveAnimation(currentFence)">Add Animation</button>
+        <button onclick="addBench(currentFence)">Add Bench</button>
+        <button onclick="addBirdFeeder(currentFence)">Add Bird Feeder</button>
+        <button onclick="addStringLights(currentFence)">Add String Lights</button>
+        <button onclick="addWaterFeature(currentFence)">Add Water Feature</button>
+        <button onclick="addDecorativeSign(currentFence)">Add Decorative Sign</button>
+        <button onclick="addInteractivePlant(currentFence)">Add Interactive Plant</button>
+    </div>
+    <script>
+        var scene, camera, renderer, currentFence, interactionManager;
+
+        // Initialize Three.js scene with interaction manager
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            interactionManager = new THREE.Interaction(renderer, scene, camera);
+
+            camera.position.z = 20;
+
+            // Load the GLB fence model
+            loadFenceModel('path/to/fence.glb', function(fence) {
+                scene.add(fence);
+                currentFence = fence;
+            });
+
+            animate();
+        }
+
+        // Function to load GLB model
+        function loadFenceModel(url, callback) {
+            var loader = new THREE.GLTFLoader();
+            loader.load(url, function(gltf) {
+                var fence = gltf.scene;
+                currentFence = fence;
+                scene.add(fence);
+                if (callback) callback(fence);
+            });
+        }
+
+        // Function to make an object draggable
+        function makeDraggable(object) {
+            interactionManager.add(object);
+
+            object.on('mousedown', function(event) {
+                object.userData.dragging = true;
+                object.userData.offset = {
+                    x: event.data.global.x - object.position.x,
+                    y: event.data.global.y - object.position.y,
+                };
+            });
+
+            object.on('mousemove', function(event) {
+                if (object.userData.dragging) {
+                    object.position.x = event.data.global.x - object.userData.offset.x;
+                    object.position.y = event.data.global.y - object.userData.offset.y;
+                }
+            });
+
+            object.on('mouseup', function() {
+                object.userData.dragging = false;
+            });
+
+            object.on('mouseout', function() {
+                object.userData.dragging = false;
+            });
+        }
+
+        // Function to add climbing plants to the fence
+        function addClimbingPlants(fence) {
+            var vineGeometry = new THREE.CylinderGeometry(0.1, 0.1, 10, 32);
+            var vineMaterial = new THREE.MeshBasicMaterial({ color: 0x228b22 });
+            for (var i = 0; i < 10; i++) {
+                var vine = new THREE.Mesh(vineGeometry, vineMaterial);
+                vine.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 2 - 1);
+                vine.rotation.x = Math.random() * Math.PI;
+                vine.rotation.y = Math.random() * Math.PI;
+                fence.add(vine);
+                makeDraggable(vine);
+            }
+        }
+
+        // Function to add lanterns to the fence
+        function addLanterns(fence) {
+            var lanternGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+            var lanternMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            for (var i = 0; i < 5; i++) {
+                var lantern = new THREE.Mesh(lanternGeometry, lanternMaterial);
+                lantern.position.set(Math.random() * 10 - 5, Math.random() * 5 + 5, Math.random() * 2 - 1);
+                fence.add(lantern);
+                makeDraggable(lantern);
+            }
+        }
+
+        // Function to change fence color
+        function changeFenceColor(color) {
+            if (currentFence) {
+                currentFence.traverse(function(child) {
+                    if (child.isMesh) {
+                        child.material.color.set(color);
+                    }
+                });
+            }
+        }
+
+        // Function to add planters to the fence
+        function addPlanters(fence) {
+            var planterGeometry = new THREE.BoxGeometry(1, 1, 1);
+            var planterMaterial = new THREE.MeshStandardMaterial({ color: 0x4caf50 });
+            for (var i = 0; i < 5; i++) {
+                var planter = new THREE.Mesh(planterGeometry, planterMaterial);
+                planter.position.set(Math.random() * 10 - 5, Math.random() * 5 + 2, Math.random() * 0.5 - 0.25);
+                fence.add(planter);
+                makeDraggable(planter);
+
+                // Add flowers to the planter
+                var flowerGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+                var flowerMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+                for (var j = 0; j < 5; j++) {
+                    var flower = new THREE.Mesh(flowerGeometry, flowerMaterial);
+                    flower.position.set(Math.random() * 0.5 - 0.25, Math.random() * 0.5, Math.random() * 0.5 - 0.25);
+                    planter.add(flower);
+                }
+            }
+        }
+
+        // Function to add decorative panels to the fence
+        function addDecorativePanels(fence) {
+            var panelGeometry = new THREE.PlaneGeometry(5, 5);
+            var panelMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513, side: THREE.DoubleSide });
+            for (var i = 0; i < 3; i++) {
+                var panel = new THREE.Mesh(panelGeometry, panelMaterial);
+                panel.position.set(Math.random() * 10 - 5, Math.random() * 5 + 2, Math.random() * 0.5 - 0.25);
+                panel.rotation.y = Math.PI / 2;
+                fence.add(panel);
+                makeDraggable(panel);
+            }
+        }
+
+              // Function to add integrated lighting to the fence
+              function addLighting(fence) {
+            var lightGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+            var lightMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+            for (var i = 0; i < 5; i++) {
+                var light = new THREE.Mesh(lightGeometry, lightMaterial);
+                light.position.set(Math.random() * 10 - 5, Math.random() * 5 + 5, Math.random() * 2 - 1);
+                fence.add(light);
+                makeDraggable(light);
+
+                // Add spotlight
+                var spotlight = new THREE.SpotLight(0xffffff, 0.5);
+                spotlight.position.set(light.position.x, light.position.y, light.position.z);
+                spotlight.target = fence;
+                scene.add(spotlight);
+            }
+        }
+
+        // Function to add motion sensors to the fence
+        function addMotionSensors(fence) {
+            var sensorGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+            var sensorMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            for (var i = 0; i < 5; i++) {
+                var sensor = new THREE.Mesh(sensorGeometry, sensorMaterial);
+                sensor.position.set(Math.random() * 10 - 5, Math.random() * 5 + 5, Math.random() * 2 - 1);
+                fence.add(sensor);
+                makeDraggable(sensor);
+
+                // Add motion detection
+                sensor.userData = { isTriggered: false };
+                sensor.on('mouseover', function() {
+                    if (!this.userData.isTriggered) {
+                        this.material.color.set(0x00ff00);
+                        this.userData.isTriggered = true;
+                    }
+                });
+                sensor.on('mouseout', function() {
+                    if (this.userData.isTriggered) {
+                        this.material.color.set(0xff0000);
+                        this.userData.isTriggered = false;
+                    }
+                });
+            }
+        }
+
+        // Function to add interactive fence gate
+        function addFenceGate(fence) {
+            var gateGeometry = new THREE.BoxGeometry(2, 5, 0.2);
+            var gateMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+
+            var gate = new THREE.Mesh(gateGeometry, gateMaterial);
+            gate.position.set(Math.random() * 10 - 5, 2.5, Math.random() * 0.5 - 0.25);
+            fence.add(gate);
+            makeDraggable(gate);
+
+            // Add interaction to open/close the gate
+            gate.userData = { isOpen: false };
+            gate.on('click', function() {
+                if (!this.userData.isOpen) {
+                    var openTween = new TWEEN.Tween(this.rotation)
+                        .to({ y: Math.PI / 2 }, 1000)
+                        .easing(TWEEN.Easing.Quadratic.Out)
+                        .start();
+                    this.userData.isOpen = true;
+                } else {
+                    var closeTween = new TWEEN.Tween(this.rotation)
+                        .to({ y: 0 }, 1000)
+                        .easing(TWEEN.Easing.Quadratic.Out)
+                        .start();
+                    this.userData.isOpen = false;
+                }
+            });
+        }
+
+        // Function to add hanging decorations to the fence
+        function addHangingDecoration(type) {
+            var decorationGeometry, decorationMaterial;
+            if (type === 'windchime') {
+                decorationGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
+                decorationMaterial = new THREE.MeshBasicMaterial({ color: 0xeeeeee });
+            } else if (type === 'birdhouse') {
+                decorationGeometry = new THREE.BoxGeometry(1, 1, 1);
+                decorationMaterial = new THREE.MeshStandardMaterial({ color: 0xffcc00 });
+            }
+            var decoration = new THREE.Mesh(decorationGeometry, decorationMaterial);
+            decoration.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 0.5 - 0.25);
+            fence.add(decoration);
+            makeDraggable(decoration);
+        }
+
+        // Function to adjust fence transparency
+        function adjustFenceTransparency(opacity) {
+            if (currentFence) {
+                currentFence.traverse(function(child) {
+                    if (child.isMesh) {
+                        child.material.transparent = true;
+                        child.material.opacity = opacity;
+                    }
+                });
+            }
+        }
+
+        // Function to customize fence sections
+        function customizeFenceSection(materialType) {
+            if (currentFence) {
+                var material;
+                switch (materialType) {
+                    case 'wood':
+                        material = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+                        break;
+                    case 'metal':
+                        material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+                        break;
+                    case 'stone':
+                        material = new THREE.MeshStandardMaterial({ color: 0x808080 });
+                        break;
+                }
+                currentFence.traverse(function(child) {
+                    if (child.isMesh) {
+                        child.material = material;
+                    }
+                });
+            }
+        }
+
+        // Function to swap fence texture
+        function swapFenceTexture(textureType) {
+            var textureLoader = new THREE.TextureLoader();
+            var texture;
+            switch (textureType) {
+                case 'wood':
+                    texture = textureLoader.load('path/to/wood-texture.jpg');
+                    break;
+                case 'metal':
+                    texture = textureLoader.load('path/to/metal-texture.jpg');
+                    break;
+                case 'stone':
+                    texture = textureLoader.load('path/to/stone-texture.jpg');
+                    break;
+            }
+            if (currentFence) {
+                currentFence.traverse(function(child) {
+                    if (child.isMesh) {
+                        child.material.map = texture;
+                        child.material.needsUpdate = true;
+                    }
+                });
+            }
+        }
+
+        // Function to add signage to the fence
+        function addSignage(fence) {
+            var signGeometry = new THREE.PlaneGeometry(3, 1);
+            var signMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+            var sign = new THREE.Mesh(signGeometry, signMaterial);
+            sign.position.set(Math.random() * 10 - 5, Math.random() * 5 + 2, Math.random() * 0.5 - 0.25);
+
+            // Add text to the sign
+            var loader = new THREE.FontLoader();
+            loader.load('path/to/font.json', function(font) {
+                var textGeometry = new THREE.TextGeometry('Welcome', {
+                    font: font,
+                    size: 0.5,
+                    height: 0.1
+                });
+                var textMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+                var textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-1.5, -0.5, 0.1);
+                sign.add(textMesh);
+            });
+
+            fence.add(sign);
+            makeDraggable(sign);
+        }
+
+        // Function to add interactive animation
+        function addInteractiveAnimation(fence) {
+            fence.traverse(function(child) {
+                if (child.isMesh) {
+                    child.on('click', function() {
+                        var tween = new TWEEN.Tween(child.position)
+                            .to({ y: child.position.y + 1 }, 1000)
+                            .easing(TWEEN.Easing.Elastic.Out)
+                            .yoyo(true)
+                            .repeat(1)
+                            .start();
+                    });
+                }
+            });
+        }
+
+        // Function to add benches to the fence
+        function addBench(fence) {
+            var benchGeometry = new THREE.BoxGeometry(4, 1, 1);
+            var benchMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+            var bench = new THREE.Mesh(benchGeometry, benchMaterial);
+            bench.position.set(Math.random() * 10 - 5, 1, Math.random() * 0.5 - 0.25);
+            fence.add(bench);
+            makeDraggable(bench);
+        }
+
+        // Function to add bird feeders to the fence
+        function addBirdFeeder(fence) {
+            var feederGeometry = new THREE.BoxGeometry(1, 1, 1);
+            var feederMaterial = new THREE.MeshStandardMaterial({ color: 0x3cb371 });
+            var feeder = new THREE.Mesh(feederGeometry, feederMaterial);
+            feeder.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 0.5 - 0.25);
+            fence.add(feeder);
+            makeDraggable(feeder);
+        }
+
+        // Function to add string lights to the fence
+        function addStringLights(fence) {
+            var lightGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            var lightMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700 });
+
+            for (var i = 0; i < 10; i++) {
+                var light = new THREE.Mesh(lightGeometry, lightMaterial);
+                light.position.set(Math.random() * 10 - 5, Math.random() * 10, Math.random() * 0.5 - 0.25);
+                fence.add(light);
+                makeDraggable(light);
+            }
+        }
+
+        // Function to add water features to the fence
+                // Function to add water features to the fence
+                function addWaterFeature(fence) {
+            var featureGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+            var featureMaterial = new THREE.MeshStandardMaterial({ color: 0x4682b4 });
+
+            var feature = new THREE.Mesh(featureGeometry, featureMaterial);
+            feature.position.set(Math.random() * 10 - 5, 0.5, Math.random() * 0.5 - 0.25);
+            fence.add(feature);
+            makeDraggable(feature);
+        }
+
+        // Function to add decorative signs to the fence
+        function addDecorativeSign(fence) {
+            var signGeometry = new THREE.PlaneGeometry(2, 1);
+            var signMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+            var sign = new THREE.Mesh(signGeometry, signMaterial);
+            sign.position.set(Math.random() * 10 - 5, 5, Math.random() * 0.5 - 0.25);
+
+            // Add text to the sign
+            var loader = new THREE.FontLoader();
+            loader.load('path/to/font.json', function(font) {
+                var textGeometry = new THREE.TextGeometry('Welcome', {
+                    font: font,
+                    size: 0.2,
+                    height: 0.05,
+                });
+                var textMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+                var textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-0.9, -0.4, 0.05);
+                sign.add(textMesh);
+            });
+
+            fence.add(sign);
+            makeDraggable(sign);
+        }
+
+        // Function to add interactive plants to the fence
+        function addInteractivePlant(fence) {
+            var potGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 32);
+            var potMaterial = new THREE.MeshStandardMaterial({ color: 0xa0522d });
+
+            var pot = new THREE.Mesh(potGeometry, potMaterial);
+            pot.position.set(Math.random() * 10 - 5, 0.25, Math.random() * 0.5 - 0.25);
+            fence.add(pot);
+            makeDraggable(pot);
+
+            var plantGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
+            var plantMaterial = new THREE.MeshStandardMaterial({ color: 0x228b22 });
+            var plant = new THREE.Mesh(plantGeometry, plantMaterial);
+            plant.position.set(0, 0.75, 0);
+            pot.add(plant);
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            TWEEN.update();
+            renderer.render(scene, camera);
+        }
+
+        // Initialize the scene
+        init();
+    </script>
+</body>
+</html>

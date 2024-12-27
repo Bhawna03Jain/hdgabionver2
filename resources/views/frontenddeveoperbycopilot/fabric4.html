@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric.js Advanced Line Drawing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <style>
+        canvas { border: 1px solid #000; }
+        .controls { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <label for="colorPicker">Line Color:</label>
+        <input type="color" id="colorPicker" value="#000000">
+        <label for="strokeWidth">Stroke Width:</label>
+        <input type="range" id="strokeWidth" min="1" max="20" value="5">
+        <label for="lineStyle">Line Style:</label>
+        <select id="lineStyle">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+        </select>
+        <label for="gridSize">Grid Size:</label>
+        <input type="number" id="gridSize" min="5" max="50" value="20">
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="clear">Clear</button>
+        <button id="delete">Delete</button>
+        <button id="duplicate">Duplicate</button>
+        <button id="group">Group</button>
+        <button id="ungroup">Ungroup</button>
+        <button id="bringToFront">Bring to Front</button>
+        <button id="sendToBack">Send to Back</button>
+        <button id="lock">Lock</button>
+        <button id="unlock">Unlock</button>
+        <button id="exportImage">Export as Image</button>
+        <button id="exportJson">Export as JSON</button>
+        <button id="exportSvg">Export as SVG</button>
+        <button id="exportPdf">Export as PDF</button>
+        <button id="measureAngle">Measure Angle</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+// Create a Fabric.js canvas with grid lines
+var canvas = new fabric.Canvas('canvas', { selection: true });
+
+// Variables to hold the current drawing settings
+var isDrawing = false;
+var startPoint = {};
+var currentColor = '#000000';
+var currentStrokeWidth = 5;
+var lineStyle = 'solid'; // Line style: 'solid', 'dashed', 'dotted', 'arrow', 'double'
+var mode = 'draw'; // Mode can be 'draw' or 'erase'
+var state = [];
+var redoState = [];
+var currentGridSize = 20;
+var unit = 'px';
+
+// Function to save the current state of the canvas
+function saveState() {
+    state.push(JSON.stringify(canvas));
+    redoState = []; // Clear the redo stack
+}
+
+// Function to draw grid lines on the canvas
+function drawGrid(size) {
+    canvas.clear();
+    var gridSize = size || currentGridSize;
+    for (var i = 0; i < (canvas.width / gridSize); i++) {
+        canvas.add(new fabric.Line([ i * gridSize, 0, i * gridSize, canvas.height], { stroke: '#ccc', selectable: false, evented: false }));
+        canvas.add(new fabric.Line([ 0, i * gridSize, canvas.width, i * gridSize], { stroke: '#ccc', selectable: false, evented: false }));
+    }
+    currentGridSize = gridSize;
+}
+drawGrid();
+
+// Function to snap object to grid
+function snapToGrid(target) {
+    var gridSize = currentGridSize;
+    target.set({
+        left: Math.round(target.left / gridSize) * gridSize,
+        top: Math.round(target.top / gridSize) * gridSize
+    });
+}
+
+// Get references to the controls
+var colorPicker = document.getElementById('colorPicker');
+var strokeWidthPicker = document.getElementById('strokeWidth');
+var lineStyleSelect = document.getElementById('lineStyle');
+var gridSizeInput = document.getElementById('gridSize');
+var unitSelect = document.getElementById('unit');
+var undoButton = document.getElementById('undo');
+var redoButton = document.getElementById('redo');
+var clearButton = document.getElementById('clear');
+var deleteButton = document.getElementById('delete');
+var duplicateButton = document.getElementById('duplicate');
+var groupButton = document.getElementById('group');
+var ungroupButton = document.getElementById('ungroup');
+var bringToFrontButton = document.getElementById('bringToFront');
+var sendToBackButton = document.getElementById('sendToBack');
+var lockButton = document.getElementById('lock');
+var unlockButton = document.getElementById('unlock');
+var exportImageButton = document.getElementById('exportImage');
+var exportJsonButton = document.getElementById('exportJson');
+var exportSvgButton = document.getElementById('exportSvg');
+var exportPdfButton = document.getElementById('exportPdf');
+var exportTiffButton = document.getElementById('exportTiff');
+var exportEpsButton = document.getElementById('exportEps');
+var exportSelectedAreaButton = document.getElementById('exportSelectedArea');
+
+// Event listeners for color, stroke width, line style, grid size, and unit changes
+colorPicker.onchange = function() {
+    currentColor = this.value;
+};
+
+strokeWidthPicker.oninput = function() {
+    currentStrokeWidth = this.value;
+};
+
+lineStyleSelect.onchange = function() {
+    lineStyle = this.value;
+};
+
+gridSizeInput.oninput = function() {
+    drawGrid(parseInt(this.value));
+};
+
+unitSelect.onchange = function() {
+    unit = this.value;
+    updateMeasurementUnits();
+};
+
+function updateMeasurementUnits() {
+    // Implement conversion between units as needed
+    var objects = canvas.getObjects();
+    objects.forEach(function(obj) {
+        if (unit === 'in') {
+            obj.scaleX = obj.scaleX * 0.393701;
+            obj.scaleY = obj.scaleY * 0.393701;
+            obj.left = obj.left * 0.393701;
+            obj.top = obj.top * 0.393701;
+        } else if (unit === 'cm') {
+            obj.scaleX = obj.scaleX * 0.393701 * 2.54;
+            obj.scaleY = obj.scaleY * 0.393701 * 2.54;
+            obj.left = obj.left * 0.393701 * 2.54;
+            obj.top = obj.top * 0.393701 * 2.54;
+        } else { // unit is pixels (px)
+            obj.scaleX = obj.scaleX / 0.393701 / 2.54;
+            obj.scaleY = obj.scaleY / 0.393701 / 2.54;
+            obj.left = obj.left / 0.393701 / 2.54;
+            obj.top = obj.top / 0.393701 / 2.54;
+        }
+    });
+    canvas.renderAll();
+}
+
+// Event listeners for control buttons
+undoButton.onclick = function() {
+    if (state.length) {
+        redoState.push(state.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+redoButton.onclick = function() {
+    if (redoState.length) {
+        state.push(redoState.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+clearButton.onclick = function() {
+    canvas.clear();
+    drawGrid();
+    saveState();
+};
+
+deleteButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        canvas.remove(activeObject);
+        saveState();
+    }
+};
+
+duplicateButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.clone(function(clonedObj) {
+            clonedObj.set({
+                left: clonedObj.left + 10,
+                top: clonedObj.top + 10,
+                evented: true
+            });
+            canvas.add(clonedObj);
+            saveState();
+        });
+    }
+};
+
+groupButton.onclick = function() {
+    var activeObjects = canvas.getActiveObjects();
+    if (activeObjects.length) {
+        var group = new fabric.Group(activeObjects);
+        canvas.clear();
+        drawGrid();
+        canvas.add(group);
+        saveState();
+    }
+};
+
+ungroupButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'group') {
+        var items = activeObject._objects;
+        canvas.remove(activeObject);
+        canvas.add(...items);
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+bringToFrontButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.bringToFront();
+        saveState();
+    }
+};
+
+sendToBackButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.sendToBack();
+        saveState();
+    }
+};
+
+lockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+unlockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+exportImageButton.onclick = function() {
+    var dataURL = canvas.toDataURL('image/png');
+    var link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'canvas.png';
+    link.click();
+};
+
+exportJsonButton.onclick = function() {
+    var json = JSON.stringify(canvas);
+    var blob = new Blob([json], { type: 'application/json' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'canvas.json';
+    link.click();
+};
+
+exportSvgButton.onclick = function() {
+    var svg = canvas.toSVG();
+    var link = document.createElement('a');
+    link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    link.download = 'canvas.svg';
+    link.click();
+};
+
+exportPdfButton.onclick = function() {
+    var imgData = canvas.toDataURL('image/png');
+    var doc = new jsPDF('landscape');
+    doc.addImage(imgData, 'PNG', 10, 10);
+    doc.save('canvas.pdf');
+};
+
+exportTiffButton.onclick = function() {
+    var imgData = canvas.toDataURL('image/tiff');
+    var link = document.createElement('a');
+    link.href = imgData;
+    link.download = 'canvas.tiff';
+    link.click();
+};
+
+exportEpsButton.onclick = function() {
+    var svg = canvas.toSVG();
+    var link = document.createElement('a');
+    link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    link.download = 'canvas.eps';
+    link.click();
+};
+
+exportSelectedAreaButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        var canvasEl = document.createElement('canvas');
+        var context = canvasEl.getContext('2d');
+        canvasEl.width = activeObject.width;
+        canvasEl.height = activeObject.height;
+        context.drawImage(canvas.getElement(), activeObject.left, activeObject.top, activeObject.width, activeObject.height, 0, 0, activeObject.width, activeObject.height);
+        var dataURL = canvasEl.toDataURL('image/png');
+        var link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'selected_area.png';
+        link.click();
+    }
+};
+
+// Function to create resizable line with control points
+function createResizableLine(x1, y1, x2, y2, options) {
+    var line = new fabric.Line([x1, y1, x2, y2], options);
+    line.set({
+        originX: 'center',
+        originY: 'center',
+        hasControls: true,
+        hasBorders: false
+    });
+
+    // Create control circles at the ends of the line
+    var startCircle = new fabric.Circle({
+        left: line.x1,
+        top: line.y1,
+        strokeWidth: 2,
+        radius: 5,
+        fill: '#ffffff',
+        stroke: '#000000',
+        originX: 'center',
+        originY: 'center',
+        hasControls: false,
+        hasBorders: false,
+        selectable: false,
+        evented: false
+    });
+
+    var endCircle = new fabric.Circle({
+        left: line.x2,
+        top: line.y2,
+        strokeWidth: 2,
+        radius: 5,
+        fill: '#ffffff',
+        stroke: '#000000',
+        originX: 'center',
+        originY: 'center',
+        hasControls: false,
+        hasBorders: false,
+        selectable: false,
+        evented: false
+    });
+
+    // Update the line and control points when moving
+    line.on('moving', function () {
+        updateCirclePosition(startCircle, line.x1, line.y1);
+        updateCirclePosition(endCircle, line.x2, line.y2);
+    });
+
+    // Update the control circles position
+    function updateCirclePosition(circle, x, y) {
+        circle.set({ left: x, top: y });
+        circle.setCoords();
+        canvas.renderAll();
+    }
+
+    // Add the line and control circles to the canvas
+    canvas.add(line, startCircle, endCircle);
+
+    // Make the circles follow the line when it moves
+    line.on('moved', function () {
+        updateCirclePosition(startCircle, line.x1, line.y1);
+        updateCirclePosition(endCircle, line.x2, line.y2);
+    });
+
+    saveState();
+    return line;
+}
+
+// Override the default mouse:down event to create resizable lines
+canvas.on('mouse:down', function (options) {
+    if (mode === 'draw') {
+        isDrawing = true;
+        startPoint = canvas.getPointer(options.e);
+        var lineOptions = {
+            stroke: currentColor,
+            strokeWidth: currentStrokeWidth
+        };
+        if (lineStyle === 'dashed') {
+            lineOptions.strokeDashArray = [5, 5];
+        } else if (lineStyle === 'dotted') {
+            lineOptions.strokeDashArray = [1, 3];
+        }
+        var line = createResizableLine(startPoint.x, startPoint.y, startPoint.x, startPoint.y, lineOptions);
+        canvas.setActiveObject(line);
+    }
+});
+
+canvas.on('mouse:move', function (options) {
+    if (!isDrawing) return;
+    var pointer = canvas.getPointer(options.e);
+    var activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'line') {
+        activeObject.set({ x2: pointer.x, y2: pointer.y });
+        constrainLineAngle(activeObject);
+        activeObject.setCoords();
+        canvas.renderAll();
+    }
+});
+
+canvas.on('mouse:up', function () {
+    if (mode === 'draw') {
+        isDrawing = false;
+        var activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === 'line') {
+            addLabelToLine(activeObject);
+            detectLineIntersections();  // Detect intersections after drawing the line
+        }
+        saveState();
+    }
+});
+
+// Improved Eraser Tool for lines
+eraserButton.onclick = function () {
+    mode = 'erase';
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingBrush.color = '#FFFFFF';
+    canvas.freeDrawingBrush.width = parseInt(currentStrokeWidth, 10);
+};
+
+// Function to constrain angles of lines to 15-degree increments
+function constrainLineAngle(line) {
+    var angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1) * (180 / Math.PI);
+    var constrainedAngle = Math.round(angle / 15) * 15;
+    var length = Math.sqrt(Math.pow(line.x2 - line.x1, 2) + Math.pow(line.y2 - line.y1, 2));
+    line.set({
+        x2: line.x1 + length * Math.cos(constrainedAngle * (Math.PI / 180)),
+        y2: line.y1 + length * Math.sin(constrainedAngle * (Math.PI / 180))
+    });
+}
+
+// Function to add dynamic labels to lines based on their length
+function addLabelToLine(line) {
+    if (line && line.type === 'line') {
+        var length = Math.sqrt(Math.pow(line.x2 - line.x1, 2) + Math.pow(line.y2 - line.y1, 2)).toFixed(2);
+        var label = 'Length: ' + length + ' px';
+        var text = new fabric.IText(label, {
+            left: (line.x1 + line.x2) / 2,
+            top: (line.y1 + line.y2) / 2,
+            fill: currentColor,
+            fontSize: currentStrokeWidth * 2,
+            originX: 'center',
+            originY: 'center',
+            selectable: true // Allow labels to be draggable
+        });
+        canvas.add(text);
+        line.associatedLabel = text;
+        line.on('moving', updateLabelPosition);
+        line.on('scaling', updateLabelPosition);
+        line.on('rotating', updateLabelPosition);
+        saveState();
+    }
+}
+
+// Function to update label position when the line moves or resizes
+function updateLabelPosition(options) {
+    var line = options.target;
+    if (line.associatedLabel) {
+        line.associatedLabel.set({
+            left: (line.x1 + line.x2) / 2,
+            top: (line.y1 + line.y2) / 2,
+            angle: line.angle // Ensure the label rotates with the line
+        });
+        line.associatedLabel.setCoords();
+        canvas.renderAll();
+    }
+}
+
+// Event listener for object modifications
+canvas.on('object:modified', function (options) {
+    var modifiedObject = options.target;
+    if (modifiedObject && modifiedObject.type === 'line') {
+        var length = Math.sqrt(Math.pow(modifiedObject.x2 - modifiedObject.x1, 2) + Math.pow(modifiedObject.y2 - modifiedObject.y1, 2)).toFixed(2);
+        modifiedObject.associatedLabel.text = 'Length: ' + length + ' px';
+        updateLabelPosition({ target: modifiedObject });
+        detectLineIntersections();  // Detect intersections after modifying the line
+    }
+});
+
+// Snapping to grid during object movement
+canvas.on('object:moving', function (options) {
+    snapToGrid(options.target);
+});
+
+// Function to detect and highlight line intersections
+function detectLineIntersections() {
+    var objects = canvas.getObjects('line');
+    for (var i = 0; i < objects.length; i++) {
+        for (var j = i + 1; j < objects.length; j++) {
+            var intersection = getLineIntersection(objects[i], objects[j]);
+            if (intersection) {
+                highlightIntersection(intersection);
+            }
+        }
+    }
+}
+
+// Function to get the intersection point of two lines
+function getLineIntersection(line1, line2) {
+    var x1 = line1.x1, y1 = line1.y1, x2 = line1.x2, y2 = line1.y2;
+    var x3 = line2.x1, y3 = line2.y1, x4 = line2.x2, y4 = line2.y2;
+    var denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    if (denominator === 0) return null;
+    var intersectX = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 *
+    // Function to get the intersection point of two lines
+    function getLineIntersection(line1, line2) {
+        var x1 = line1.x1, y1 = line1.y1, x2 = line1.x2, y2 = line1.y2;
+        var x3 = line2.x1, y3 = line2.y1, x4 = line2.x2, y4 = line2.y2;
+        var denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        if (denominator === 0) return null;
+        var intersectX = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator;
+        var intersectY = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator;
+        return { x: intersectX, y: intersectY };
+    }
+
+    // Function to highlight intersection points
+    function highlightIntersection(point) {
+        var intersectionPoint = new fabric.Circle({
+            left: point.x,
+            top: point.y,
+            radius: 5,
+            fill: 'red',
+            selectable: false,
+            evented: false
+        });
+        canvas.add(intersectionPoint);
+    }
+
+    // Snapping to grid during object movement
+    canvas.on('object:moving', function (options) {
+        snapToGrid(options.target);
+    });
+
+    // Function to detect and highlight line intersections
+    function detectLineIntersections() {
+        var objects = canvas.getObjects('line');
+        for (var i = 0; i < objects.length; i++) {
+            for (var j = i + 1; j < objects.length; j++) {
+                var intersection = getLineIntersection(objects[i], objects[j]);
+                if (intersection) {
+                    highlightIntersection(intersection);
+                }
+            }
+        }
+    }
+
+    // Add keyboard shortcuts for common operations
+    document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey && event.key === 'z') { // Ctrl+Z for undo
+            undoButton.click();
+        } else if (event.ctrlKey && event.key === 'y') { // Ctrl+Y for redo
+            redoButton.click();
+        } else if (event.ctrlKey && event.key === 'c') { // Ctrl+C for copy
+            canvas.getActiveObject().clone(function(clonedObj) {
+                clipboard = clonedObj;
+            });
+        } else if (event.ctrlKey && event.key === 'v') { // Ctrl+V for paste
+            clipboard.clone(function(clonedObj) {
+                canvas.discardActiveObject();
+                clonedObj.set({
+                    left: clonedObj.left + 10,
+                    top: clonedObj.top + 10,
+                    evented: true
+                });
+                canvas.add(clonedObj);
+                canvas.setActiveObject(clonedObj);
+                saveState();
+            });
+        }
+    });
+
+    // Save the initial state
+    saveState();

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric.js Advanced Line Drawing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <style>
+        canvas { border: 1px solid #000; }
+        .controls { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <label for="colorPicker">Line Color:</label>
+        <input type="color" id="colorPicker" value="#000000">
+        <label for="strokeWidth">Stroke Width:</label>
+        <input type="range" id="strokeWidth" min="1" max="20" value="5">
+        <label for="lineStyle">Line Style:</label>
+        <select id="lineStyle">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+            <option value="arrow">Arrow</option>
+            <option value="double">Double Line</option>
+        </select>
+        <label for="gridSize">Grid Size:</label>
+        <input type="number" id="gridSize" value="20" min="5" max="100">
+        <label for="unit">Measurement Unit:</label>
+        <select id="unit">
+            <option value="px">Pixels</option>
+            <option value="in">Inches</option>
+            <option value="cm">Centimeters</option>
+        </select>
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="clear">Clear</button>
+        <button id="delete">Delete</button>
+        <button id="duplicate">Duplicate</button>
+        <button id="group">Group</button>
+        <button id="ungroup">Ungroup</button>
+        <button id="bringToFront">Bring to Front</button>
+        <button id="sendToBack">Send to Back</button>
+        <button id="lock">Lock</button>
+        <button id="unlock">Unlock</button>
+        <button id="exportImage">Export as Image</button>
+        <button id="exportJson">Export as JSON</button>
+        <button id="exportSvg">Export as SVG</button>
+        <button id="exportPdf">Export as PDF</button>
+        <button id="exportTiff">Export as TIFF</button>
+        <button id="exportEps">Export as EPS</button>
+        <button id="exportSelectedArea">Export Selected Area</button>
+        <button id="saveShape">Save Shape</button>
+        <button id="startRecording">Start Recording</button>
+        <button id="startVoiceCommands">Start Voice Commands</button>
+        <button id="stopVoiceCommands">Stop Voice Commands</button>
+        <button id="setShortcut">Set Shortcut</button>
+        <button id="measure">Measure</button>
+        <button id="addAnnotation">Add Annotation</button>
+        <button id="loadImageBackground">Load Image Background</button>
+        <button id="addHorizontalGuide">Add Horizontal Guide</button>
+        <button id="addVerticalGuide">Add Vertical Guide</button>
+        <select id="shapeSelect"></select>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+// Create a Fabric.js canvas with grid lines
+var canvas = new fabric.Canvas('canvas', { selection: true });
+
+// Variables to hold the current drawing settings
+var isDrawing = false;
+var startPoint = {};
+var currentColor = '#000000';
+var currentStrokeWidth = 5;
+var lineStyle = 'solid'; // Line style: 'solid', 'dashed', 'dotted', 'arrow', 'double'
+var mode = 'draw'; // Mode can be 'draw' or 'erase'
+var state = [];
+var redoState = [];
+var currentGridSize = 20;
+var unit = 'px';
+
+// Function to save the current state of the canvas
+function saveState() {
+    state.push(JSON.stringify(canvas));
+    redoState = []; // Clear the redo stack
+}
+
+// Function to draw grid lines on the canvas
+function drawGrid(size) {
+    canvas.clear();
+    var gridSize = size || currentGridSize;
+    for (var i = 0; i < (canvas.width / gridSize); i++) {
+        canvas.add(new fabric.Line([ i * gridSize, 0, i * gridSize, canvas.height], { stroke: '#ccc', selectable: false, evented: false }));
+        canvas.add(new fabric.Line([ 0, i * gridSize, canvas.width, i * gridSize], { stroke: '#ccc', selectable: false, evented: false }));
+    }
+    currentGridSize = gridSize;
+}
+drawGrid();
+
+// Function to snap object to grid
+function snapToGrid(target) {
+    var gridSize = currentGridSize;
+    target.set({
+        left: Math.round(target.left / gridSize) * gridSize,
+        top: Math.round(target.top / gridSize) * gridSize
+    });
+}
+
+// Get references to the controls
+var colorPicker = document.getElementById('colorPicker');
+var strokeWidthPicker = document.getElementById('strokeWidth');
+var lineStyleSelect = document.getElementById('lineStyle');
+var gridSizeInput = document.getElementById('gridSize');
+var unitSelect = document.getElementById('unit');
+var undoButton = document.getElementById('undo');
+var redoButton = document.getElementById('redo');
+var clearButton = document.getElementById('clear');
+var deleteButton = document.getElementById('delete');
+var duplicateButton = document.getElementById('duplicate');
+var groupButton = document.getElementById('group');
+var ungroupButton = document.getElementById('ungroup');
+var bringToFrontButton = document.getElementById('bringToFront');
+var sendToBackButton = document.getElementById('sendToBack');
+var lockButton = document.getElementById('lock');
+var unlockButton = document.getElementById('unlock');
+var exportImageButton = document.getElementById('exportImage');
+var exportJsonButton = document.getElementById('exportJson');
+var exportSvgButton = document.getElementById('exportSvg');
+var exportPdfButton = document.getElementById('exportPdf');
+var exportTiffButton = document.getElementById('exportTiff');
+var exportEpsButton = document.getElementById('exportEps');
+var exportSelectedAreaButton = document.getElementById('exportSelectedArea');
+var saveShapeButton = document.getElementById('saveShape');
+var startRecordingButton = document.getElementById('startRecording');
+var startVoiceCommandsButton = document.getElementById('startVoiceCommands');
+var stopVoiceCommandsButton = document.getElementById('stopVoiceCommands');
+var setShortcutButton = document.getElementById('setShortcut');
+var measureButton = document.getElementById('measure');
+var addAnnotationButton = document.getElementById('addAnnotation');
+var loadImageButton = document.getElementById('loadImageBackground');
+var addHorizontalGuideButton = document.getElementById('addHorizontalGuide');
+var addVerticalGuideButton = document.getElementById('addVerticalGuide');
+var shapeSelect = document.getElementById('shapeSelect');
+
+// Event listeners for color, stroke width, line style, grid size, and unit changes
+colorPicker.onchange = function() {
+    currentColor = this.value;
+};
+
+strokeWidthPicker.oninput = function() {
+    currentStrokeWidth = this.value;
+};
+
+lineStyleSelect.onchange = function() {
+    lineStyle = this.value;
+};
+
+gridSizeInput.oninput = function() {
+    drawGrid(parseInt(this.value));
+};
+
+unitSelect.onchange = function() {
+    unit = this.value;
+    updateMeasurementUnits();
+};
+
+function updateMeasurementUnits() {
+    // Implement conversion between units as needed
+    var objects = canvas.getObjects();
+    objects.forEach(function(obj) {
+        if (unit === 'in') {
+            obj.scaleX = obj.scaleX * 0.393701;
+            obj.scaleY = obj.scaleY * 0.393701;
+            obj.left = obj.left * 0.393701;
+            obj.top = obj.top * 0.393701;
+        } else if (unit === 'cm') {
+            obj.scaleX = obj.scaleX * 0.393701 * 2.54;
+            obj.scaleY = obj.scaleY * 0.393701 * 2.54;
+            obj.left = obj.left * 0.393701 * 2.54;
+            obj.top = obj.top * 0.393701 * 2.54;
+        } else { // unit is pixels (px)
+            obj.scaleX = obj.scaleX / 0.393701 / 2.54;
+            obj.scaleY = obj.scaleY / 0.393701 / 2.54;
+            obj.left = obj.left / 0.393701 / 2.54;
+            obj.top = obj.top / 0.393701 / 2.54;
+        }
+    });
+    canvas.renderAll();
+}
+
+// Event listeners for control buttons
+// Event listeners for control buttons
+undoButton.onclick = function() {
+    if (state.length) {
+        redoState.push(state.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+redoButton.onclick = function() {
+    if (redoState.length) {
+        state.push(redoState.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+clearButton.onclick = function() {
+    canvas.clear();
+    drawGrid();
+    saveState();
+};
+
+deleteButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        canvas.remove(activeObject);
+        saveState();
+    }
+};
+
+duplicateButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.clone(function(clonedObj) {
+            clonedObj.set({
+                left: clonedObj.left + 10,
+                top: clonedObj.top + 10,
+                evented: true
+            });
+            canvas.add(clonedObj);
+            saveState();
+        });
+    }
+};
+
+groupButton.onclick = function() {
+    var activeObjects = canvas.getActiveObjects();
+    if (activeObjects.length) {
+        var group = new fabric.Group(activeObjects);
+        canvas.clear();
+        drawGrid();
+        canvas.add(group);
+        saveState();
+    }
+};
+
+ungroupButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'group') {
+        var items = activeObject._objects;
+        canvas.remove(activeObject);
+        canvas.add(...items);
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+bringToFrontButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.bringToFront();
+        saveState();
+    }
+};
+
+sendToBackButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.sendToBack();
+        saveState();
+    }
+};
+
+lockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+unlockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+exportImageButton.onclick = function() {
+    var dataURL = canvas.toDataURL('image/png');
+    var link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'canvas.png';
+    link.click();
+};
+
+exportJsonButton.onclick = function() {
+    var json = JSON.stringify(canvas);
+    var blob = new Blob([json], { type: 'application/json' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'canvas.json';
+    link.click();
+};
+
+exportSvgButton.onclick = function() {
+    var svg = canvas.toSVG();
+    var link = document.createElement('a');
+    link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    link.download = 'canvas.svg';
+    link.click();
+};
+
+exportPdfButton.onclick = function() {
+    var imgData = canvas.toDataURL('image/png');
+    var doc = new jsPDF('landscape');
+    doc.addImage(imgData, 'PNG', 10, 10);
+    doc.save('canvas.pdf');
+};
+
+exportTiffButton.onclick = function() {
+    var imgData = canvas.toDataURL('image/tiff');
+    var link = document.createElement('a');
+    link.href = imgData;
+    link.download = 'canvas.tiff';
+    link.click();
+};
+
+exportEpsButton.onclick = function() {
+    var svg = canvas.toSVG();
+    var link = document.createElement('a');
+    link.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    link.download = 'canvas.eps';
+    link.click();
+};
+
+exportSelectedAreaButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        var canvasEl = document.createElement('canvas');
+        var context = canvasEl.getContext('2d');
+        canvasEl.width = activeObject.width;
+        canvasEl.height = activeObject.height;
+        context.drawImage(canvas.getElement(), activeObject.left, activeObject.top, activeObject.width, activeObject.height, 0, 0, activeObject.width, activeObject.height);
+        var dataURL = canvasEl.toDataURL('image/png');
+        var link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'selected_area.png';
+        link.click();
+    }
+};
+
+// Function to save custom shape to library
+function saveShapeToLibrary(name, shape) {
+    var shapeLibrary = JSON.parse(localStorage.getItem('shapeLibrary')) || {};
+    shapeLibrary[name] = shape.toObject();
+    localStorage.setItem('shapeLibrary', JSON.stringify(shapeLibrary));
+}
+
+// Function to load shape library
+function loadShapeLibrary() {
+    var shapeLibrary = JSON.parse(localStorage.getItem('shapeLibrary')) || {};
+    for (var shapeName in shapeLibrary) {
+        var option = document.createElement('option');
+        option.value = shapeName;
+        option.text = shapeName;
+        shapeSelect.appendChild(option);
+    }
+}
+
+// Add event listener for saving shapes
+saveShapeButton.onclick = function() {
+    var shapeName = prompt('Enter shape name:');
+    if (shapeName) {
+        var activeObject = canvas.getActiveObject();
+        if (activeObject) {
+            saveShapeToLibrary(shapeName, activeObject);
+        } else {
+            alert('Select a shape to save');
+        }
+    }
+};
+
+// Load shape library on startup
+loadShapeLibrary();
+
+// Function to use shape from library
+shapeSelect.onchange = function() {
+    var shapeName = shapeSelect.value;
+    var shapeLibrary = JSON.parse(localStorage.getItem('shapeLibrary')) || {};
+    var shapeData = shapeLibrary[shapeName];
+    if (shapeData) {
+        fabric.util.enlivenObjects([shapeData], function(objects) {
+            canvas.add(objects[0]);
+            saveState();
+        });
+    }
+};
+
+// Function to add draggable guide
+function addGuide(x, y, orientation) {
+    var guide = new fabric.Line(orientation === 'horizontal' ? [0, y, canvas.width, y] : [x, 0, x, canvas.height], {
+        stroke: 'blue',
+        selectable: true,
+        evented: true,
+        hasControls: false,
+        hasBorders: false
+    });
+    canvas.add(guide);
+    saveState();
+}
+
+// Event listeners for adding guides
+addHorizontalGuideButton.onclick = function() {
+    var y = prompt('Enter y position for guide:');
+    if (y) {
+        addGuide(0, parseInt(y), 'horizontal');
+    }
+};
+
+addVerticalGuideButton.onclick = function() {
+    var x = prompt('Enter x position for guide:');
+    if (x) {
+        addGuide(parseInt(x), 0, 'vertical');
+    }
+};
+
+// Function to import SVG file
+function importSVG() {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.svg';
+    input.onchange = function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            fabric.loadSVGFromString(e.target.result, function(objects, options) {
+                var svg = fabric.util.groupSVGElements(objects, options);
+                canvas.add(svg).renderAll();
+                saveState();
+            });
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+// Add button and event listener for importing SVG
+var importSVGButton = document.createElement('button');
+importSVGButton.innerText = 'Import SVG';
+importSVGButton.onclick = importSVG;
+document.body.appendChild(importSVGButton);
+
+// Implementing voice commands using Web Speech API
+if ('webkitSpeechRecognition' in window) {
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event) {
+        var transcript = event.results[event.resultIndex][0].transcript.trim().toLowerCase();
+        if (transcript === 'undo') {
+            undoButton.click();
+        } else if (transcript === 'redo') {
+            redoButton.click();
+        } else if (transcript === 'clear') {
+            clearButton.click();
+        } else if (transcript === 'save') {
+            exportImageButton.click();
+        } else if (transcript.startsWith('draw line')) {
+            mode = 'draw';
+        }
+    };
+
+    startVoiceCommandsButton.onclick = function() {
+        recognition.start();
+    };
+
+    stopVoiceCommandsButton.onclick = function() {
+        recognition.stop();
+    };
+}
+
+// Function to set custom shortcut
+function setShortcut(action, key) {
+    var shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || {};
+    shortcuts[key] = action;
+    localStorage.setItem('shortcuts', JSON.stringify(shortcuts));
+}
+
+// Function to load shortcuts
+// Function to load shortcuts
+function loadShortcuts() {
+    var shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || {};
+    document.addEventListener('keydown', function(event) {
+        var key = event.key.toLowerCase();
+        if (shortcuts[key]) {
+            if (shortcuts[key] === 'undo') undoButton.click();
+            else if (shortcuts[key] === 'redo') redoButton.click();
+            else if (shortcuts[key] === 'clear') clearButton.click();
+            else if (shortcuts[key] === 'save') exportImageButton.click();
+        }
+    });
+}
+
+// Load shortcuts on startup
+loadShortcuts();
+
+// Event listener for setting shortcuts
+setShortcutButton.onclick = function() {
+    var action = prompt('Enter action (e.g., undo, redo, clear, save):');
+    var key = prompt('Enter key for shortcut:').toLowerCase();
+    if (action && key) {
+        setShortcut(action, key);
+    }
+};
+
+// Function to apply 3D transformations
+function apply3DTransformation(object, angleX, angleY, angleZ) {
+    object.set({
+        skewX: angleX,
+        skewY: angleY,
+        angle: angleZ
+    });
+    object.setCoords();
+    canvas.renderAll();
+}
+
+// Add sliders for 3D transformations
+var angleXSlider = document.createElement('input');
+angleXSlider.type = 'range';
+angleXSlider.min = -90;
+angleXSlider.max = 90;
+angleXSlider.value = 0;
+angleXSlider.oninput = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        apply3DTransformation(activeObject, parseInt(this.value), activeObject.skewY, activeObject.angle);
+    }
+};
+document.body.appendChild(angleXSlider);
+
+var angleYSlider = document.createElement('input');
+angleYSlider.type = 'range';
+angleYSlider.min = -90;
+angleYSlider.max = 90;
+angleYSlider.value = 0;
+angleYSlider.oninput = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        apply3DTransformation(activeObject, activeObject.skewX, parseInt(this.value), activeObject.angle);
+    }
+};
+document.body.appendChild(angleYSlider);
+
+var angleZSlider = document.createElement('input');
+angleZSlider.type = 'range';
+angleZSlider.min = -180;
+angleZSlider.max = 180;
+angleZSlider.value = 0;
+angleZSlider.oninput = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        apply3DTransformation(activeObject, activeObject.skewX, activeObject.skewY, parseInt(this.value));
+    }
+};
+document.body.appendChild(angleZSlider);
+
+// Function to start time-lapse recording
+function startRecording() {
+    var chunks = [];
+    var stream = canvas.getElement().captureStream(30); // 30 FPS
+    var recorder = new MediaRecorder(stream);
+    recorder.ondataavailable = function(event) {
+        if (event.data.size > 0) {
+            chunks.push(event.data);
+        }
+    };
+    recorder.onstop = function() {
+        var blob = new Blob(chunks, { type: 'video/webm' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = 'timelapse.webm';
+        link.click();
+    };
+    recorder.start();
+    createStopRecordingButton(recorder); // Create the stop recording button
+}
+
+// Function to create the stop recording button
+function createStopRecordingButton(recorder) {
+    var stopRecordingButton = document.createElement('button');
+    stopRecordingButton.innerText = 'Stop Recording';
+    stopRecordingButton.onclick = function () {
+        recorder.stop();
+        document.body.removeChild(stopRecordingButton); // Remove the button after stopping
+    };
+    document.body.appendChild(stopRecordingButton);
+}
+
+// Add event listener for starting time-lapse recording
+startRecordingButton.onclick = startRecording;
+
+// Function to measure distance between two points
+function measureDistance(x1, y1, x2, y2) {
+    var distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    return distance.toFixed(2);
+}
+
+// Function to measure angle between two lines
+function measureAngle(line1, line2) {
+    var angle1 = Math.atan2(line1.y2 - line1.y1, line1.x2 - line1.x1);
+    var angle2 = Math.atan2(line2.y2 - line2.y1, line2.x2 - line2.x1);
+    var angle = Math.abs(angle1 - angle2) * (180 / Math.PI);
+    return angle.toFixed(2);
+}
+
+// Add event listener for measuring distance and angle
+measureButton.onclick = function() {
+    var activeObjects = canvas.getActiveObjects();
+    if (activeObjects.length === 2) {
+        if (activeObjects[0].type === 'line' && activeObjects[1].type === 'line') {
+            var angle = measureAngle(activeObjects[0], activeObjects[1]);
+            alert('Angle: ' + angle + ' degrees');
+        } else {
+            var distance = measureDistance(activeObjects[0].left, activeObjects[0].top, activeObjects[1].left, activeObjects[1].top);
+            alert('Distance: ' + distance + ' px');
+        }
+    } else {
+        alert('Select two objects to measure distance or angle');
+    }
+};
+
+// Function to add annotations
+function addAnnotation(text, x, y) {
+    var annotation = new fabric.IText(text, {
+        left: x,
+        top: y,
+        fill: '#000000',
+        fontSize: 14,
+        originX: 'center',
+        originY: 'center',
+        selectable: true
+    });
+    canvas.add(annotation);
+    saveState();
+}
+
+// Add event listener for adding annotations
+addAnnotationButton.onclick = function() {
+    var text = prompt('Enter annotation text:');
+    if (text) {
+        var pointer = canvas.getPointer(event);
+        addAnnotation(text, pointer.x, pointer.y);
+    }
+};
+
+// Function to load image background
+function loadImageBackground(url) {
+    fabric.Image.fromURL(url, function(img) {
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height
+        });
+    });
+}
+
+// Add event listener for loading image background
+loadImageButton.onclick = function() {
+    var url = prompt('Enter image URL:');
+    if (url) {
+        loadImageBackground(url);
+    }
+};
+
+// Save the initial state
+saveState();

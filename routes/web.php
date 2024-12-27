@@ -128,6 +128,18 @@ Route::get('/', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 })->name('');
+Route::get('/product_tailwind', function () {
+    return view('product_tailwind');
+})->name('');
+Route::get('/checkout-tailwind', function () {
+    return view('checkout');
+})->name('');
+Route::get('/cart_tailwind', function () {
+    return view('cart');
+})->name('');
+Route::get('/detail_tailwind', function () {
+    return view('detail_tailwind');
+})->name('');
 Route::get('/home', function () {
     return view('front.index');
 })->name('home');

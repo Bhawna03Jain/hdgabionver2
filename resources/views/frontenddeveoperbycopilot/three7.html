@@ -1,0 +1,726 @@
+Complex AI Interactions
+Implement complex AI interactions including decision-making and learning:
+
+javascript
+// Define AI behavior states and transitions
+var aiStates = {
+    idle: function(ai) {
+        // AI idle behavior logic
+        ai.position.x += (Math.random() - 0.5) * 0.1;
+        ai.position.z += (Math.random() - 0.5) * 0.1;
+    },
+    seek: function(ai, target) {
+        // AI seeking behavior logic
+        ai.position.lerp(target.position, 0.01);
+    },
+    flee: function(ai, threat) {
+        // AI fleeing behavior logic
+        ai.position.add(ai.position.clone().sub(threat.position).normalize().multiplyScalar(0.1));
+    }
+};
+
+// AI decision-making function
+function aiDecisionMaking(ai, target, threat) {
+    var distanceToTarget = ai.position.distanceTo(target.position);
+    var distanceToThreat = ai.position.distanceTo(threat.position);
+
+    if (distanceToThreat < 20) {
+        return 'flee';
+    } else if (distanceToTarget < 50) {
+        return 'seek';
+    } else {
+        return 'idle';
+    }
+}
+
+// Example AI character
+var ai = new THREE.Mesh(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+ai.position.set(0, 0, 0);
+scene.add(ai);
+
+// Example target and threat
+var target = new THREE.Mesh(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
+target.position.set(100, 0, 100);
+scene.add(target);
+
+var threat = new THREE.Mesh(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+threat.position.set(-100, 0, -100);
+scene.add(threat);
+
+// Update AI behavior in the animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    TWEEN.update();
+    composer.render();
+
+    var aiState = aiDecisionMaking(ai, target, threat);
+    aiStates[aiState](ai, target, threat);
+}
+
+// Call the animation loop
+animate();
+Dynamic Water Flow
+Add realistic dynamic water flow and interaction:
+
+javascript
+// Function to create dynamic water flow
+function createDynamicWater() {
+    var waterGeometry = new THREE.PlaneGeometry(100, 100);
+    var waterMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            time: { value: 1.0 },
+            resolution: { value: new THREE.Vector2() }
+        },
+        vertexShader: document.getElementById('vertexShader').textContent,
+        fragmentShader: document.getElementById('fragmentShader').textContent
+    });
+
+    var water = new THREE.Mesh(waterGeometry, waterMaterial);
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -50;
+    scene.add(water);
+
+    // Update water shader in the animation loop
+    function animateWater() {
+        requestAnimationFrame(animateWater);
+        waterMaterial.uniforms.time.value += 0.05;
+        composer.render();
+    }
+
+    animateWater();
+}
+
+// Call function to create dynamic water
+createDynamicWater();
+Detailed Weather Patterns
+Introduce detailed weather patterns including thunderstorms and fog:
+
+javascript
+// Function to create a thunderstorm
+function createThunderstorm() {
+    function createLightning() {
+        var lightning = new THREE.PointLight(0xffffff, 1, 500);
+        lightning.position.set(Math.random() * 400 - 200, 200, Math.random() * 400 - 200);
+        scene.add(lightning);
+
+        setTimeout(() => {
+            scene.remove(lightning);
+        }, 100);
+    }
+
+    function startLightningStorm() {
+        setInterval(() => {
+            createLightning();
+        }, Math.random() * 3000 + 2000); // Random interval between 2-5 seconds
+    }
+
+    // Example usage to start lightning storm
+    startLightningStorm();
+
+    // Add fog to the scene
+    scene.fog = new THREE.Fog(0x000000, 100, 500);
+
+    // Function to create rain
+    function addRain() {
+        var rainGeometry = new THREE.Geometry();
+        for (var i = 0; i < 10000; i++) {
+            var rainDrop = new THREE.Vector3(
+                Math.random() * 800 - 400,
+                Math.random() * 500,
+                Math.random() * 800 - 400
+            );
+            rainGeometry.vertices.push(rainDrop);
+        }
+
+        var rainMaterial = new THREE.PointsMaterial({
+            color: 0xaaaaaa,
+            size: 0.1,
+            transparent: true
+        });
+
+        var rain = new THREE.Points(rainGeometry, rainMaterial);
+        rain.name = 'weather';
+        scene.add(rain);
+
+        function animateRain() {
+            requestAnimationFrame(animateRain);
+            rainGeometry.vertices.forEach(v => {
+                v.y -= 0.1;
+                if (v.y < 0) {
+                    v.y = 500;
+                }
+            });
+            rainGeometry.verticesNeedUpdate = true;
+            composer.render();
+        }
+
+        animateRain();
+    }
+
+    addRain();
+}
+
+// Call function to create a thunderstorm
+createThunderstorm();
+Customizable User Interface (UI)
+Create a customizable UI for enhanced user experience:
+
+html
+<!-- Add a customizable UI panel -->
+<div id="uiPanel" style="position: fixed; top: 10px; left: 10px; background: rgba(0, 0, 0, 0.8); padding: 10px; color: #fff;">
+    <h3>Environment Controls</h3>
+    <label for="weather">Weather:</label>
+    <select id="weather" onchange="changeWeather(this.value)">
+        <option value="clear">Clear</option>
+        <option value="rain">Rain</option>
+        <option value="snow">Snow</option>
+        <option value="thunderstorm">Thunderstorm</option>
+    </select>
+
+    <label for="season">Season:</label>
+    <select id="season" onchange="changeSeason(this.value)">
+        <option value="spring">Spring</option>
+        <option value="summer">Summer</option>
+        <option value="autumn">Autumn</option>
+        <option value="winter">Winter</option>
+    </select>
+
+    <label for="timeOfDay">Time of Day:</label>
+    <select id="timeOfDay" onchange="updateSkybox(this.value)">
+        <option value="morning">Morning</option>
+        <option value="afternoon">Afternoon</option>
+        <option value="evening">Evening</option>
+        <option value="night">Night</option>
+    </select>
+</div>
+Interactive Map and Mini-Map
+Add a map and mini-map for better navigation and exploration:
+
+html
+<!-- Add a mini-map -->
+<canvas id="miniMap" width="200" height="200" style="position: fixed; bottom: 10px; right: 10px; border: 1px solid #000;"></canvas>
+
+<script>
+// Function to update mini-map
+function updateMiniMap() {
+    var miniMapCanvas = document.getElementById('miniMap');
+    var miniMapContext = miniMapCanvas.getContext('2d');
+
+    miniMapContext.clearRect(0, 0, miniMapCanvas.width, miniMapCanvas.height);
+
+    scene.children.forEach(child => {
+        miniMapContext.fillStyle = (child.name === 'AI') ? '#ff0000' : '#0000ff';
+        miniMapContext.fillRect(child.position.x / 5 + 100, -child.position.z / 5 + 100, 5, 5);
+    });
+
+    requestAnimationFrame(updateMiniMap);
+}
+
+// Call function to update mini-map
+updateMiniMap();
+</script>
+Additional Advanced Features
+Interactive Waterfalls: Create realistic waterfalls with dynamic water flow.
+
+Realistic Sky and Cloud Animation: Implement dynamic sky and cloud animations.
+
+Real-Time Reflections: Use real-time reflections for water and shiny surfaces.
+
+Physics-Based Interactions: Enhance interactions with physics-based responses.
+
+Animated Characters: Add animated characters with skeletal animations.
+
+Customizable Avatars: Allow users to customize their avatars.
+
+Procedural Forest Generation: Automatically generate dense forests with varied trees and plants.
+
+Interactive Minimap: Add a minimap that shows the user's position and points of interest.
+
+Sound Localization: Implement 3D sound localization for immersive audio experiences.
+
+Interactive Waterfalls
+Create realistic waterfalls with dynamic water flow:
+
+javascript
+// Function to create a waterfall
+function createWaterfall() {
+    var waterfallGeometry = new THREE.PlaneGeometry(5, 20);
+    var waterfallMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            time: { value: 1.0 },
+            resolution: { value: new THREE.Vector2() }
+        },
+        vertexShader: document.getElementById('waterfallVertexShader').textContent,
+        fragmentShader: document.getElementById('waterfallFragmentShader').textContent,
+        transparent: true
+    });
+
+    var waterfall = new THREE.Mesh(waterfallGeometry, waterfallMaterial);
+    waterfall.rotation.x = -Math.PI / 2;
+    waterfall.position.set(0, 10, 0);
+    scene.add(waterfall);
+
+    function animateWaterfall() {
+        requestAnimationFrame(animateWaterfall);
+        waterfallMaterial.uniforms.time.value += 0.05;
+        composer.render();
+    }
+
+    animateWaterfall();
+}
+
+// Call function to create a waterfall
+createWaterfall();
+Realistic Sky and Cloud Animation
+Implement dynamic sky and cloud animations:
+
+javascript
+// Function to create dynamic sky and clouds
+function createDynamicSky() {
+    var skyGeometry = new THREE.SphereGeometry(500, 32, 32);
+    var skyMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            time: { value: 1.0 }
+        },
+        vertexShader: document.getElementById('skyVertexShader').textContent,
+        fragmentShader: document.getElementById('skyFragmentShader').textContent,
+        side: THREE.BackSide
+    });
+
+    var sky = new THREE.Mesh(skyGeometry, skyMaterial);
+    scene.add(sky);
+
+    function animateSky() {
+        requestAnimationFrame(animateSky);
+        skyMaterial.uniforms.time.value += 0.01;
+        composer.render();
+    }
+
+    animateSky();
+}
+
+// Call function to create dynamic sky
+createDynamicSky();
+Real-Time Reflections
+Use real-time reflections for water and shiny surfaces:
+
+javascript
+// Function to create real-time reflections
+function createRealTimeReflections() {
+    var waterGeometry = new THREE.PlaneGeometry(100, 100);
+    var waterMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            time: { value: 1.0 },
+            resolution: { value: new THREE.Vector2() }
+        },
+        vertexShader: document.getElementById('waterVertexShader').textContent,
+        fragmentShader: document.getElementById('waterFragmentShader').textContent,
+        transparent: true
+    });
+
+    var water = new THREE.Mesh(waterGeometry, waterMaterial);
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -50;
+    scene.add(water);
+
+    var reflector = new THREE.Reflector(waterGeometry, {
+        clipBias: 0.003,
+        textureWidth: window.innerWidth * window.devicePixelRatio,
+        textureHeight: window.innerHeight * window.devicePixelRatio,
+        color: 0x777777
+    });
+
+    water.add(reflector);
+
+    function animateWater() {
+        requestAnimationFrame(animateWater);
+        waterMaterial.uniforms.time.value += 0.05;
+        composer.render();
+    }
+
+    animateWater();
+}
+
+// Call function to create real-time reflections
+createRealTimeReflections();
+Physics-Based Interactions
+Enhance interactions with physics-based responses:
+
+javascript
+// Function to create physics-based interactions
+function createPhysicsBasedInteractions() {
+    var physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    physicsWorld.setGravity(new Ammo.btVector3(0, -10, 0));
+
+    function createPhysicsObject(object, mass) {
+        var transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin(new Ammo.btVector3(object.position.x, object.position.y, object.position.z));
+        var motionState = new Ammo.btDefaultMotionState(transform);
+
+        var shape = new Ammo.btBoxShape(new Ammo.btVector3(1, 1, 1));
+        var localInertia = new Ammo.btVector3(0, 0, 0);
+        shape.calculateLocalInertia(mass, localInertia);
+
+        var bodyInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+        var body = new Ammo.btRigidBody(bodyInfo);
+
+        physicsWorld.addRigidBody(body);
+        object.userData.physicsBody = body;
+    }
+
+    var boxGeometry = new THREE.BoxGeometry(10, 10, 10);
+    var boxMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    var box = new THREE.Mesh(boxGeometry, boxMaterial);
+    box.position.set(0, 50, 0);
+    scene.add(box);
+    createPhysicsObject(box, 1);
+
+    function updatePhysics(deltaTime) {
+        physicsWorld.stepSimulation(deltaTime, 10);
+        scene.children.forEach(object => {
+            if (object.userData.physicsBody) {
+                var transform = new Ammo.btTransform();
+                object.userData.physicsBody.getMotionState().getWorldTransform(transform);
+                var origin = transform.getOrigin();
+                object.position.set(origin.x(), origin.y(), origin.z());
+            }
+        });
+    }
+
+    var clock = new THREE.Clock();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        var deltaTime = clock.getDelta();
+        updatePhysics(deltaTime);
+        composer.render();
+    }
+
+    animate();
+}
+
+// Call function to create physics-based interactions
+createPhysicsBasedInteractions();
+Animated Characters
+Add animated characters with skeletal animations:
+
+javascript
+// Function to load and animate characters
+function loadAnimatedCharacter() {
+    var loader = new THREE.GLTFLoader();
+    loader.load('path/to/character.glb', function(gltf) {
+        var character = gltf.scene;
+        scene.add(character);
+
+        var mixer = new THREE.AnimationMixer(character);
+        var action = mixer.clipAction(gltf.animations[0]);
+        action.play();
+
+        function animateCharacter() {
+            requestAnimationFrame(animateCharacter);
+            var delta = clock.getDelta();
+            mixer.update(delta);
+            composer.render();
+        }
+
+        animateCharacter();
+    });
+}
+
+// Call function to load and animate characters
+loadAnimatedCharacter();
+Customizable Avatars
+Allow users to customize their avatars:
+
+html
+<!-- Add UI for avatar customization -->
+<div id="avatarCustomization">
+    <label for="avatarColor">Avatar Color:</label>
+    <input type="color" id="avatarColor" value="#ff0000" onchange="customizeAvatar()">
+</div>
+
+<script>
+// Function to customize avatar
+function customizeAvatar() {
+    var avatarColor = document.getElementById('avatarColor').value;
+    avatar.material.color.set(avatarColor);
+}
+
+// Example avatar creation
+var avatarGeometry = new THREE.SphereGeometry(5, 32, 32);
+var avatarMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+var avatar = new THREE.Mesh(avatarGeometry, avatarMaterial);
+avatar.position.set(0, 0, 0);
+scene.add(avatar);
+</script>
+Procedural Forest Generation
+Automatically generate dense forests with varied trees and plants:
+
+javascript
+// Function to generate a procedural forest
+function generateForest() {
+    var treeGeometry = new THREE.ConeGeometry(5, 20, 32);
+    var treeMaterial = new THREE.MeshStandardMaterial({ color: 0x228b22 });
+
+    for (var i = 0; i < 1000; i++) {
+        var tree = new THREE.Mesh(treeGeometry, treeMaterial);
+        tree.position.set(Math.random() * 800 - 400, 0, Math.random() * 800 - 400);
+        tree.scale.setScalar(Math.random() * 0.5 + 0.5); // Vary tree sizes
+        tree.castShadow = true;
+        tree.receiveShadow = true;
+        scene.add(tree);
+    }
+}
+
+// Call function to generate a procedural forest
+generateForest();
+<script>
+    // Function to update the minimap
+    function updateMinimap() {
+        var context = document.getElementById('minimap').getContext('2d');
+        context.clearRect(0, 0, 200, 200);
+
+        context.fillStyle = 'green';
+        context.fillRect(player.position.x + 100, player.position.z + 100, 10, 10); // Draw player position
+
+        context.fillStyle = 'blue';
+        scene.children.forEach(child => {
+            if (child.name === 'poi') {
+                context.fillRect(child.position.x + 100, child.position.z + 100, 5, 5); // Draw points of interest
+            }
+        });
+
+        requestAnimationFrame(updateMinimap);
+    }
+
+    // Initialize player and points of interest
+    var player = new THREE.Mesh(new THREE.SphereGeometry(5, 32, 32), new THREE.MeshStandardMaterial({ color: 0x0000ff }));
+    player.position.set(0, 0, 0);
+    scene.add(player);
+
+    var poiMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    var poiGeometry = new THREE.SphereGeometry(5);
+
+    function addPOI(x, y, z, info) {
+        var poi = new THREE.Mesh(poiGeometry, poiMaterial);
+        poi.position.set(x, y, z);
+        poi.name = 'poi';
+        poi.userData = { info: info };
+        scene.add(poi);
+    }
+
+    addPOI(50, 10, 50, 'This is a beautiful tree.');
+    addPOI(-100, 10, -50, 'This is a scenic viewpoint.');
+
+    updateMinimap();
+</script>
+Sound Localization
+Implement 3D sound localization for immersive audio experiences:
+
+javascript
+// Function to add localized sound
+function addLocalizedSound(position, soundFile) {
+    var listener = new THREE.AudioListener();
+    camera.add(listener);
+
+    var sound = new THREE.PositionalAudio(listener);
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load(soundFile, function (buffer) {
+        sound.setBuffer(buffer);
+        sound.setRefDistance(20);
+        sound.setLoop(true);
+        sound.setVolume(0.5);
+        sound.play();
+    });
+
+    var soundSource = new THREE.Mesh(new THREE.SphereGeometry(1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    soundSource.position.copy(position);
+    soundSource.add(sound);
+    scene.add(soundSource);
+}
+
+// Example usage to add localized sound
+addLocalizedSound(new THREE.Vector3(50, 10, 50), 'path/to/birds-chirping.mp3');
+Waterfall Vertex and Fragment Shaders
+To make the waterfall shader work, you'll need to add vertex and fragment shaders for the waterfall effect:
+
+html
+<script id="waterfallVertexShader" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+</script>
+
+<script id="waterfallFragmentShader" type="x-shader/x-fragment">
+    uniform float time;
+    varying vec2 vUv;
+    void main() {
+        vec2 uv = vUv;
+        uv.y += time * 0.1;
+        vec3 color = vec3(0.1, 0.4, 0.8) * smoothstep(0.2, 0.8, fract(uv.y));
+        gl_FragColor = vec4(color, 1.0);
+    }
+</script>
+Sky Vertex and Fragment Shaders
+To make the dynamic sky shader work, you'll need vertex and fragment shaders for the sky effect:
+
+html
+<script id="skyVertexShader" type="x-shader/x-vertex">
+    uniform float time;
+    varying vec3 vPos;
+    void main() {
+        vPos = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+</script>
+
+<script id="skyFragmentShader" type="x-shader/x-fragment">
+    uniform float time;
+    varying vec3 vPos;
+    void main() {
+        float brightness = sin(vPos.y * 0.2 + time * 0.1) * 0.5 + 0.5;
+        vec3 skyColor = vec3(0.1, 0.2, 0.4) * brightness;
+        gl_FragColor = vec4(skyColor, 1.0);
+    }
+</script>
+Water Vertex and Fragment Shaders
+To make the enhanced water shader work, you'll need vertex and fragment shaders for the water effect:
+
+html
+<script id="waterVertexShader" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+</script>
+
+<script id="waterFragmentShader" type="x-shader/x-fragment">
+    uniform float time;
+    varying vec2 vUv;
+    void main() {
+        vec2 uv = vUv;
+        uv.y += time * 0.1;
+        vec3 color = vec3(0.2, 0.4, 0.6) * smoothstep(0.2, 0.8, fract(uv.y));
+        gl_FragColor = vec4(color, 0.5);
+    }
+</script>
+Summary
+By integrating these advanced features, your 3D environment will become even more interactive, immersive, and visually stunning:
+
+Interactive Waterfalls: Created realistic waterfalls with dynamic water flow.
+
+Realistic Sky and Cloud Animation: Implemented dynamic sky and cloud animations.
+
+Real-Time Reflections: Used real-time reflections for water and shiny surfaces.
+
+Physics-Based Interactions: Enhanced interactions with physics-based responses.
+
+Animated Characters: Added animated characters with skeletal animations.
+
+Customizable Avatars: Allowed users to customize their avatars.
+
+Procedural Forest Generation: Automatically generated dense forests with varied trees and plants.
+
+Interactive Minimap: Added a minimap that shows the user's position and points of interest.
+
+Sound Localization: Implemented 3D sound localization for immersive audio experiences.
+
+Feel free to integrate these features into your application and customize them further to fit your specific needs. If you have more ideas or need additional assistance, just let me know! 🌟✨
+
+
+
+
+Message Copilot
+<!-- Add UI panel for settings -->
+<div id="settingsPanel" style="position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px;">
+    <h3>Settings</h3>
+    <label for="weather">Weather:</label>
+    <select id="weather" onchange="changeWeather(this.value)">
+        <option value="clear">Clear</option>
+        <option value="rain">Rain</option>
+        <option value="snow">Snow</option>
+    </select>
+    <br>
+    <label for="season">Season:</label>
+    <select id="season" onchange="changeSeason(this.value)">
+        <option value="spring">Spring</option>
+        <option value="summer">Summer</option>
+        <option value="autumn">Autumn</option>
+        <option value="winter">Winter</option>
+    </select>
+</div>
+
+<script>
+// Example functions to change weather and season
+function changeWeather(weather) {
+    // Logic to change weather
+    console.log('Changing weather to:', weather);
+}
+
+function changeSeason(season) {
+    // Logic to change season
+    console.log('Changing season to:', season);
+}
+</script>
+// Implement A* pathfinding algorithm for AI navigation
+function findPath(start, goal) {
+    // Define the A* pathfinding algorithm logic here
+    // Example of creating a grid and implementing A*
+}
+
+// Move AI along the path
+function moveAI(ai, path) {
+    var index = 0;
+    function moveToNextPoint() {
+        if (index < path.length) {
+            var waypoint = path[index];
+            ai.position.lerp(waypoint, 0.02);
+            if (ai.position.distanceTo(waypoint) < 1) {
+                index++;
+            }
+            requestAnimationFrame(moveToNextPoint);
+        }
+    }
+    moveToNextPoint();
+}
+
+// Example usage of pathfinding for AI
+var start = new THREE.Vector3(0, 0, 0);
+var goal = new THREE.Vector3(100, 0, 100);
+var path = findPath(start, goal);
+moveAI(ai, path);
+// Function to simulate weather and climate changes
+function simulateWeatherAndClimate() {
+    var weatherPatterns = ['clear', 'rain', 'snow', 'storm'];
+    var currentWeather = 'clear';
+    var weatherDuration = 0;
+
+    function updateWeather() {
+        weatherDuration--;
+        if (weatherDuration <= 0) {
+            currentWeather = weatherPatterns[Math.floor(Math.random() * weatherPatterns.length)];
+            weatherDuration = Math.floor(Math.random() * 1000) + 500; // Random duration for each weather
+            changeWeather(currentWeather);
+        }
+        setTimeout(updateWeather, 100);
+    }
+
+    updateWeather();
+}
+
+// Call function to simulate weather and climate changes
+simulateWeatherAndClimate();
+<!-- Add AR.js scripts -->
+<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+<script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.5/aframe/build/aframe-ar.js"></script>
+
+<!-- AR scene setup -->
+<a-scene embedded arjs>
+    <a-box position="0 0.5 0" material="opacity: 0.5; color: yellow;" shadow></a-box>
+    <a-marker-camera preset="hiro"></a-marker-camera>
+</a-scene>

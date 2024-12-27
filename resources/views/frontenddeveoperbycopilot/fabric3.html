@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric.js Advanced Line Drawing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <style>
+        canvas { border: 1px solid #000; }
+        .controls { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <label for="colorPicker">Line Color:</label>
+        <input type="color" id="colorPicker" value="#000000">
+        <label for="strokeWidth">Stroke Width:</label>
+        <input type="range" id="strokeWidth" min="1" max="20" value="5">
+        <label for="lineStyle">Line Style:</label>
+        <select id="lineStyle">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+        </select>
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="clear">Clear</button>
+        <button id="delete">Delete</button>
+        <button id="duplicate">Duplicate</button>
+        <button id="group">Group</button>
+        <button id="ungroup">Ungroup</button>
+        <button id="bringToFront">Bring to Front</button>
+        <button id="sendToBack">Send to Back</button>
+        <button id="lock">Lock</button>
+        <button id="unlock">Unlock</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+// Create a Fabric.js canvas with grid lines
+var canvas = new fabric.Canvas('canvas', { selection: false });
+
+// Variables to hold the current drawing settings
+var isDrawing = false;
+var startPoint = {};
+var currentColor = '#000000';
+var currentStrokeWidth = 5;
+var lineStyle = 'solid'; // Line style: 'solid', 'dashed', 'dotted'
+var state = [];
+var redoState = [];
+
+// Function to save the current state of the canvas
+function saveState() {
+    state.push(JSON.stringify(canvas));
+    redoState = []; // Clear the redo stack
+}
+
+// Function to draw grid lines on the canvas
+function drawGrid() {
+    var gridSize = 20;
+    for (var i = 0; i < (canvas.width / gridSize); i++) {
+        canvas.add(new fabric.Line([ i * gridSize, 0, i * gridSize, canvas.height], { stroke: '#ccc', selectable: false, evented: false }));
+        canvas.add(new fabric.Line([ 0, i * gridSize, canvas.width, i * gridSize], { stroke: '#ccc', selectable: false, evented: false }));
+    }
+}
+drawGrid();
+
+// Function to snap object to grid
+function snapToGrid(target) {
+    var gridSize = 20;
+    target.set({
+        left: Math.round(target.left / gridSize) * gridSize,
+        top: Math.round(target.top / gridSize) * gridSize
+    });
+}
+
+// Get references to the controls
+var colorPicker = document.getElementById('colorPicker');
+var strokeWidthPicker = document.getElementById('strokeWidth');
+var lineStyleSelect = document.getElementById('lineStyle');
+var undoButton = document.getElementById('undo');
+var redoButton = document.getElementById('redo');
+var clearButton = document.getElementById('clear');
+var deleteButton = document.getElementById('delete');
+var duplicateButton = document.getElementById('duplicate');
+var groupButton = document.getElementById('group');
+var ungroupButton = document.getElementById('ungroup');
+var bringToFrontButton = document.getElementById('bringToFront');
+var sendToBackButton = document.getElementById('sendToBack');
+var lockButton = document.getElementById('lock');
+var unlockButton = document.getElementById('unlock');
+
+// Event listeners for color, stroke width, and line style changes
+colorPicker.onchange = function() {
+    currentColor = this.value;
+};
+
+strokeWidthPicker.oninput = function() {
+    currentStrokeWidth = this.value;
+};
+
+lineStyleSelect.onchange = function() {
+    lineStyle = this.value;
+};
+
+// Event listeners for control buttons
+undoButton.onclick = function() {
+    if (state.length) {
+        redoState.push(state.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+redoButton.onclick = function() {
+    if (redoState.length) {
+        state.push(redoState.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+clearButton.onclick = function() {
+    canvas.clear();
+    drawGrid();
+    saveState();
+};
+
+deleteButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        canvas.remove(activeObject);
+        saveState();
+    }
+};
+
+duplicateButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.clone(function(clonedObj) {
+            clonedObj.set({
+                left: clonedObj.left + 10,
+                top: clonedObj.top + 10,
+                evented: true
+            });
+            canvas.add(clonedObj);
+            saveState();
+        });
+    }
+};
+
+groupButton.onclick = function() {
+    var activeObjects = canvas.getActiveObjects();
+    if (activeObjects.length) {
+        var group = new fabric.Group(activeObjects);
+        canvas.clear();
+        drawGrid();
+        canvas.add(group);
+        saveState();
+    }
+};
+
+ungroupButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'group') {
+        var items = activeObject._objects;
+        canvas.remove(activeObject);
+        canvas.add(...items);
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+bringToFrontButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.bringToFront();
+        saveState();
+    }
+};
+
+sendToBackButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.sendToBack();
+        saveState();
+    }
+};
+
+lockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+unlockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+// Event listeners for mouse events to draw lines
+canvas.on('mouse:down', function(options) {
+    isDrawing = true;
+    startPoint = canvas.getPointer(options.e);
+});
+
+canvas.on('mouse:move', function(options) {
+    if (!isDrawing) return;
+    var pointer = canvas.getPointer(options.e);
+    canvas.remove(canvas.getActiveObject()); // Remove the previous line
+    var lineOptions = {
+        stroke: currentColor,
+        strokeWidth: currentStrokeWidth,
+    };
+    if (lineStyle === 'dashed') {
+        lineOptions.strokeDashArray = [5, 5];
+    } else if (lineStyle === 'dotted') {
+        lineOptions.strokeDashArray = [1, 3];
+    }
+    var line = new fabric.Line([startPoint.x, startPoint.y, pointer.x, pointer.y], lineOptions);
+    canvas.add(line).setActiveObject(line);
+});
+
+canvas.on('mouse:up', function() {
+    isDrawing = false;
+    canvas.discardActiveObject();
+    saveState();
+});
+
+// Snapping to grid during object movement
+canvas.on('object:moving', function(options) {
+    snapToGrid(options.target);
+});
+
+// Save the initial state
+saveState();
+more
+Let's add more advanced features to make your Fabric.jsline drawing application even more robust, focusing solely on lines and their manipulation within a grid. Here's an extended list of operations you can perform on lines:
+
+Additional Features:
+Label Management: Add, edit, and delete labels.
+
+Line Styles: Different line styles, such as dashed and dotted.
+
+Duplicate Line: Allow duplicating existing lines.
+
+Grouping and Ungrouping: Group multiple lines together and ungroup them.
+
+Layer Management: Bring lines to front or send them to back.
+
+Lock/Unlock Lines: Lock lines to prevent modifications and unlock them for editing.
+
+Updated HTML Setup:
+html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric.js Advanced Line Drawing</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <style>
+        canvas { border: 1px solid #000; }
+        .controls { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <label for="colorPicker">Line Color:</label>
+        <input type="color" id="colorPicker" value="#000000">
+        <label for="strokeWidth">Stroke Width:</label>
+        <input type="range" id="strokeWidth" min="1" max="20" value="5">
+        <label for="lineStyle">Line Style:</label>
+        <select id="lineStyle">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+        </select>
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="clear">Clear</button>
+        <button id="delete">Delete</button>
+        <button id="duplicate">Duplicate</button>
+        <button id="group">Group</button>
+        <button id="ungroup">Ungroup</button>
+        <button id="bringToFront">Bring to Front</button>
+        <button id="sendToBack">Send to Back</button>
+        <button id="lock">Lock</button>
+        <button id="unlock">Unlock</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+Updated JavaScript Setup (script.js):
+javascript
+// Create a Fabric.js canvas with grid lines
+var canvas = new fabric.Canvas('canvas', { selection: false });
+
+// Variables to hold the current drawing settings
+var isDrawing = false;
+var startPoint = {};
+var currentColor = '#000000';
+var currentStrokeWidth = 5;
+var lineStyle = 'solid'; // Line style: 'solid', 'dashed', 'dotted'
+var state = [];
+var redoState = [];
+
+// Function to save the current state of the canvas
+function saveState() {
+    state.push(JSON.stringify(canvas));
+    redoState = []; // Clear the redo stack
+}
+
+// Function to draw grid lines on the canvas
+function drawGrid() {
+    var gridSize = 20;
+    for (var i = 0; i < (canvas.width / gridSize); i++) {
+        canvas.add(new fabric.Line([ i * gridSize, 0, i * gridSize, canvas.height], { stroke: '#ccc', selectable: false, evented: false }));
+        canvas.add(new fabric.Line([ 0, i * gridSize, canvas.width, i * gridSize], { stroke: '#ccc', selectable: false, evented: false }));
+    }
+}
+drawGrid();
+
+// Function to snap object to grid
+function snapToGrid(target) {
+    var gridSize = 20;
+    target.set({
+        left: Math.round(target.left / gridSize) * gridSize,
+        top: Math.round(target.top / gridSize) * gridSize
+    });
+}
+
+// Get references to the controls
+var colorPicker = document.getElementById('colorPicker');
+var strokeWidthPicker = document.getElementById('strokeWidth');
+var lineStyleSelect = document.getElementById('lineStyle');
+var undoButton = document.getElementById('undo');
+var redoButton = document.getElementById('redo');
+var clearButton = document.getElementById('clear');
+var deleteButton = document.getElementById('delete');
+var duplicateButton = document.getElementById('duplicate');
+var groupButton = document.getElementById('group');
+var ungroupButton = document.getElementById('ungroup');
+var bringToFrontButton = document.getElementById('bringToFront');
+var sendToBackButton = document.getElementById('sendToBack');
+var lockButton = document.getElementById('lock');
+var unlockButton = document.getElementById('unlock');
+
+// Event listeners for color, stroke width, and line style changes
+colorPicker.onchange = function() {
+    currentColor = this.value;
+};
+
+strokeWidthPicker.oninput = function() {
+    currentStrokeWidth = this.value;
+};
+
+lineStyleSelect.onchange = function() {
+    lineStyle = this.value;
+};
+
+// Event listeners for control buttons
+undoButton.onclick = function() {
+    if (state.length) {
+        redoState.push(state.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+redoButton.onclick = function() {
+    if (redoState.length) {
+        state.push(redoState.pop());
+        canvas.loadFromJSON(state[state.length - 1], function() {
+            canvas.renderAll();
+        });
+    }
+};
+
+clearButton.onclick = function() {
+    canvas.clear();
+    drawGrid();
+    saveState();
+};
+
+deleteButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        canvas.remove(activeObject);
+        saveState();
+    }
+};
+
+duplicateButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.clone(function(clonedObj) {
+            clonedObj.set({
+                left: clonedObj.left + 10,
+                top: clonedObj.top + 10,
+                evented: true
+            });
+            canvas.add(clonedObj);
+            saveState();
+        });
+    }
+};
+
+groupButton.onclick = function() {
+    var activeObjects = canvas.getActiveObjects();
+    if (activeObjects.length) {
+        var group = new fabric.Group(activeObjects);
+        canvas.clear();
+        drawGrid();
+        canvas.add(group);
+        saveState();
+    }
+};
+
+ungroupButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'group') {
+        var items = activeObject._objects;
+        canvas.remove(activeObject);
+        canvas.add(...items);
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+bringToFrontButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.bringToFront();
+        saveState();
+    }
+};
+
+sendToBackButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.sendToBack();
+        saveState();
+    }
+};
+
+lockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: true, lockMovementY: true, lockRotation: true, lockScalingX: true, lockScalingY: true });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+unlockButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.set({ lockMovementX: false, lockMovementY: false, lockRotation: false, lockScalingX: false, lockScalingY: false });
+        canvas.renderAll();
+        saveState();
+    }
+};
+
+// Event listeners for mouse events to draw lines
+canvas.on('mouse:down', function(options) {
+    isDrawing = true;
+    startPoint = canvas.getPointer(options.e);
+});
+
+canvas.on('mouse:move', function(options) {
+    if (!isDrawing) return;
+    var pointer = canvas.getPointer(options.e);
+    canvas.remove(canvas.getActiveObject()); // Remove the previous line
+    var lineOptions = {
+        stroke: currentColor,
+        strokeWidth: currentStrokeWidth,
+    };
+    if (lineStyle === 'dashed') {
+        lineOptions.strokeDashArray = [5, 5];
+    } else if (lineStyle === 'dotted') {
+        lineOptions.strokeDashArray = [1, 3];
+    }
+    var line = new fabric.Line([startPoint.x, startPoint.y, pointer.x, pointer.y], lineOptions);
+    canvas.add(line).setActiveObject(line);
+});
+
+canvas.on('mouse:up', function() {
+    isDrawing = false;
+    canvas.discardActiveObject();
+    saveState();
+});
+
+// Snapping to grid during object movement
+canvas.on('object:moving', function(options) {
+    snapToGrid(options.target);
+});
+
+// Save the initial state
+saveState();
+Summary of Features:
+Drawing Multiple Lines: Allows drawing multiple lines by clicking and dragging.
+
+Grid and Snapping: Draws a grid and snaps lines to the grid.
+
+Line Operations: Moving, resizing, rotating, duplicating, grouping, ungrouping, locking, unlocking, bringing to front, and sending to back.
+
+Line Styles: Allows different line styles (solid, dashed, dotted).

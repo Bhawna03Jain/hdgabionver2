@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric.js Line Drawing with Advanced Labels</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <style>
+        canvas { border: 1px solid #000; }
+        .controls { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <label for="colorPicker">Line Color:</label>
+        <input type="color" id="colorPicker" value="#000000">
+        <label for="labelColorPicker">Label Color:</label>
+        <input type="color" id="labelColorPicker" value="#FF0000">
+        <label for="strokeWidth">Stroke Width:</label>
+        <input type="range" id="strokeWidth" min="1" max="20" value="5">
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="clear">Clear</button>
+        <button id="save">Save</button>
+        <button id="line">Draw Line</button>
+        <button id="rect">Draw Rectangle</button>
+        <button id="circle">Draw Circle</button>
+        <button id="text">Add Text</button>
+        <button id="freeDraw">Free Draw</button>
+        <button id="eraser">Eraser</button>
+        <button id="delete">Delete</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+// Create a Fabric.js canvas
+var canvas = new fabric.Canvas('canvas');
+
+// Variables to hold the current drawing settings
+var isDrawing = false;
+var startPoint = {};
+var currentColor = '#000000';
+var currentLabelColor = '#FF0000';
+var currentStrokeWidth = 5;
+var mode = 'line'; // 'line', 'rect', 'circle', 'text', 'freeDraw', 'erase'
+
+// Arrays to hold the history for undo/redo
+var state = [];
+var mods = 0;
+
+// Function to save the current state of the canvas
+function saveState() {
+    state.push(JSON.stringify(canvas));
+}
+
+// Get references to the controls
+var colorPicker = document.getElementById('colorPicker');
+var labelColorPicker = document.getElementById('labelColorPicker');
+var strokeWidthPicker = document.getElementById('strokeWidth');
+var undoButton = document.getElementById('undo');
+var redoButton = document.getElementById('redo');
+var clearButton = document.getElementById('clear');
+var saveButton = document.getElementById('save');
+var lineButton = document.getElementById('line');
+var rectButton = document.getElementById('rect');
+var circleButton = document.getElementById('circle');
+var textButton = document.getElementById('text');
+var freeDrawButton = document.getElementById('freeDraw');
+var eraserButton = document.getElementById('eraser');
+var deleteButton = document.getElementById('delete');
+
+// Event listeners for color and stroke width changes
+colorPicker.onchange = function() {
+    currentColor = this.value;
+};
+
+labelColorPicker.onchange = function() {
+    currentLabelColor = this.value;
+};
+
+strokeWidthPicker.oninput = function() {
+    currentStrokeWidth = this.value;
+};
+
+// Event listeners for mode buttons
+lineButton.onclick = function() { mode = 'line'; };
+rectButton.onclick = function() { mode = 'rect'; };
+circleButton.onclick = function() { mode = 'circle'; };
+textButton.onclick = function() { mode = 'text'; };
+freeDrawButton.onclick = function() {
+    mode = 'freeDraw';
+    canvas.isDrawingMode = true;
+    canvas.freeDrawingBrush.color = currentColor;
+    canvas.freeDrawingBrush.width = parseInt(currentStrokeWidth, 10);
+};
+eraserButton.onclick = function() {
+    mode = 'erase';
+};
+deleteButton.onclick = function() {
+    var activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        if (activeObject.associatedLabel) {
+            canvas.remove(activeObject.associatedLabel);
+        }
+        canvas.remove(activeObject);
+        saveState();
+    }
+};
+
+// Event listener for save button
+saveButton.onclick = function() {
+    var dataURL = canvas.toDataURL('image/png');
+    var link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'canvas.png';
+    link.click();
+};
+
+// Event listeners for undo, redo, and clear buttons
+undoButton.onclick = function() {
+    if (state.length) {
+        mods = 1;
+        canvas.loadFromJSON(state[state.length - mods], function() {
+            canvas.renderAll();
+            state.pop();
+            mods = 0;
+        });
+    }
+};
+
+redoButton.onclick = function() {
+    console.warn('Redo functionality is a bit more complex and requires a different approach.');
+};
+
+clearButton.onclick = function() {
+    canvas.clear();
+    saveState();
+};
+
+// Event listeners for mouse and touch events
+canvas.on('mouse:down', function(options) {
+    isDrawing = true;
+    startPoint = canvas.getPointer(options.e);
+
+    if (mode === 'text') {
+        var text = new fabric.IText('Edit me', {
+            left: startPoint.x,
+            top: startPoint.y,
+            fill: currentColor,
+            fontSize: currentStrokeWidth * 2,
+        });
+        canvas.add(text).setActiveObject(text);
+        mode = 'select'; // Switch back to select mode after adding text
+    } else if (mode === 'erase') {
+        var target = canvas.findTarget(options.e);
+        if (target) {
+            canvas.remove(target);
+        }
+    }
+});
+
+canvas.on('mouse:move', function(options) {
+    if (!isDrawing) return;
+    var pointer = canvas.getPointer(options.e);
+
+    if (mode === 'line') {
+        canvas.remove(canvas.getActiveObject()); // Remove the previous line
+        var line = new fabric.Line([startPoint.x, startPoint.y, pointer.x, pointer.y], {
+            stroke: currentColor,
+            strokeWidth: currentStrokeWidth,
+        });
+        canvas.add(line).setActiveObject(line);
+    } else if (mode === 'rect') {
+        canvas.remove(canvas.getActiveObject()); // Remove the previous rectangle
+        var rect = new fabric.Rect({
+            left: Math.min(startPoint.x, pointer.x),
+            top: Math.min(startPoint.y, pointer.y),
+            width: Math.abs(pointer.x - startPoint.x),
+            height: Math.abs(pointer.y - startPoint.y),
+            fill: 'transparent',
+            stroke: currentColor,
+            strokeWidth: currentStrokeWidth,
+        });
+        canvas.add(rect).setActiveObject(rect);
+    } else if (mode === 'circle') {
+        canvas.remove(canvas.getActiveObject()); // Remove the previous circle
+        var radius = Math.sqrt(Math.pow(pointer.x - startPoint.x, 2) + Math.pow(pointer.y - startPoint.y, 2));
+        var circle = new fabric.Circle({
+            left: startPoint.x,
+            top: startPoint.y,
+            radius: radius,
+            fill: 'transparent',
+            stroke: currentColor,
+            strokeWidth: currentStrokeWidth,
+        });
+        canvas.add(circle).setActiveObject(circle);
+    }
+});
+
+canvas.on('mouse:up', function() {
+    isDrawing = false;
+    canvas.isDrawingMode = false;
+    if (mode === 'line') {
+        addLabelToLine(canvas.getActiveObject());
+    }
+    canvas.discardActiveObject();
+    saveState();
+});
+
+// Function to add labels to lines based on their length
+function addLabelToLine(line) {
+    if (line && line.type === 'line') {
+        var length = Math.sqrt(Math.pow(line.x2 - line.x1, 2) + Math.pow(line.y2 - line.y1, 2)).toFixed(2);
+        var label = 'Length: ' + length + ' px';
+        var text = new fabric.IText(label, {
+            left: (line.x1 + line.x2) / 2,
+            top: (line.y1 + line.y2) / 2,
+            fill: currentLabelColor,
+            fontSize: currentStrokeWidth * 2,
+            originX: 'center',
+            originY: 'center'
+        });
+        canvas.add(text);
+        line.associatedLabel = text;
+        line.on('moving', updateLabelPosition);
+        line.on('scaling', updateLabelPosition);
+        line.on('rotating', updateLabelPosition);
+        saveState();
+    }
+}
+
+// Function to update label position when the line moves or resizes
+// Function to update label position when the line moves or resizes
+function updateLabelPosition(options) {
+    var line = options.target;
+    if (line.associatedLabel) {
+        line.associatedLabel.set({
+            left: (line.x1 + line.x2) / 2,
+            top: (line.y1 + line.y2) / 2,
+        });
+        line.associatedLabel.setCoords();
+        canvas.renderAll();
+    }
+}
+
+// Event listener for object modifications
+canvas.on('object:modified', function(options) {
+    var modifiedObject = options.target;
+    if (modifiedObject && modifiedObject.type === 'line') {
+        var length = Math.sqrt(Math.pow(modifiedObject.x2 - modifiedObject.x1, 2) + Math.pow(modifiedObject.y2 - modifiedObject.y1, 2)).toFixed(2);
+        modifiedObject.associatedLabel.text = 'Length: ' + length + ' px';
+        updateLabelPosition({ target: modifiedObject });
+    }
+});
+
+// Tooltip for line length on hover
+canvas.on('mouse:over', function(options) {
+    var hoveredObject = options.target;
+    if (hoveredObject && hoveredObject.type === 'line') {
+        var length = Math.sqrt(Math.pow(hoveredObject.x2 - hoveredObject.x1, 2) + Math.pow(hoveredObject.y2 - hoveredObject.y1, 2)).toFixed(2);
+        var tooltip = new fabric.Text('Length: ' + length + ' px', {
+            left: (hoveredObject.x1 + hoveredObject.x2) / 2,
+            top: (hoveredObject.y1 + hoveredObject.y2) / 2 - 20,
+            fill: '#000000',
+            fontSize: 12,
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            evented: false,
+        });
+        canvas.add(tooltip);
+        hoveredObject.tooltip = tooltip;
+    }
+});
+
+canvas.on('mouse:out', function(options) {
+    var hoveredObject = options.target;
+    if (hoveredObject && hoveredObject.tooltip) {
+        canvas.remove(hoveredObject.tooltip);
+        hoveredObject.tooltip = null;
+    }
+});
+
+// Save the initial state
+saveState();

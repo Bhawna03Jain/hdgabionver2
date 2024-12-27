@@ -11,11 +11,13 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Flag Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" />
-    @vite(['resources/css/app.css', 'resources/css/header.css'])
+
+    @vite(['resources/css/app.css', 'resources/css/header.css', 'resources/css/checkout.css', 'resources/css/cart.css'])
+@yield('style')
 </head>
 
 <body class="font-size-normal">
-    <header class="w-full">
+    <header class="w-screen">
         <!--Top Header-->
         <div id="top-header"
             class="bg-secondary-800 h-10 text-size-14 flex justify-center lg:justify-end lg:pr-5 items-center gap-6 text-white">
@@ -93,10 +95,10 @@
                         <a href="#" class="py-1 group-hover:text-red transition-all duration-300">Products <i
                                 class="fa-solid fa-caret-down"></i></a>
                         <div id="product-dropdown"
-                            class="max-h-0 overflow-hidden transition-all duration-300 absolute bg-white shadow-md p-5 mt-2 top-full transform -translate-x-1/4 border-4 border-t-red">
+                            class="max-h-0 overflow-hidden transition-all duration-300 absolute bg-white shadow-md mt-2 top-full transform -translate-x-1/4 border-4 border-t-red">
                             <div class="flex justify-around items-center gap-2">
                                 <a href="home" class="hover:shadow-xl  transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
                                             alt="" srcset="">
@@ -104,7 +106,7 @@
                                     </figure>
                                 </a>
                                 <a href="#" class="hover:shadow-xl  transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
 
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
@@ -114,7 +116,7 @@
                                     </figure>
                                 </a>
                                 <a href="#" class="hover:shadow-xl  transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
                                             alt="" srcset="">
@@ -123,7 +125,7 @@
                                 </a>
                                 <a href="#"
                                     class="hover:shadow-xl group transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
 
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
@@ -141,10 +143,7 @@
                     <li class="py-3 px-3 group relative "><a href="#"
                             class=" py-1 group-hover:text-red transition-colors duration-300">Miscellaneous <i
                                 class="fa-solid fa-caret-down"></i></span></a>
-                        {{-- <div class="absolute h-12 inset-x-0 border border-red bottom-[-55px]">
 
-
-                            </div> --}}
                     </li>
                     <li class="py-3 px-3 group "><a href="#"
                             class=" py-1 group-hover:text-red transition-colors duration-300">Gallery<span
@@ -185,7 +184,7 @@
                             class="max-h-0 overflow-x-scroll transition-all duration-300  bg-white shadow-md border-4 border-t-red">
                             <div class="flex justify-around items-center gap-2 p-5">
                                 <a href="home" class="hover:shadow-xl  transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
                                             alt="" srcset="">
@@ -193,7 +192,7 @@
                                     </figure>
                                 </a>
                                 <a href="#" class="hover:shadow-xl  transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
 
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
@@ -203,7 +202,7 @@
                                     </figure>
                                 </a>
                                 <a href="#" class="hover:shadow-xl  transition-all duration-300 rounded-2xl">
-                                    <figure class="w-44 flex justify-center items-center flex-col gap-2">
+                                    <figure class="w-40 flex justify-center items-center flex-col gap-2">
                                         <img class="hover:scale-125 transition-all duration-300"
                                             src="{{ asset('front/images/basket_orig/Basket 2.178.png') }}"
                                             alt="" srcset="">
@@ -230,10 +229,7 @@
                     <li class="w-full group relative "><a href="#"
                             class=" py-3 flex justify-center items-center w-full  group-hover:bg-red group-hover:text-white transition-colors duration-300 gap-2">Miscellaneous
                             <i class="fa-solid fa-caret-down"></i></span></a>
-                        {{-- <div class="absolute h-12 inset-x-0 border border-red bottom-[-55px]">
 
-
-                </div> --}}
                     </li>
                     <li class="group w-full"><a href="#"
                             class=" py-3 flex justify-center items-center w-full  group-hover:bg-red group-hover:text-white transition-colors duration-300">Gallery</a>
@@ -358,14 +354,9 @@
         </nav>
     </header>
 
-    <div class="container mx-auto p-4 " style="height:100vh;">
-        <h1 class="text-2xl font-bold text-center text-gray-800">Hello, Tailwind CSS in Laravel!</h1>
-    </div>
-    <h1 class="text-3xl font-bold underline text-center text-red">
-        Hello world!
-    </h1>
-    @vite(['resources/js/common.js','resources/js/app.js', 'resources/js/header.js'])
-
+   @yield('content')
+    @vite(['resources/js/common.js','resources/js/app.js', 'resources/js/header.js', 'resources/js/checkout.js', 'resources/js/cart.js'])
+    @yield('script')
 </body>
 
 </html>

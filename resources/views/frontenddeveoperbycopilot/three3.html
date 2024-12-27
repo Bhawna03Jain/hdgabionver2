@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fabric.js to Three.js 3D Gabion Fences</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+
+        .controls {
+            margin-top: 10px;
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-buttons button,
+        .control-buttons input {
+            margin: 5px;
+        }
+
+        #webgl {
+            width: 800px;
+            height: 500px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="controls">
+        <div class="control-buttons">
+            <select id="modelSelector">
+                <option value="gabion_fence.glb">Standard Gabion Fence</option>
+                <option value="modern_gabion_fence.glb">Modern Gabion Fence</option>
+                <!-- Add more options as needed -->
+            </select>
+            <button id="convertTo3D">Convert to 3D</button>
+        </div>
+    </div>
+    <div id="webgl"></div>
+    <script>
+        // Create a Fabric.js canvas
+        var canvas = new fabric.Canvas('canvas', { selection: true });
+
+        // Three.js setup
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, 800 / 500, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(800, 500);
+        renderer.shadowMap.enabled = true;
+        document.getElementById('webgl').appendChild(renderer.domElement);
+
+        camera.position.set(0, 100, 200);
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        // Post-processing setup
+        var composer = new THREE.EffectComposer(renderer);
+        var renderPass = new THREE.RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(800, 500), 1.5, 0.4, 0.85);
+        composer.addPass(bloomPass);
+
+        // Add ambient and directional lighting
+        var ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(50, 100, 50).normalize();
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+
+        // Lens flares setup
+        var textureLoader = new THREE.TextureLoader();
+        var textureFlare0 = textureLoader.load('path/to/lensflare0.png');
+        var textureFlare2 = textureLoader.load('path/to/lensflare2.png');
+        var textureFlare3 = textureLoader.load('path/to/lensflare3.png');
+
+        function createLensFlare(x, y, z) {
+            var lensflare = new THREE.Lensflare();
+            lensflare.addElement(new THREE.LensflareElement(textureFlare0, 700, 0));
+            lensflare.addElement(new THREE.LensflareElement(textureFlare2, 512, 0.5));
+            lensflare.addElement(new THREE.LensflareElement(textureFlare3, 60, 0.6));
+            lensflare.addElement(new THREE.LensflareElement(textureFlare3, 70, 0.7));
+            lensflare.addElement(new THREE.LensflareElement(textureFlare3, 120, 0.9));
+            lensflare.addElement(new THREE.LensflareElement(textureFlare3, 70, 1));
+            lensflare.position.set(x, y, z);
+            scene.add(lensflare);
+        }
+
+        createLensFlare(0, 100, 50);
+        createLensFlare(-50, 80, 30);
+
+        // Add environment map
+        var environmentMap = new THREE.CubeTextureLoader()
+            .setPath('path/to/cube-texture/')
+            .load([
+                'px.jpg', 'nx.jpg',
+                'py.jpg', 'ny.jpg',
+                'pz.jpg', 'nz.jpg'
+            ]);
+
+        scene.background = environmentMap;
+
+        // Create and add ground plane
+        var groundGeometry = new THREE.PlaneGeometry(1000, 1000);
+        var groundMaterial = new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false });
+        var ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -50;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Add skybox for environment
+        var skyboxLoader = new THREE.CubeTextureLoader();
+        var skyboxTexture = skyboxLoader.setPath('path/to/skybox/').load([
+            'px.jpg', 'nx.jpg',
+            'py.jpg', 'ny.jpg',
+            'pz.jpg', 'nz.jpg'
+        ]);
+        scene.background = skyboxTexture;
+
+        // Smooth camera animation
+        function animateCamera() {
+            var tween = new TWEEN.Tween(camera.position)
+                .to({ x: Math.sin(Date.now() * 0.001) * 200, z: Math.cos(Date.now() * 0.001) * 200 }, 2000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(function () {
+                    camera.lookAt(scene.position);
+                })
+                .start();
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            TWEEN.update();
+            composer.render();
+        }
+
+        // Load GLTF model based on user selection
+        function loadModel(callback) {
+            var modelURL = 'path/to/' + document.getElementById('modelSelector').value;
+            gltfLoader.load(modelURL, function (gltf) {
+                callback(gltf.scene);
+            });
+        }
+
+        // Function to convert Fabric.js lines to Three.js 3D models
+        function convertLinesTo3D() {
+            canvas.getObjects('line').forEach(function (line) {
+                var lineLength = Math.sqrt(Math.pow(line.x2 - line.x1, 2) + Math.pow(line.y2 - line.y1, 2));
+                var segments = Math.ceil(lineLength / 10); // Adjust segment size as needed
+                var direction = new THREE.Vector3(line.x2 - line.x1, line.y2 - line.y1, 0).normalize();
+                var angle = Math.atan2(direction.y, direction.x);
+
+                for (var i = 0; i < segments; i++) {
+                    loadModel(function (model) {
+                        var segment = model.clone();
+                        var positionX = line.x1 + direction.x * i * 10;
+                        var positionY = line.y1 + direction.y * i * 10;
+
+                        // Calculate position and rotation
+                        segment.position.set(positionX, positionY, 0);
+                        segment.rotation.z = angle;
+
+                        // Adjust scale based on line segment length
+                        segment.scale.set(0.1, 0.1, 0.1); // Adjust scale as needed
+
+                        // Add texture to the gabion fence
+                        var textureLoader = new THREE.TextureLoader();
+                        var texture = textureLoader.load('path/to/texture.jpg');
+                        segment.traverse(function (child) {
+                            if (child.isMesh) {
+                                child.material.map = texture;
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                            }
+                        });
+
+                        scene.add(segment);
+                    });
+                }
+            });
+
+            animate();
+        }
+
+        // Event listener for converting lines to 3D models
+        document.getElementById('convertTo3D').onclick = function () {
+            convertLinesTo3D();
+            animateCamera();
+        };
+
+        // Example: Adding a line to the Fabric.js canvas
+        var line = new fabric.Line([50, 100, 200, 200], {
+            stroke: 'black',
+            strokeWidth: 2
+        });
+
+canvas.add(line);
+
+// Trigger the animation
+animate();
+</script>
+</body>
+</html>
+// Function to add rain effect
+function addRain() {
+    var rainGeometry = new THREE.Geometry();
+    for (var i = 0; i < 10000; i++) {
+        var rainDrop = new THREE.Vector3(
+            Math.random() * 800 - 400,
+            Math.random() * 500,
+            Math.random() * 800 - 400
+        );
+        rainGeometry.vertices.push(rainDrop);
+    }
+
+    var rainMaterial = new THREE.PointsMaterial({
+        color: 0xaaaaaa,
+        size: 0.1,
+        transparent: true
+    });
+
+    var rain = new THREE.Points(rainGeometry, rainMaterial);
+    scene.add(rain);
+
+    function animateRain() {
+        requestAnimationFrame(animateRain);
+        rainGeometry.vertices.forEach(function (v) {
+            v.y -= 0.1;
+            if (v.y < 0) {
+                v.y = 500;
+            }
+        });
+        rainGeometry.verticesNeedUpdate = true;
+        composer.render();
+    }
+
+    animateRain();
+}
+
+// Call the function to add rain effect
+addRain();
+// Function to add transform controls for interactive modification
+function addTransformControls(object) {
+    var transformControls = new THREE.TransformControls(camera, renderer.domElement);
+    transformControls.attach(object);
+    transformControls.setMode('translate'); // Can be 'translate', 'rotate', or 'scale'
+    scene.add(transformControls);
+
+    transformControls.addEventListener('change', function () {
+        composer.render();
+    });
+}
+
+// Example of adding transform controls to a model
+loadModel(function (model) {
+    var segment = model.clone();
+    segment.position.set(0, 0, 0);
+    segment.scale.set(0.1, 0.1, 0.1);
+    scene.add(segment);
+    addTransformControls(segment);
+});
+// Function to add trees and grass
+function addLandscaping() {
+    var treeGeometry = new THREE.ConeGeometry(5, 20, 32);
+    var treeMaterial = new THREE.MeshBasicMaterial({ color: 0x228B22 });
+    for (var i = 0; i < 50; i++) {
+        var tree = new THREE.Mesh(treeGeometry, treeMaterial);
+        tree.position.set(
+            Math.random() * 1000 - 500,
+            0,
+            Math.random() * 1000 - 500
+        );
+        scene.add(tree);
+    }
+
+    var grassGeometry = new THREE.PlaneGeometry(1000, 1000);
+    var grassMaterial = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+    var grass = new THREE.Mesh(grassGeometry, grassMaterial);
+    grass.rotation.x = -Math.PI / 2;
+    grass.position.y = -50;
+    scene.add(grass);
+}
+
+// Call the function to add landscaping
+addLandscaping();
+// Function to simulate different times of the day
+function simulateTimeOfDay(time) {
+    var lightColor;
+    switch (time) {
+        case 'sunrise':
+            lightColor = 0xFFD700;
+            break;
+        case 'day':
+            lightColor = 0xFFFFFF;
+            break;
+        case 'sunset':
+            lightColor = 0xFF4500;
+            break;
+        case 'night':
+            lightColor = 0x0000FF;
+            break;
+    }
+    directionalLight.color.setHex(lightColor);
+}
+
+// Call the function to simulate sunrise
+simulateTimeOfDay('sunrise');
+// Function to add ambient sound
+function addAmbientSound() {
+    var listener = new THREE.AudioListener();
+    camera.add(listener);
+
+    var sound = new THREE.Audio(listener);
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load('path/to/sound.mp3', function (buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.setVolume(0.5);
+        sound.play();
+    });
+
+    scene.add(sound);
+}
+
+// Call the function to add ambient sound
+addAmbientSound();
+more feature
+Absolutely! Let's add some more advanced and interactive features to enhance the 3D gabion fences further. Here are some additional features we could consider implementing:
+
+Additional Advanced Features
+Dynamic Weather Effects: Add dynamic weather effects like rain, snow, or fog to make the scene more immersive.
+
+Interactive Fence Modification: Allow users to modify the position, height, and style of the gabion fences in real-time.
+
+Contextual Landscaping: Add trees, grass, and other landscaping elements to provide context to the gabion fences.
+
+Time of Day Simulation: Simulate different times of the day with changing light conditions (e.g., sunrise, sunset, night).
+
+Performance Optimizations: Ensure smooth performance even with complex scenes and interactions.
+
+Sound Effects: Add ambient sound effects to enhance the environment.
+
+Advanced Particle Effects: Enhance particle effects for environmental elements like dust, leaves, or fireflies.
+
+Dynamic Weather Effects
+javascript
+// Function to add rain effect
+function addRain() {
+    var rainGeometry = new THREE.Geometry();
+    for (var i = 0; i < 10000; i++) {
+        var rainDrop = new THREE.Vector3(
+            Math.random() * 800 - 400,
+            Math.random() * 500,
+            Math.random() * 800 - 400
+        );
+        rainGeometry.vertices.push(rainDrop);
+    }
+
+    var rainMaterial = new THREE.PointsMaterial({
+        color: 0xaaaaaa,
+        size: 0.1,
+        transparent: true
+    });
+
+    var rain = new THREE.Points(rainGeometry, rainMaterial);
+    scene.add(rain);
+
+    function animateRain() {
+        requestAnimationFrame(animateRain);
+        rainGeometry.vertices.forEach(function (v) {
+            v.y -= 0.1;
+            if (v.y < 0) {
+                v.y = 500;
+            }
+        });
+        rainGeometry.verticesNeedUpdate = true;
+        composer.render();
+    }
+
+    animateRain();
+}
+
+// Call the function to add rain effect
+addRain();
+Interactive Fence Modification
+javascript
+// Function to add transform controls for interactive modification
+function addTransformControls(object) {
+    var transformControls = new THREE.TransformControls(camera, renderer.domElement);
+    transformControls.attach(object);
+    transformControls.setMode('translate'); // Can be 'translate', 'rotate', or 'scale'
+    scene.add(transformControls);
+
+    transformControls.addEventListener('change', function () {
+        composer.render();
+    });
+}
+
+// Example of adding transform controls to a model
+loadModel(function (model) {
+    var segment = model.clone();
+    segment.position.set(0, 0, 0);
+    segment.scale.set(0.1, 0.1, 0.1);
+    scene.add(segment);
+    addTransformControls(segment);
+});
+Contextual Landscaping
+javascript
+// Function to add trees and grass
+function addLandscaping() {
+    var treeGeometry = new THREE.ConeGeometry(5, 20, 32);
+    var treeMaterial = new THREE.MeshBasicMaterial({ color: 0x228B22 });
+    for (var i = 0; i < 50; i++) {
+        var tree = new THREE.Mesh(treeGeometry, treeMaterial);
+        tree.position.set(
+            Math.random() * 1000 - 500,
+            0,
+            Math.random() * 1000 - 500
+        );
+        scene.add(tree);
+    }
+
+    var grassGeometry = new THREE.PlaneGeometry(1000, 1000);
+    var grassMaterial = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+    var grass = new THREE.Mesh(grassGeometry, grassMaterial);
+    grass.rotation.x = -Math.PI / 2;
+    grass.position.y = -50;
+    scene.add(grass);
+}
+
+// Call the function to add landscaping
+addLandscaping();
+Time of Day Simulation
+javascript
+// Function to simulate different times of the day
+function simulateTimeOfDay(time) {
+    var lightColor;
+    switch (time) {
+        case 'sunrise':
+            lightColor = 0xFFD700;
+            break;
+        case 'day':
+            lightColor = 0xFFFFFF;
+            break;
+        case 'sunset':
+            lightColor = 0xFF4500;
+            break;
+        case 'night':
+            lightColor = 0x0000FF;
+            break;
+    }
+    directionalLight.color.setHex(lightColor);
+}
+
+// Call the function to simulate sunrise
+simulateTimeOfDay('sunrise');
+Sound Effects
+javascript
+// Function to add ambient sound
+function addAmbientSound() {
+    var listener = new THREE.AudioListener();
+    camera.add(listener);
+
+    var sound = new THREE.Audio(listener);
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load('path/to/sound.mp3', function (buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.setVolume(0.5);
+        sound.play();
+    });
+
+    scene.add(sound);
+}
+
+// Call the function to add ambient sound
+addAmbientSound();
+Summary
+These additional features will significantly enhance the realism and interactivity of your 3D scene. Here’s a summary:
+
+Dynamic Weather Effects: Adds rain to the scene.
+
+Interactive Fence Modification: Allows real-time modification of the gabion fences.
+
+Contextual Landscaping: Adds trees and grass for context.
+
+Time of Day Simulation: Changes lighting based on the time of day.
+
+Sound Effects: Adds ambient sounds to enhance the environment.
+
+
+// Function to customize fence parameters
+function customizeFence(model) {
+    var gui = new dat.GUI();
+    var params = {
+        height: 1,
+        width: 1,
+        material: 'stone'
+    };
+
+    var updateFence = function() {
+        model.scale.set(params.width, params.height, 1);
+        // Update material based on selection (pseudo-code, implement material change logic)
+        switch (params.material) {
+            case 'stone':
+                model.material = stoneMaterial;
+                break;
+            case 'wood':
+                model.material = woodMaterial;
+                break;
+        }
+    };
+
+    gui.add(params, 'height', 0.5, 2).onChange(updateFence);
+    gui.add(params, 'width', 0.5, 2).onChange(updateFence);
+    gui.add(params, 'material', ['stone', 'wood']).onChange(updateFence);
+
+    updateFence(); // Apply initial parameters
+}
+
+// Load model and apply customization
+loadModel(function(model) {
+    var segment = model.clone();
+    segment.position.set(0, 0, 0);
+    scene.add(segment);
+    customizeFence(segment);
+});
+// Ammo.js physics setup (include Ammo.js library first)
+Ammo().then(function(Ammo) {
+    var physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    physicsWorld.setGravity(new Ammo.btVector3(0, -10, 0));
+
+    // Create physics body for an object
+    function createPhysicsBody(object, mass) {
+        var transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin(new Ammo.btVector3(object.position.x, object.position.y, object.position.z));
+        var motionState = new Ammo.btDefaultMotionState(transform);
+
+        var shape = new Ammo.btBoxShape(new Ammo.btVector3(1, 1, 1)); // Adjust shape as needed
+        var localInertia = new Ammo.btVector3(0, 0, 0);
+        shape.calculateLocalInertia(mass, localInertia);
+
+        var bodyInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+        var body = new Ammo.btRigidBody(bodyInfo);
+
+        physicsWorld.addRigidBody(body);
+        object.userData.physicsBody = body;
+    }
+
+    // Update physics simulation
+    function updatePhysics(deltaTime) {
+        physicsWorld.stepSimulation(deltaTime, 10);
+        scene.children.forEach(function(object) {
+            if (object.userData.physicsBody) {
+                var transform = new Ammo.btTransform();
+                object.userData.physicsBody.getMotionState().getWorldTransform(transform);
+                var origin = transform.getOrigin();
+                object.position.set(origin.x(), origin.y(), origin.z());
+            }
+        });
+    }
+
+    // Add an object with physics
+    loadModel(function(model) {
+        var segment = model.clone();
+        segment.position.set(0, 50, 0); // Elevated position to fall due to gravity
+        scene.add(segment);
+        createPhysicsBody(segment, 1); // 1 kg mass
+    });
+
+    // Animation loop with physics update
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        TWEEN.update();
+        var deltaTime = clock.getDelta();
+        updatePhysics(deltaTime);
+        composer.render();
+    }
+
+    // Initialize clock for physics
+    var clock = new THREE.Clock();
+    animate();
+});
+// Function to add a pond
+function addPond() {
+    var waterGeometry = new THREE.CircleGeometry(50, 32);
+    var waterMaterial = new THREE.MeshPhongMaterial({ color: 0x1ca3ec, transparent: true, opacity: 0.8 });
+    var water = new THREE.Mesh(waterGeometry, waterMaterial);
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -50;
+    scene.add(water);
+}
+
+// Add water feature
+addPond();
+// Function to add interactive light
+function addInteractiveLight() {
+    var light = new THREE.PointLight(0xff0000, 1, 100);
+    light.position.set(0, 50, 0);
+    scene.add(light);
+
+    var gui = new dat.GUI();
+    var lightParams = {
+        color: 0xff0000,
+        intensity: 1
+    };
+
+    gui.addColor(lightParams, 'color').onChange(function(value) {
+        light.color.setHex(value);
+    });
+    gui.add(lightParams, 'intensity', 0, 2).onChange(function(value) {
+        light.intensity = value;
+    });
+}
+
+// Call function to add interactive light
+addInteractiveLight();
+// Function to measure distance between two points
+function measureDistance(point1, point2) {
+    var distance = point1.distanceTo(point2);
+    console.log('Distance:', distance);
+    return distance;
+}
+
+// Example usage
+var point1 = new THREE.Vector3(0, 0, 0);
+var point2 = new THREE.Vector3(10, 0, 0);
+measureDistance(point1, point2);
+// Function to animate object along a path
+function animateObjectAlongPath(object, path) {
+    var tween = new TWEEN.Tween(object.position)
+        .to({ x: path.x, y: path.y, z: path.z }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(function () {
+            object.lookAt(scene.position);
+        })
+        .start();
+}
+
+// Define a path and animate an object along it
+var path = { x: 50, y: 0, z: 50 };
+var object = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+scene.add(object);
+animateObjectAlongPath(object, path);
+// Function to add 3D text label
+function addTextLabel(text, position) {
+    var loader = new THREE.FontLoader();
+    loader.load('path/to/font.json', function (font) {
+        var textGeometry = new THREE.TextGeometry(text, {
+            font: font,
+            size: 1,
+            height: 0.1
+        });
+        var textMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        var mesh = new THREE.Mesh(textGeometry, textMaterial);
+        mesh.position.copy(position);
+        scene.add(mesh);
+    });
+}
+
+// Example of adding a text label
+addTextLabel('Gabion Fence', new THREE.Vector3(0, 10, 0));
+more
+Alright, let's continue enhancing the 3D scene of gabion fences with some additional features that can make the environment even more immersive and interactive.
+
+Additional Advanced Features
+Customizable Fence Parameters: Allow users to customize fence parameters such as height, width, and material.
+
+Physics Simulation: Add physics to the environment for realistic interactions.
+
+Advanced Landscaping with Water Features: Include ponds, rivers, or fountains for added realism.
+
+Interactive Light Sources: Allow users to interactively add and modify light sources.
+
+Measurement Tools: Provide tools for measuring distances and angles in the 3D scene.
+
+Path Animation: Create animated paths for camera movement or object animations.
+
+3D Text Labels: Add 3D text labels to annotate different parts of the scene.
+
+Customizable Fence Parameters
+Allow users to customize the dimensions and materials of the gabion fences:
+
+javascript
+// Function to customize fence parameters
+function customizeFence(model) {
+    var gui = new dat.GUI();
+    var params = {
+        height: 1,
+        width: 1,
+        material: 'stone'
+    };
+
+    var updateFence = function() {
+        model.scale.set(params.width, params.height, 1);
+        // Update material based on selection (pseudo-code, implement material change logic)
+        switch (params.material) {
+            case 'stone':
+                model.material = stoneMaterial;
+                break;
+            case 'wood':
+                model.material = woodMaterial;
+                break;
+        }
+    };
+
+    gui.add(params, 'height', 0.5, 2).onChange(updateFence);
+    gui.add(params, 'width', 0.5, 2).onChange(updateFence);
+    gui.add(params, 'material', ['stone', 'wood']).onChange(updateFence);
+
+    updateFence(); // Apply initial parameters
+}
+
+// Load model and apply customization
+loadModel(function(model) {
+    var segment = model.clone();
+    segment.position.set(0, 0, 0);
+    scene.add(segment);
+    customizeFence(segment);
+});
+Physics Simulation
+Add physics simulation using a library like Ammo.jsor Cannon.jsfor realistic interactions:
+
+javascript
+// Ammo.js physics setup (include Ammo.js library first)
+Ammo().then(function(Ammo) {
+    var physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    physicsWorld.setGravity(new Ammo.btVector3(0, -10, 0));
+
+    // Create physics body for an object
+    function createPhysicsBody(object, mass) {
+        var transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin(new Ammo.btVector3(object.position.x, object.position.y, object.position.z));
+        var motionState = new Ammo.btDefaultMotionState(transform);
+
+        var shape = new Ammo.btBoxShape(new Ammo.btVector3(1, 1, 1)); // Adjust shape as needed
+        var localInertia = new Ammo.btVector3(0, 0, 0);
+        shape.calculateLocalInertia(mass, localInertia);
+
+        var bodyInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+        var body = new Ammo.btRigidBody(bodyInfo);
+
+        physicsWorld.addRigidBody(body);
+        object.userData.physicsBody = body;
+    }
+
+    // Update physics simulation
+    function updatePhysics(deltaTime) {
+        physicsWorld.stepSimulation(deltaTime, 10);
+        scene.children.forEach(function(object) {
+            if (object.userData.physicsBody) {
+                var transform = new Ammo.btTransform();
+                object.userData.physicsBody.getMotionState().getWorldTransform(transform);
+                var origin = transform.getOrigin();
+                object.position.set(origin.x(), origin.y(), origin.z());
+            }
+        });
+    }
+
+    // Add an object with physics
+    loadModel(function(model) {
+        var segment = model.clone();
+        segment.position.set(0, 50, 0); // Elevated position to fall due to gravity
+        scene.add(segment);
+        createPhysicsBody(segment, 1); // 1 kg mass
+    });
+
+    // Animation loop with physics update
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        TWEEN.update();
+        var deltaTime = clock.getDelta();
+        updatePhysics(deltaTime);
+        composer.render();
+    }
+
+    // Initialize clock for physics
+    var clock = new THREE.Clock();
+    animate();
+});
+Advanced Landscaping with Water Features
+Include water features such as ponds, rivers, or fountains to make the scene more realistic:
+
+javascript
+// Function to add a pond
+function addPond() {
+    var waterGeometry = new THREE.CircleGeometry(50, 32);
+    var waterMaterial = new THREE.MeshPhongMaterial({ color: 0x1ca3ec, transparent: true, opacity: 0.8 });
+    var water = new THREE.Mesh(waterGeometry, waterMaterial);
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -50;
+    scene.add(water);
+}
+
+// Add water feature
+addPond();
+Interactive Light Sources
+Allow users to add and modify light sources in the scene:
+
+javascript
+// Function to add interactive light
+function addInteractiveLight() {
+    var light = new THREE.PointLight(0xff0000, 1, 100);
+    light.position.set(0, 50, 0);
+    scene.add(light);
+
+    var gui = new dat.GUI();
+    var lightParams = {
+        color: 0xff0000,
+        intensity: 1
+    };
+
+    gui.addColor(lightParams, 'color').onChange(function(value) {
+        light.color.setHex(value);
+    });
+    gui.add(lightParams, 'intensity', 0, 2).onChange(function(value) {
+        light.intensity = value;
+    });
+}
+
+// Call function to add interactive light
+addInteractiveLight();
+Measurement Tools
+Provide tools for measuring distances and angles in the 3D scene:
+
+javascript
+// Function to measure distance between two points
+function measureDistance(point1, point2) {
+    var distance = point1.distanceTo(point2);
+    console.log('Distance:', distance);
+    return distance;
+}
+
+// Example usage
+var point1 = new THREE.Vector3(0, 0, 0);
+var point2 = new THREE.Vector3(10, 0, 0);
+measureDistance(point1, point2);
+Path Animation
+Create animated paths for camera movement or object animations:
+
+javascript
+// Function to animate object along a path
+function animateObjectAlongPath(object, path) {
+    var tween = new TWEEN.Tween(object.position)
+        .to({ x: path.x, y: path.y, z: path.z }, 2000)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(function () {
+            object.lookAt(scene.position);
+        })
+        .start();
+}
+
+// Define a path and animate an object along it
+var path = { x: 50, y: 0, z: 50 };
+var object = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+scene.add(object);
+animateObjectAlongPath(object, path);
+3D Text Labels
+Add 3D text labels to annotate different parts of the scene:
+
+javascript
+// Function to add 3D text label
+function addTextLabel(text, position) {
+    var loader = new THREE.FontLoader();
+    loader.load('path/to/font.json', function (font) {
+        var textGeometry = new THREE.TextGeometry(text, {
+            font: font,
+            size: 1,
+            height: 0.1
+        });
+        var textMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        var mesh = new THREE.Mesh(textGeometry, textMaterial);
+        mesh.position.copy(position);
+        scene.add(mesh);
+    });
+}
+
+// Example of adding a text label
+addTextLabel('Gabion Fence', new THREE.Vector3(0, 10, 0));
+Summary
+By integrating these additional features, you can significantly enhance the interactivity and realism of your 3D gabion fence scene. Here’s a summary:
+
+Customizable Fence Parameters: Allows users to customize dimensions and materials.
+
+Physics Simulation: Adds realistic physics interactions.
+
+Advanced Landscaping: Includes water features for added realism.
+
+Interactive Light Sources: Users can add and modify light sources interactively.
+
+Measurement Tools: Provides tools for measuring distances and angles.
+
+Path Animation: Creates animated paths for objects.
+
+3D Text Labels: Adds 3D text labels for annotation.
