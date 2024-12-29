@@ -270,184 +270,184 @@ $.ajax({
         });
     });
 
-    document
-        .querySelectorAll("#filterBasketForm .basket-filter")
-        .forEach((checkbox) => {
-            checkbox.addEventListener("change", function () {
-                // Pass the DOM element explicitly
-                handleCheckboxChange($(this)); // Wrap it with jQuery to use jQuery methods
-            });
-        });
+    // document
+    //     .querySelectorAll("#filterBasketForm .basket-filter")
+    //     .forEach((checkbox) => {
+    //         checkbox.addEventListener("change", function () {
+    //             // Pass the DOM element explicitly
+    //             handleCheckboxChange($(this)); // Wrap it with jQuery to use jQuery methods
+    //         });
+    //     });
 
-    function handleCheckboxChange($checkbox) {
-        const form = $("#filterBasketForm");
-        const allCheckboxes = $(`input[name="${$checkbox.attr("name")}"]`);
+    // function handleCheckboxChange($checkbox) {
+    //     const form = $("#filterBasketForm");
+    //     const allCheckboxes = $(`input[name="${$checkbox.attr("name")}"]`);
 
-        const isFileUpload = false; // Update if file upload is involved
+    //     const isFileUpload = false; // Update if file upload is involved
 
-        if ($checkbox.val().includes("_all")) {
-            // If "All" is checked, uncheck all others
-            if ($checkbox.is(":checked")) {
-                allCheckboxes.not($checkbox).prop("checked", false);
-            }
-        } else {
-            // If a specific option is checked, uncheck "All"
-            allCheckboxes.filter('[value*="_all"]').prop("checked", false);
-        }
+    //     if ($checkbox.val().includes("_all")) {
+    //         // If "All" is checked, uncheck all others
+    //         if ($checkbox.is(":checked")) {
+    //             allCheckboxes.not($checkbox).prop("checked", false);
+    //         }
+    //     } else {
+    //         // If a specific option is checked, uncheck "All"
+    //         allCheckboxes.filter('[value*="_all"]').prop("checked", false);
+    //     }
 
-        // Gather form data
-        const formData = form.serialize(); // Serialize form inputs
-        console.log(formData);
-        // AJAX call
-        $.ajax({
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
-            type: "POST",
-            url: "product-filter-data/baskets",
-            data: formData,
-            processData: !isFileUpload,
-            contentType: isFileUpload
-                ? false
-                : "application/x-www-form-urlencoded",
-            success: function (resp) {
-                console.log(resp);
+    //     // Gather form data
+    //     const formData = form.serialize(); // Serialize form inputs
+    //     console.log(formData);
+    //     // AJAX call
+    //     $.ajax({
+    //         headers: {
+    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    //         },
+    //         type: "POST",
+    //         url: "product-filter-data/baskets",
+    //         data: formData,
+    //         processData: !isFileUpload,
+    //         contentType: isFileUpload
+    //             ? false
+    //             : "application/x-www-form-urlencoded",
+    //         success: function (resp) {
+    //             console.log(resp);
 
-                $("#loader").hide();
-                if (resp.type === "error" && resp.status === "false") {
-                    $.each(resp.errors, function (i, error) {
-                        $(".reset-" + i)
-                            .css("color", "red")
-                            .html(error)
-                            .show();
+    //             $("#loader").hide();
+    //             if (resp.type === "error" && resp.status === "false") {
+    //                 $.each(resp.errors, function (i, error) {
+    //                     $(".reset-" + i)
+    //                         .css("color", "red")
+    //                         .html(error)
+    //                         .show();
 
-                        setTimeout(function () {
-                            $(".reset-" + i).hide();
-                        }, 4000);
+    //                     setTimeout(function () {
+    //                         $(".reset-" + i).hide();
+    //                     }, 4000);
 
-                        toastr.error(decodeURIComponent(error));
-                    });
-                } else if (
-                    resp.type === "success" ||
-                    resp.type === "uploaded"
-                ) {
-                    updateProductList(resp.products);
-                    // console.log("Redirecting to: " + resp.message);
-                    // window.location.href =
-                    //     resp.message +
-                    //     "?successMessage=" +
-                    //     encodeURIComponent("Filter Applied Successfully");
+    //                     toastr.error(decodeURIComponent(error));
+    //                 });
+    //             } else if (
+    //                 resp.type === "success" ||
+    //                 resp.type === "uploaded"
+    //             ) {
+    //                 updateProductList(resp.products);
+    //                 // console.log("Redirecting to: " + resp.message);
+    //                 // window.location.href =
+    //                 //     resp.message +
+    //                 //     "?successMessage=" +
+    //                 //     encodeURIComponent("Filter Applied Successfully");
 
-                    // if (typeof successCallback === "function") {
-                    //     successCallback(resp);
-                    // }
-                } else {
-                    // Update UI dynamically for products
-                    // updateProductList(resp.products);
-                }
-            },
-            error: function () {
-                console.log("Error occurred.");
-            },
-        });
-    }
-    function updateProductList(products) {
-        const productContainer = $(".productContainer"); // Target the container where products will be rendered
-        // console.log(productContainer);
-        // Clear existing products
-        // productContainer.empty();
+    //                 // if (typeof successCallback === "function") {
+    //                 //     successCallback(resp);
+    //                 // }
+    //             } else {
+    //                 // Update UI dynamically for products
+    //                 // updateProductList(resp.products);
+    //             }
+    //         },
+    //         error: function () {
+    //             console.log("Error occurred.");
+    //         },
+    //     });
+    // }
+    // function updateProductList(products) {
+    //     const productContainer = $(".productContainer"); // Target the container where products will be rendered
+    //     // console.log(productContainer);
+    //     // Clear existing products
+    //     // productContainer.empty();
 
-        // productContainer.append("productHTML");
-        // Iterate over the products and append them to the container
-        products.forEach((product) => {
-            // console.log(product.name);
-            // const productHTML = `${product.name}`;
-            const productHTML = `
-                <div class="product">
-                    <div class="info-large">
-                        <h4>${product.name}</h4>
-                        <div class="sku">
-                            <strong>${product.sku}</strong>
-                        </div>
-                        <div class="price-big">
-                            $${product.price}
-                        </div>
-                        <button class="add-cart-large"><a href=/basket-detail/${
-                            product.id
-                        }>View Detail</a></button>
-                    </div>
-                    <div class="make3D">
-                        <div class="product-front">
-                            <div class="shadow"></div>
-                            <img src="${product.main_image}" alt="">
-                            <div class="image_overlay"></div>
-                            <div class="view_gallery"><a href="/basket-detail/${
-                                product.id
-                            }">View Detail</a></div>
-                            <div class="add_to_cart">Add To Cart</div>
-                            <div class="view_gallery">View gallery</div>
-                            <div class="stats">
-                                <div class="stats-container">
-                                    <span class="product_price">$${
-                                        product.price
-                                    }</span>
-                                    <span class="product_name">${
-                                        product.name
-                                    }</span>
-                                    <p>${
-                                        product.attributes.find(
-                                            (attr) => attr.name === "length"
-                                        ).value
-                                    }
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-back">
-                            <div class="shadow"></div>
-                            <div class="carousel">
+    //     // productContainer.append("productHTML");
+    //     // Iterate over the products and append them to the container
+    //     products.forEach((product) => {
+    //         // console.log(product.name);
+    //         // const productHTML = `${product.name}`;
+    //         const productHTML = `
+    //             <div class="product">
+    //                 <div class="info-large">
+    //                     <h4>${product.name}</h4>
+    //                     <div class="sku">
+    //                         <strong>${product.sku}</strong>
+    //                     </div>
+    //                     <div class="price-big">
+    //                         $${product.price}
+    //                     </div>
+    //                     <button class="add-cart-large"><a href=/basket-detail/${
+    //                         product.id
+    //                     }>View Detail</a></button>
+    //                 </div>
+    //                 <div class="make3D">
+    //                     <div class="product-front">
+    //                         <div class="shadow"></div>
+    //                         <img src="${product.main_image}" alt="">
+    //                         <div class="image_overlay"></div>
+    //                         <div class="view_gallery"><a href="/basket-detail/${
+    //                             product.id
+    //                         }">View Detail</a></div>
+    //                         <div class="add_to_cart">Add To Cart</div>
+    //                         <div class="view_gallery">View gallery</div>
+    //                         <div class="stats">
+    //                             <div class="stats-container">
+    //                                 <span class="product_price">$${
+    //                                     product.price
+    //                                 }</span>
+    //                                 <span class="product_name">${
+    //                                     product.name
+    //                                 }</span>
+    //                                 <p>${
+    //                                     product.attributes.find(
+    //                                         (attr) => attr.name === "length"
+    //                                     ).value
+    //                                 }
+    //                                 </p>
+    //                             </div>
+    //                         </div>
+    //                     </div>
+    //                     <div class="product-back">
+    //                         <div class="shadow"></div>
+    //                         <div class="carousel">
 
-        <ul class="carousel-container" rel="0" style="width: 945px;">
-        ${
-            Array.isArray(product.relavant_images)
-                ? product.relavant_images
-                      .map(
-                          (img) =>
-                              `<li style="width: 33.3333%;"><img src="${img}" alt=""></li>`
-                      )
-                      .join("")
-                : "<li>No images available</li>"
-        }
-        </ul>
-                                <div class="arrows-perspective">
-                                    <div class="carouselPrev">
-                                        <div class="y"></div>
-                                        <div class="x"></div>
-                                    </div>
-                                    <div class="carouselNext">
-                                        <div class="y"></div>
-                                        <div class="x"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flip-back">
-                                <div class="cy"></div>
-                                <div class="cx"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+    //     <ul class="carousel-container" rel="0" style="width: 945px;">
+    //     ${
+    //         Array.isArray(product.relavant_images)
+    //             ? product.relavant_images
+    //                   .map(
+    //                       (img) =>
+    //                           `<li style="width: 33.3333%;"><img src="${img}" alt=""></li>`
+    //                   )
+    //                   .join("")
+    //             : "<li>No images available</li>"
+    //     }
+    //     </ul>
+    //                             <div class="arrows-perspective">
+    //                                 <div class="carouselPrev">
+    //                                     <div class="y"></div>
+    //                                     <div class="x"></div>
+    //                                 </div>
+    //                                 <div class="carouselNext">
+    //                                     <div class="y"></div>
+    //                                     <div class="x"></div>
+    //                                 </div>
+    //                             </div>
+    //                         </div>
+    //                         <div class="flip-back">
+    //                             <div class="cy"></div>
+    //                             <div class="cx"></div>
+    //                         </div>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         `;
 
-            productContainer.append(productHTML);
-        });
+    //         productContainer.append(productHTML);
+    //     });
 
-        // Initialize any interactive elements like carousels if needed
-        // initializeCarousels();
+    //     // Initialize any interactive elements like carousels if needed
+    //     // initializeCarousels();
 
-        // Reinitialize interactive elements
-        initializeInteractiveElements();
-    }
+    //     // Reinitialize interactive elements
+    //     initializeInteractiveElements();
+    // }
     // Function to reinitialize interactive elements
     function initializeInteractiveElements() {
         // Reinitialize hover effects and event listeners

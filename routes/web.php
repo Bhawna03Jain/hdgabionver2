@@ -140,6 +140,15 @@ Route::get('/cart_tailwind', function () {
 Route::get('/detail_tailwind', function () {
     return view('detail_tailwind');
 })->name('');
+
+
+// Route::get('/products', function () {
+//     return view('front.products.product');
+
+// })->name('');
+Route::get('products/{type}',[ProductController::class,'products'])->name('products.products');
+Route::get('products/product-detail/{type}/{id}',[ProductController::class,'productDetail'])->name('products.products');
+
 Route::get('/home', function () {
     return view('front.index');
 })->name('home');

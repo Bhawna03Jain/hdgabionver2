@@ -39,6 +39,10 @@ class CartService
     {
         return $this->cartItemRepository->getAll()->where('user_id', $userid);
     }
+    public function getcartItemsByGuestId($guestid)
+    {
+        return $this->cartItemRepository->getAll()->where('guest_id', $guestid);
+    }
     // public function getcartItemsWithAttributesByCatId($catid)
     // {
     //     return $this->cartItemRepository->getAll()->where('category_id', $catid);

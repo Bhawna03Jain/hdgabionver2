@@ -123,6 +123,7 @@
                                             <th>Short Description</th>
                                             <th>Detailed Description</th>
                                             <th>Main Image</th>
+                                            <th>Is Shown To Frontend</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -223,6 +224,7 @@
                                                     </div>
 
                                                 </td>
+
                                                 <td>
                                                     @if ($product->main_image)
                                                         <img src="{{ asset($product->main_image) }}" alt="Main Image"
@@ -230,6 +232,9 @@
                                                     @else
                                                         <p>No Image</p>
                                                     @endif
+                                                </td>
+                                                <td>
+                                                    <input type="checkbox" checked data-toggle="toggle" data-size="xs" value="{{ $product->is_shown_to_fronend }}">
                                                 </td>
                                                 <td>
                                                     {{-- <a href="javascript:void(0)" class="text-warning edit-product-btn" data-id="{{ $product->id }}">

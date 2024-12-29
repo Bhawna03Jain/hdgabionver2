@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Services\CartService;
+use App\Services\ProductService;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Auth;
 use Session;
+
 class CartController extends Controller
 {
     protected $cartService;
+    protected $productService;
 
-    public function __construct(CartService $cartService)
+    public function __construct(CartService $cartService,ProductService $productService)
     {
 
         $this->cartService = $cartService;
+        $this->productService = $productService;
     }
 
     public function index()
@@ -27,48 +31,50 @@ class CartController extends Controller
             // $cartItems = Cart::search(function ($key, $value) use ($user_email) {
             //     return $key->options->user_email == $user_email;
             // });
-            //return   $cartItems;
+            // return   $cartItems;
             return view('front.cart.index', compact('cartItems'));
         } else {
 
-            $session_id = Session::get('session_id');
+            // $session_id = Session::get('session_id');
             $cartItems = session()->get('cart', []);
-            //return   $cartItems;
+            // return   $cartItems;
             return view('front.cart.index', compact('cartItems'));
         }
         //return view('cart.index',compact('cartItems'));
     }
     public function addToCart(Request $request)
     {
+        // dd("i");
         $data = $request->all();
-
+        // dd($data);
         $rules = [
             'product_id' => [
                 'required',
                 Rule::exists('products', 'id'),
             ],
-            'name' => 'required|string',
+            // 'name' => 'required|string',
             'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            // 'price' => 'required|numeric|min:0',
         ];
 
         $customMessages = [
             'product_id.required' => 'The product ID is required.',
             'product_id.exists' => 'The selected product does not exist.',
-            'name.required' => 'The product name is required.',
-            'name.string' => 'The product name must be a string.',
+            // 'name.required' => 'The product name is required.',
+            // 'name.string' => 'The product name must be a string.',
             'quantity.required' => 'The quantity is required.',
             'quantity.integer' => 'The quantity must be an integer.',
             'quantity.min' => 'The quantity must be at least 1.',
-            'price.required' => 'The price is required.',
-            'price.numeric' => 'The price must be a valid number.',
-            'price.min' => 'The price must be at least 0.',
+            // 'price.required' => 'The price is required.',
+            // 'price.numeric' => 'The price must be a valid number.',
+            // 'price.min' => 'The price must be at least 0.',
         ];
 
         $validator = Validator::make($request->all(), $rules, $customMessages);
 
-
         if (Auth::check()) {
+
+            dd(Auth::user()->id);
             // **Authenticated User Logic**
             $cartItem = $this->cartService->getcartByUserIdAndProductId(Auth::user()->id, $request->product_id);
             // $cartItem = CartItem::where('user_id', Auth::user()->id)
@@ -98,37 +104,51 @@ class CartController extends Controller
             }
         } else {
             // **Guest User Logic**
-            $session_id = Session::get('session_id');
+            // $session_id = Session::get('session_id');
+// dd($session_id);
+// session::forget('cart');
+            $cart = Session::get('cart');
+            // dd(Session::get('cart'));
+            // dd(count($cart));
+            // if (count($cart) == 0) {
+            //     $productExists = false;
+            // } else {
+            //     $productExists = true;
+            // }
+            // $cart = Session::get('cart', []);
 
-    $cart = Session::get('cart', []);
-            $cart = Session::get('cart', []);
 
             $productExists = false;
-
             // Check if the product already exists in the session cart
+if($cart){
             foreach ($cart as &$item) {
                 if ($item['product_id'] == $request->product_id) {
-                    $item['quantity'] += $request->quantity;
+                    $item['quantity'] = $request->quantity;
                     $productExists = true;
                     break;
                 }
             }
-
+        }
             // If the product does not exist, add it to the cart
             if (!$productExists) {
+                // $carts=$this->cartService->getcartItemsByProductId($request->product_id)->first();
+                // dd($carts);
                 $cart[] = [
                     'product_id' => $request->product_id,
-                    'name' => $request->name,
+                    'name' => $this->productService->getproductById($request->product_id)->name,
                     'quantity' => $request->quantity,
-                    'price' => $request->price,
+                    'price' => 0,
+                    'image'=>$this->productService->getproductById($request->product_id)->main_image,
                 ];
             }
-
             // Update the session cart
             Session::put('cart', $cart);
+            $cartItem =Session::get('cart');
+            // dd($cartItem);
+// Session::forget('cart');
         }
 
-        return response()->json(['message' => 'Item added to cart successfully!']);
+        return response()->json(['message' => 'Item added to cart successfully!','products'=>$cartItem,'type'=>'success']);
     }
 
     // To handle merging the cart when a guest user logs in, you can implement logic in the login or a dedicated mergeCart function. Here’s an example:

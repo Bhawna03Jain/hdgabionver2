@@ -544,11 +544,13 @@ break;
     public function filterData($type, Request $request)
     {
         // dd($request->all());
+        $catid = $this->categoryService->getCategoryByCode($type)->id;
+
         switch ($type) {
             case 'baskets':
 
                 $query = Product::query();
-
+$query->where('category_id',$catid);
                 // if ($request->filled('length') && !in_array('length_all', $request->length)) {
                 //     $query->whereHas('attributes', function ($q) use ($request) {
                 //         $q->where('name', 'length')->whereIn('value', $request->length);
@@ -583,6 +585,7 @@ break;
                 }
                 // Get the filtered results
                 $products = $query->with('attributes')->get();
+                // dd($products);
                 // dd($products[0]['attributes']);
                 return response()->json([
                     'type' => 'success',
@@ -617,4 +620,50 @@ break;
 
         return response()->json(['no' => $no]);
     }
+
+    // *****************************Front End*************************************
+    public function products($type)
+    {
+        // dd($type);
+        $category = $this->categoryService->getCategoryByCode($type);
+        $cat_code = $type;
+        $products = $this->productService->getproductsWithAttributesByCatId($category->id);
+        if ($cat_code) {
+            return view('front.products.products', compact('products', 'category','cat_code'));
+
+            // switch ($cat_code) {
+            //     case 'baskets':
+            //         $products = $this->productService->getproductsWithAttributesByCatId
+            //         ($catid);
+            //            return view('front.products.products', compact('products', 'category'));
+            //     case 'parts':
+
+                //     $products = $this->productService->getproductsWithAttributesByCatId
+                //     ($catid);
+                //     // dd($products);
+                //     //  $categories = $this->categoryService->getAllCategories();
+                //     return view('admin.products.parts.index', compact('products', 'category'));
+
+                // case 'others':
+
+
+            // }
+    // return view('front.products.product');
+    }
+    }
+    public function productDetail($type,$id)
+    {
+        // dd($type);
+
+        $category = $this->categoryService->getCategoryByCode($type);
+        $cat_code = $type;
+        $product = $this->productService->getproductById($id);
+        // dd($product);
+        // $products = $this->productService->getproductsWithAttributesByCatId($category->id);
+        if ($cat_code) {
+            return view('front.products.product-detail', compact('product', 'category','cat_code'));
+
+    }
+    }
+    // *********************************End Front End***********************************
 }

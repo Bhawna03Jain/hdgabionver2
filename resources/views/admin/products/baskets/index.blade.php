@@ -1,7 +1,7 @@
 @extends('admin.Layout.layout')
 @section('style')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
-    <style>
+       <style>
 
         #main_image_box {
             padding: 10px;
@@ -124,6 +124,7 @@
                                             <th>Short Description</th>
                                             <th>Detailed Description</th>
                                             <th>Main Image</th>
+                                            <th>Visible To Frontend</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -231,6 +232,9 @@
                                                         @else
                                                             <p>No Image</p>
                                                         @endif
+                                                    </td>
+                                                    <td>
+                                                        <input type="checkbox" checked data-toggle="toggle" data-size="xs" value="{{ $product->is_shown_to_fronend }}">
                                                     </td>
                                                     <td>
                                                         {{-- <a href="javascript:void(0)" class="text-warning edit-product-btn" data-id="{{ $product->id }}">
@@ -456,6 +460,7 @@
 
 @section('jscript')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
     {{-- <script src="{{ url('admin/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ url('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ url('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>

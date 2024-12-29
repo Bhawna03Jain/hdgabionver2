@@ -26,6 +26,9 @@ return new class extends Migration
             $table->decimal('total_price', 10, 2)->default(0); // Price with precision
             $table->integer('stock')->default(0); // Stock count
             $table->boolean('is_active')->default(true); // Active/inactive flag
+            $table->boolean('is_shown_to_fronend')->default(true); // Active/inactive flag
+
+
             $table->boolean('should_display')->default(true); // Active/inactive flag
             $table->string('main_image'); // URL or path to main image
             $table->json('relevant_images')->nullable();

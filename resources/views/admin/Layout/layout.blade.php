@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="{{url('admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{url('admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
-  <!-- Theme style -->
+  <!-- Theme style --><link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="{{url('admin/css/adminlte.min.css')}}">
 
   <link rel="stylesheet" href="{{url('admin/plugins/summernote/summernote-bs4.min.css')}}">
@@ -91,6 +92,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params-polyfill/7.0.1/url-search-params.min.js"></script>
     <script src="{{ url('admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
         <script src="{{ url('admin/plugins/dropzone/min/dropzone.min.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 <script src="{{url('admin/js/functions.js') }}"></script>
 <script>
     $(function() {
