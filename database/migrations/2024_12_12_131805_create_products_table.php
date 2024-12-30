@@ -24,6 +24,7 @@ return new class extends Migration
             // $table->string(column: 'unit_type')->nullable();//per kg ,per piece
             // // $table->string(column: 'specs')->nullable();
             $table->decimal('total_price', 10, 2)->default(0); // Price with precision
+            $table->json('json_format')->nullable();
             $table->integer('stock')->default(0); // Stock count
             $table->boolean('is_active')->default(true); // Active/inactive flag
             $table->boolean('is_shown_to_fronend')->default(true); // Active/inactive flag

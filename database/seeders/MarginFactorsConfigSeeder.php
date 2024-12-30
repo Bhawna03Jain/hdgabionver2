@@ -17,7 +17,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 1,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -27,7 +27,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 2,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ], [
@@ -36,7 +36,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 3,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ], [
@@ -45,7 +45,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 4,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ], [
@@ -54,7 +54,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 5,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ], [
@@ -63,7 +63,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 6,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ], [
@@ -72,7 +72,7 @@ class MarginFactorsConfigSeeder extends Seeder
                 'country_id' => 7,
                 'cost' => 0,
                 'product_type'=>'boq',
-                'boq_config_id' => 3,
+                'boq_config_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

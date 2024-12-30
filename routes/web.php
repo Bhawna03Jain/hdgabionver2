@@ -69,7 +69,7 @@ Route::prefix('/admin')->group(function () {
         Route::post('countries/update', [CountryController::class, 'update'])->name('countries.update');
         Route::delete('countries/delete/{id}', [CountryController::class, 'destroy'])->name('countries.destroy');
 
- // Inventory Fence Configuration
+        // Inventory Fence Configuration
 
         Route::get('mastersheet/inventory/fence', [InventoryController::class, 'inventoryFencesConfig']);
         Route::post('mastersheet/inventory/fence/update', [InventoryController::class, 'storeOrUpdateFenceConfig'])->name('admin_mastersheet_fence_config.update');
@@ -94,6 +94,7 @@ Route::prefix('/admin')->group(function () {
         // Route::post('mastersheet/boq/basket/delete/{type?}/{id}', [BOQConfigController::class, 'deletebasketConfig'])->name('admin_mastersheet_basket_config.delete');
         // Route::get('mastersheet/boq/basket/get-last-id/{type?}', [BOQConfigController::class, 'getLastId']);
         // Route::post('mastersheet/boq/basket/check-code/{type?}', [BOQConfigController::class, 'checkCodeExists']);
+        // Route::get('mastersheet/boq/{boqtype}/standard', [BOQConfigController::class, 'BOQConfig']);
         Route::get('mastersheet/boq/{boqtype}/{type?}', [BOQConfigController::class, 'BOQConfig']);
         Route::post('mastersheet/boq/{boqtype}/update/{type?}', [BOQConfigController::class, 'storeOrUpdateConfig'])->name('admin_mastersheet_config.update');
         Route::post('mastersheet/boq/{boqtype}/delete/{type?}/{id}', [BOQConfigController::class, 'deleteConfig'])->name('admin_mastersheet_config.delete');
@@ -101,21 +102,21 @@ Route::prefix('/admin')->group(function () {
         Route::post('mastersheet/boq/{boqtype}/check-code/{type?}', [BOQConfigController::class, 'checkCodeExists']);
 
 
-//===============Products for Category==============
-Route::get('products/{catid}',[ProductController::class,'index'])->name('products.index');
-Route::get('products/create/{catid}', [ProductController::class, 'create'])->name('products.create');
+        //===============Products for Category==============
+        Route::get('products/{catid}', [ProductController::class, 'index'])->name('products.index');
+        Route::get('products/create/{catid}', [ProductController::class, 'create'])->name('products.create');
 
-Route::get('products/{productId}/edit',[ProductController::class,'edit'])->name('products.edit');
-Route::post('products/store',[ProductController::class,'store'])->name('products.store');
-Route::post('products/{productId}/update',[ProductController::class,'update'])->name('products.update');
+        Route::get('products/{productId}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
+        Route::post('products/{productId}/update', [ProductController::class, 'update'])->name('products.update');
 
 
-Route::post('/isProductByNameExist', [ProductController::class, 'isProductByNameExist'])->name('check.product.name');
-Route::post('/isProductByArticleExist', [ProductController::class, 'isProductByArticleExist'])->name('check.product.article');
-Route::post('/isProductByHsCodeExist', [ProductController::class, 'isProductByHsCodeExist'])->name('check.product.hscode');
-Route::post('products/getlastno/{column}', [ProductController::class, 'getLastNo'])->name('product.getlastno');
+        Route::post('/isProductByNameExist', [ProductController::class, 'isProductByNameExist'])->name('check.product.name');
+        Route::post('/isProductByArticleExist', [ProductController::class, 'isProductByArticleExist'])->name('check.product.article');
+        Route::post('/isProductByHsCodeExist', [ProductController::class, 'isProductByHsCodeExist'])->name('check.product.hscode');
+        Route::post('products/getlastno/{column}', [ProductController::class, 'getLastNo'])->name('product.getlastno');
 
-});
+    });
 });
 
 // ===============End Admin======================
@@ -128,26 +129,15 @@ Route::get('/', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 })->name('');
-Route::get('/product_tailwind', function () {
-    return view('product_tailwind');
-})->name('');
-Route::get('/checkout-tailwind', function () {
-    return view('checkout');
-})->name('');
-Route::get('/cart_tailwind', function () {
-    return view('cart');
-})->name('');
-Route::get('/detail_tailwind', function () {
-    return view('detail_tailwind');
-})->name('');
+
 
 
 // Route::get('/products', function () {
 //     return view('front.products.product');
 
 // })->name('');
-Route::get('products/{type}',[ProductController::class,'products'])->name('products.products');
-Route::get('products/product-detail/{type}/{id}',[ProductController::class,'productDetail'])->name('products.products');
+Route::get('products/{type}', [ProductController::class, 'products'])->name('products.products');
+Route::get('products/product-detail/{type}/{id}', [ProductController::class, 'productDetail'])->name('products.products');
 
 Route::get('/home', function () {
     return view('front.index');
@@ -181,6 +171,18 @@ Route::get('/shop', function () {
 Route::get('/checkout', function () {
     return view('front.checkout');
 })->name('checkout');
+Route::get('/product_tailwind', function () {
+    return view('product_tailwind');
+})->name('');
+Route::get('/checkout-tailwind', function () {
+    return view('checkout');
+})->name('');
+Route::get('/cart_tailwind', function () {
+    return view('cart');
+})->name('');
+Route::get('/detail_tailwind', function () {
+    return view('detail_tailwind');
+})->name('');
 
 // **************************cart**************************
 
@@ -194,6 +196,10 @@ Route::get('privacy-policy', function () {
 })->name('privacy-policy');
 Route::post('product-filter-data/{type}', [ProductController::class, 'filterData'])->name('filter.products');
 // ==========================End Guest======================
+
+
+// ================Customer===============
+
 
 Route::prefix('/customer')->group(function () {
 
@@ -240,4 +246,6 @@ Route::prefix('/customer')->group(function () {
         // Other routes that need this middleware
     });
 });
+
+// ==================End Customer==================
 

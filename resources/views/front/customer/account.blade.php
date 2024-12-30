@@ -1,4 +1,4 @@
-@extends('front.Layout.layout')
+@extends('front.Layout.layout_old')
 
 @section('style')
     <style>
@@ -247,6 +247,7 @@
     <div class="container-fluid ">
         <div class="row">
             <div class="col-12 col-md-4 mx-auto"> --}}
+
 @section('main-content')
 <section class="mainSection">
     <div class="container mt-5">

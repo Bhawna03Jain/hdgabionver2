@@ -15,7 +15,7 @@ class CartController extends Controller
     protected $cartService;
     protected $productService;
 
-    public function __construct(CartService $cartService,ProductService $productService)
+    public function __construct(CartService $cartService, ProductService $productService)
     {
 
         $this->cartService = $cartService;
@@ -74,7 +74,7 @@ class CartController extends Controller
 
         if (Auth::check()) {
 
-            dd(Auth::user()->id);
+            // dd(Auth::user()->id);
             // **Authenticated User Logic**
             $cartItem = $this->cartService->getcartByUserIdAndProductId(Auth::user()->id, $request->product_id);
             // $cartItem = CartItem::where('user_id', Auth::user()->id)
@@ -85,7 +85,7 @@ class CartController extends Controller
                 // Update quantity if product already exists
                 $this->cartService->updatecartQuantity([
                     'id' => $cartItem->id,
-                    'quantity' => $cartItem->quantity + $request->quantity,
+                    'quantity' => $request->quantity,
                 ]);
                 // $cartItem->update([
                 //     'id'=> $cartItem->id,
@@ -93,62 +93,76 @@ class CartController extends Controller
                 // ]);
             } else {
                 // Add new item to the cart
-                $this->cartService->createcartItem($data);
-                // CartItem::create([
-                //     'user_id' => auth()->id(),
-                //     'product_id' => $request->product_id,
-                //     'name' => $request->name,
-                //     'quantity' => $request->quantity,
-                //     'price' => $request->price,
-                // ]);
+                $data['user_id'] = Auth::user()->id;
+                $cartItem = $this->cartService->createcartItem($data);
+                // dd($data);
+
+                // 5 [
+                //     "product_id" => "13"
+                //     "name" => "Gabion Basket 1"
+                //     "quantity" => "1"
+                //     "price" => 0
+                //     "image" => "admin/images/products/baskets/65023.png"
+                //   ]
             }
+            // $cartItems[] = [
+            //     'product_id' => $data['product_id'],
+            //     'name' => $this->productService->getproductById($data['product_id'])->name,
+            //     'quantity' => $data['quantity'],
+            //     'price' => 0,
+            //     'image' => $this->productService->getproductById($data['product_id'])->main_image,
+            // ];
+            $items = $this->cartService->getcartItemsByUserId(Auth::user()->id);
+            foreach ($items as $item) {
+                $cartItems[] = [
+                    'product_id' => $item['product_id'],
+                    'name' => $this->productService->getproductById($item['product_id'])->name,
+                    'quantity' => $item['quantity'],
+                    'price' => 0,
+                    'image' => $this->productService->getproductById($item['product_id'])->main_image,
+                ];
+            }
+            // dd($cartItems);
+
+            return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItems, 'type' => 'success']);
+
         } else {
             // **Guest User Logic**
-            // $session_id = Session::get('session_id');
-// dd($session_id);
-// session::forget('cart');
+
             $cart = Session::get('cart');
-            // dd(Session::get('cart'));
-            // dd(count($cart));
-            // if (count($cart) == 0) {
-            //     $productExists = false;
-            // } else {
-            //     $productExists = true;
-            // }
-            // $cart = Session::get('cart', []);
-
-
             $productExists = false;
             // Check if the product already exists in the session cart
-if($cart){
-            foreach ($cart as &$item) {
-                if ($item['product_id'] == $request->product_id) {
-                    $item['quantity'] = $request->quantity;
-                    $productExists = true;
-                    break;
+            if ($cart) {
+                foreach ($cart as &$item) {
+                    if ($item['product_id'] == $request->product_id) {
+                        $item['quantity'] = $request->quantity;
+                        $productExists = true;
+                        break;
+                    }
                 }
             }
-        }
             // If the product does not exist, add it to the cart
             if (!$productExists) {
                 // $carts=$this->cartService->getcartItemsByProductId($request->product_id)->first();
                 // dd($carts);
-                $cart[] = [
+                $cartItems[] = [
                     'product_id' => $request->product_id,
                     'name' => $this->productService->getproductById($request->product_id)->name,
                     'quantity' => $request->quantity,
                     'price' => 0,
-                    'image'=>$this->productService->getproductById($request->product_id)->main_image,
+                    'image' => $this->productService->getproductById($request->product_id)->main_image,
                 ];
             }
             // Update the session cart
-            Session::put('cart', $cart);
-            $cartItem =Session::get('cart');
-            // dd($cartItem);
+            Session::put('cart', $cartItems);
+            // $cartItem=Session::get('cart');
 // Session::forget('cart');
-        }
+// dd($cartItems);
+            return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItems, 'type' => 'success']);
 
-        return response()->json(['message' => 'Item added to cart successfully!','products'=>$cartItem,'type'=>'success']);
+        }
+        // dd($cartItems);
+//         return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItems, 'type' => 'success']);
     }
 
     // To handle merging the cart when a guest user logs in, you can implement logic in the login or a dedicated mergeCart function. Here’s an example:

@@ -80,10 +80,13 @@ class MasterSheetBOQConfigService
         }
     }
 
-    public function updateOrCreateAllMaterials($boqtype, $boqConfigId, Request $request)
+    // public function updateOrCreateAllMaterials($boqtype, $boqConfigId, Request $request)
+    public function updateOrCreateAllMaterials($boqConfigId, Request $request)
     {
-        dd($request->all());
-
+        // dd($boqtype);
+        // dd($request->all());
+// $boqConfigId=$request->boqconfigid;
+// dd($boqConfigId);
         // dd($request->input('extra_material_configs'));
         DB::beginTransaction();
 
@@ -120,6 +123,9 @@ class MasterSheetBOQConfigService
         }
         if ($request->input('extra_material_configs')) {
             $data = [];
+            $boqtype = $this->boqConfigRepository->find($boqConfigId)->type;
+            // dd($boqtype);
+            // dd($request->input('extra_material_configs'));
             foreach ($request->input('extra_material_configs') as $key => $item) {
                 // dd($boqtype);
                 if ($boqtype === 'Basket') {
@@ -138,8 +144,8 @@ class MasterSheetBOQConfigService
                         $data['weight_kg_formula'] = '{{no*unit_price}}';
                     }
                     $data['name'] = $item['item_name'];
-                    $data['length'] = $item['length'];
-                    $data['no'] = $item['no'];
+                    // $data['length'] = $item['length'];
+                    // $data['no'] = $item['no'];
                     $data['specs'] = $item['specs'];
                     if ($code === 'rods') {
                         for ($i = 1; $i <= 6; $i++) {
@@ -154,8 +160,8 @@ class MasterSheetBOQConfigService
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
                                     }
                                     $data['sides'] = $sides;
-
-
+                                    $data['length_formula'] = "{{length}}";
+                                    $data['no_formula'] = "{{(width/10+1)*2}}";
                                     break;
 
                                 case 2:
@@ -167,6 +173,8 @@ class MasterSheetBOQConfigService
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
                                     }
                                     $data['sides'] = $sides;
+                                    $data['length_formula'] = "{{width}}";
+                                    $data['no_formula'] = "{{(length/10+1)*2}}";
 
                                     break;
                                 case 3:
@@ -178,6 +186,9 @@ class MasterSheetBOQConfigService
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
                                     }
                                     $data['sides'] = $sides;
+                                    $data['length_formula'] = "{{height}}";
+                                    $data['no_formula'] = "{{(width/10+1)*(length>100?3:2)}}";
+
 
                                     break;
                                 case 4:
@@ -189,6 +200,10 @@ class MasterSheetBOQConfigService
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
                                     }
                                     $data['sides'] = $sides;
+                                    $data['length_formula'] = "{{width}}";
+                                    $data['no_formula'] = "{{((width/maze+1)*2)(length>100?3:2)}}";
+
+
 
                                     break;
                                 case 5:
@@ -200,6 +215,8 @@ class MasterSheetBOQConfigService
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
                                     }
                                     $data['sides'] = $sides;
+                                    $data['length_formula'] = "{{height}}";
+                                    $data['no_formula'] = "{{(length/10+1)*2}}";
 
                                     break;
                                 case 6:
@@ -211,11 +228,14 @@ class MasterSheetBOQConfigService
                                         $sides = ucfirst($parts[0]) . ' And ' . ucfirst($parts[1]);
                                     }
                                     $data['sides'] = $sides;
+                                    $data['length_formula'] = "{{length}}";
+                                    $data['no_formula'] = "{{(height/maze+1)*2}}";
 
                                     break;
                             }
 
                             $data['price_formula'] = '{{unit_price*weight_kg}}';
+
                             $existingRecord = $this->materialConfigRepository->getByBoqConfigAndCode($boqConfigId, $data);
 
                             if (!$existingRecord) {
@@ -230,6 +250,8 @@ class MasterSheetBOQConfigService
                         $data['sides'] = "";
                         $data['weight_kg_formula'] = '{{length*weight_per_unit}}';
                         $data['price_formula'] = '{{unit_price*weight_kg}}';
+                        $data['length_formula'] = "{{(4*(length+width+height))}}";
+                        $data['no_formula'] = "N/A";
                         $existingRecord = $this->materialConfigRepository->getByBoqConfigAndCode($boqConfigId, $data);
 
                         if (!$existingRecord) {
@@ -243,6 +265,7 @@ class MasterSheetBOQConfigService
                         $data['sides'] = "";
                         $data['weight_kg_formula'] = '';
                         $data['price_formula'] = '{{unit_price*no}}';
+
                         $existingRecord = $this->materialConfigRepository->getByBoqConfigAndCode($boqConfigId, $data);
 
                         if (!$existingRecord) {
@@ -277,33 +300,33 @@ class MasterSheetBOQConfigService
 // dd($request);
         DB::beginTransaction();
         // try {
-            if ($request->input('taxes')) {
-                foreach ($request->input('taxes') as $key => $data) {
-                    // dd($key);
-                    $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
-                    if ($existingRecord && $existingRecord->trashed()) {
-                        return "trashed";
-                    } else {
+        if ($request->input('taxes')) {
+            foreach ($request->input('taxes') as $key => $data) {
+                // dd($key);
+                $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
+                if ($existingRecord && $existingRecord->trashed()) {
+                    return "trashed";
+                } else {
 
-                        $this->taxesConfigRepository->update($key, $data);
-                    }
+                    $this->taxesConfigRepository->update($key, $data);
                 }
             }
-            if ($request->input('extra_taxes')) {
-                foreach ($request->input('extra_taxes') as $key => $data) {
-                    $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
-                    if ($existingRecord && $existingRecord->trashed()) {
-                        return "trashed";
-                    } elseif (!$existingRecord) {
-                        $data['boq_config_id'] = $boqConfigId;
-                        $this->taxesConfigRepository->create($data);
-                    }
+        }
+        if ($request->input('extra_taxes')) {
+            foreach ($request->input('extra_taxes') as $key => $data) {
+                $existingRecord = $this->taxesConfigRepository->getByBoqConfigAndCode($boqConfigId, $data['code']);
+                if ($existingRecord && $existingRecord->trashed()) {
+                    return "trashed";
+                } elseif (!$existingRecord) {
+                    $data['boq_config_id'] = $boqConfigId;
+                    $this->taxesConfigRepository->create($data);
                 }
             }
-            // Commit the transaction if all updates are successful
-            DB::commit();
+        }
+        // Commit the transaction if all updates are successful
+        DB::commit();
 
-            return true;
+        return true;
         // } catch (\Exception $e) {
         //     // Rollback the transaction if something goes wrong
         //     DB::rollBack();
@@ -489,16 +512,187 @@ class MasterSheetBOQConfigService
         }
     }
 
-    public function createSingleBasketBOQPrice($request)
+    public function createSingleBasketBOQPrice($product, $cat_code)
     {
-        // $BasketBOQData['material_configs'] = $BasketBOQData1;
-        $BasketBOQData['length'] = $request['lengthvalue'];
-        $BasketBOQData['height'] = $request['height'];
-        $BasketBOQData['depth'] = $request['depth'];
-        $BasketBOQData['poles'] = $request['poles'];
-        return $this->calculateMaterialCost($BasketBOQData);
+        // dd($product);
+        $BasketBOQData['material_configs'] = [];
+        $BasketBOQData['length'] = $product['attributes']['length'];
+        $BasketBOQData['width'] = $product['attributes']['width'];
+        $BasketBOQData['height'] = $product['attributes']['height'];
+        $BasketBOQData['maze'] = $product['attributes']['maze'];
+        $boqtype = ucfirst('basket'); // Basket,Fence
+        $boqConfig = $this->getIdByType($boqtype);
+        // Check if BoQ Config is found, else abort with 404
+        if (!$boqConfig) {
+
+            abort(404, 'BOQ Config not found');
+        } else {
+            $boqid = $boqConfig->id;
+        }
+        $commonmaterials = $boqConfig->materialConfigs->where('common', '1');
+        $extramaterials = $boqConfig->materialConfigs->where('common', '0');
+
+        $BasketBOQData = $this->calculateMaterialCost($BasketBOQData, $product['attributes'], $boqtype, $commonmaterials, $extramaterials, );
+        $manufacturing = $boqConfig->manufacturingConfigs;
+        $BasketBOQData = $this->calculateManufacturingCost($BasketBOQData, $boqtype, $manufacturing);
+
+        //
+        $taxes = $boqConfig->taxesConfigs;
+        $BasketBOQData = $this->calculateTaxesCost($BasketBOQData, $boqtype, $taxes);
+
+        $BasketBOQData['exfactory_cost'] = round($BasketBOQData['material_configs']['total_price'] + $BasketBOQData['manufacturing_configs']['total_price'] + $BasketBOQData['taxes_configs']['total_price'], 2);
+        // **For All Europe******
+        $country_id = 1;
+        $BasketBOQData['country_id_' . $country_id]['margin_factors'] = $boqConfig->marginFactorsConfigs->where('country_id', 1)->first()->margin_factor;
+        $BasketBOQData['country_id_' . $country_id]['price_without_vat_bruto'] = round(($BasketBOQData['exfactory_cost'] * $BasketBOQData['country_id_' . $country_id]['margin_factors']) / 1.23, 2);
+        $BasketBOQData['country_id_' . $country_id]['price_with_vat_netto'] = round(($BasketBOQData['exfactory_cost'] * $BasketBOQData['country_id_' . $country_id]['margin_factors']), 2);
+        $BasketBOQData['country_id_' . $country_id]['vat_23'] = round(($BasketBOQData['country_id_' . $country_id]['price_with_vat_netto'] - $BasketBOQData['country_id_' . $country_id]['price_without_vat_bruto']), 2);
+        dd($BasketBOQData);
+        return $BasketBOQData;
+
+        // $country_margin_factors = $boqConfig->marginFactorsConfigs;
     }
 
+    public function calculateTaxesCost($BasketBOQData, $boqtype, $taxes)
+    {
+        // dd($BasketBOQData);
+        switch ($boqtype) {
+            case 'Basket':
+                $totalTaxesCost = 0;
+                // dd($BasketBOQData['manufacturing_configs']['total_price']);
+                $totalCost = $BasketBOQData['material_configs']['total_price'] + $BasketBOQData['manufacturing_configs']['total_price'];
+                // Loop through common materials
+                foreach ($taxes as $item) {
+                    // dd($item);
+                    $BasketBOQData['taxes_configs'][$item['id']]['percentage'] = $item['percentage'];
+                    $BasketBOQData['taxes_configs'][$item['id']]['cost'] = ($item['percentage'] * $totalCost) / 100;
+                    $totalTaxesCost += $BasketBOQData['taxes_configs'][$item['id']]['cost'];
+                }
+                $BasketBOQData['taxes_configs']['total_price'] = round($totalTaxesCost, 2);
+                //   dd($BasketBOQData);
+                return $BasketBOQData;
+                break;
+            case 'Fence':
+                break;
+        }
+   }
+   public function calculateManufacturingCost($BasketBOQData, $boqtype, $manufacturing)
+    {
+        // dd($BasketBOQData);
+        switch ($boqtype) {
+            case 'Basket':
+                $totalManufacturingCost = 0;
+                $totalWeight = $BasketBOQData['material_configs']['common']['total_weight_kg'];
+                // Loop through common materials
+                foreach ($manufacturing as $item) {
+                    // dd($item);
+                    $BasketBOQData['manufacturing_configs'][$item['id']]['cost_per_unit'] = $item['cost_per_unit'];
+                    $BasketBOQData['manufacturing_configs'][$item['id']]['cost'] = $item['cost_per_unit'] * $totalWeight;
+                    $totalManufacturingCost += $BasketBOQData['manufacturing_configs'][$item['id']]['cost'];
+                }
+                $BasketBOQData['manufacturing_configs']['total_price'] = round($totalManufacturingCost, 2);
+                //   dd($BasketBOQData);
+                return $BasketBOQData;
+                break;
+            case 'Fence':
+                break;
+        }
+    }
+    function evaluateFormula($formula, $variables)
+    {
+        // Clean the formula by removing placeholders and whitespace
+        $formula = trim(str_replace(['{{', '}}'], '', $formula));
+
+        // If formula is not applicable, return default value
+        if ($formula === "N/A") {
+            return 0;
+        }
+        // Replace variables in the formula
+        foreach ($variables as $key => $value) {
+            $formula = str_replace($key, $value, $formula);
+        }
+        // Safely evaluate the formula
+        try {
+            return eval ('return ' . $formula . ';');
+        } catch (\Throwable $e) {
+            return 0; // Handle errors gracefully
+        }
+    }
+    public function calculateMaterialCost($BasketBOQData, $attributes, $boqtype, $commonmaterials, $extramaterials)
+    {
+        // dd($commonmaterials);
+        switch ($boqtype) {
+            case 'Basket':
+                $totalMaterialCost = 0;
+                $totalWeight = 0;
+                // Loop through common materials
+                foreach ($commonmaterials as $material) {
+                    $prodIdKey = 'prod_id_' . $material->id;
+                    $variables = [
+                        'length' => $attributes['length'],
+                        'width' => $attributes['width'],
+                        'height' => $attributes['height'],
+                        'maze' => ($attributes['maze'] === '10x5' ? 5 : 10),
+                        'weight_per_unit' => $material->product->attributes->firstWhere('name', 'weight_per_unit')->value ?? 1,
+                        'unit_price' => $material->product->attributes->firstWhere('name', 'unit_price')->value ?? 1,
+                    ];
+                    // Length
+                    $BasketBOQData['material_configs']['common'][$prodIdKey]['length'] = $this->evaluateFormula($material->length_formula, $variables);
+
+                    // No
+                    $BasketBOQData['material_configs']['common'][$prodIdKey]['no'] = $this->evaluateFormula($material->no_formula, $variables);
+
+                    // Weight in Kg
+                    $variables['length'] = $BasketBOQData['material_configs']['common'][$prodIdKey]['length'] ?? 1;
+                    $variables['no'] = $BasketBOQData['material_configs']['common'][$prodIdKey]['no'] ?? 1;
+                    $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_kg'] = $this->evaluateFormula($material->weight_kg_formula, $variables);
+                    $totalWeight += $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_kg'];
+
+                    // Total Price in Euro
+                    $variables['weight_kg'] = $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_kg'] ?? 1;
+                    $BasketBOQData['material_configs']['common'][$prodIdKey]['price'] = $this->evaluateFormula($material->price_formula, $variables);
+                    $totalMaterialCost += $BasketBOQData['material_configs']['common'][$prodIdKey]['price'];
+
+                    // Additional attributes
+                    $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_per_unit'] = $variables['weight_per_unit'];
+                    $BasketBOQData['material_configs']['common'][$prodIdKey]['unit_price'] = $variables['unit_price'];
+                }
+                $BasketBOQData['material_configs']['common']['total_price'] = round($totalMaterialCost, 2);
+                $BasketBOQData['material_configs']['common']['total_weight_kg'] = $totalWeight;
+
+                $totalMaterialCost = 0;
+                foreach ($extramaterials as $material) {
+                    $prodIdKey = 'prod_id_' . $material->id;
+                    $variables = [
+                        'no' => $material->no,
+                        'weight_per_unit' => $material->product->attributes->firstWhere('name', 'weight_per_unit')->value ?? 1,
+                        'unit_price' => $material->product->attributes->firstWhere('name', 'unit_price')->value ?? 1,
+                    ];
+                    // Length
+
+                    // No
+                    $BasketBOQData['material_configs']['extra_material'][$prodIdKey]['no'] = $material->no;
+
+
+                    // Total Price in Euro
+                    $variables['weight_kg'] = $BasketBOQData['material_configs']['extra_material'][$prodIdKey]['weight_kg'] ?? 1;
+                    $BasketBOQData['material_configs']['extra_material'][$prodIdKey]['price'] = $this->evaluateFormula($material->price_formula, $variables);
+                    $totalMaterialCost += $BasketBOQData['material_configs']['extra_material'][$prodIdKey]['price'];
+
+                    // Additional attributes
+                    // $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_per_unit'] = $variables['weight_per_unit'];
+                    $BasketBOQData['material_configs']['extra_material'][$prodIdKey]['unit_price'] = $variables['unit_price'];
+                }
+                $BasketBOQData['material_configs']['extra_material']['total_price'] = $totalMaterialCost;
+                // $BasketBOQData['material_configs']['common']['total_weight_kg']=$totalWeight;
+                // dd($BasketBOQData);
+                $BasketBOQData['material_configs']['total_price'] = round($BasketBOQData['material_configs']['common']['total_price'] + $BasketBOQData['material_configs']['extra_material']['total_price'], 2);
+                return $BasketBOQData;
+                break;
+            case 'Fence':
+                break;
+        }
+    }
 
 }
 // public function deleteBasketManufacturing( $type,$id)

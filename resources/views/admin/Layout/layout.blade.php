@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="{{url('admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
   {{-- <link rel="stylesheet" href="{{ asset('admin/css/backend.css') }}"> --}}
   <link rel="stylesheet" href="{{ url('admin/css/datatable.css' )}}">
+  <link rel="stylesheet" href="{{ url('admin/css/style.css' )}}">
 @yield('style');
 </head>
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">

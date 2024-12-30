@@ -18,6 +18,8 @@ class MaterialConfig extends Model
         'item_name',
         'length',
         'no',
+        'length_formula',
+        'no_formula',
         'weight_per_cm',
         'unit_price',
         'weight_kg',

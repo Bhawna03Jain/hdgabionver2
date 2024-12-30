@@ -22,6 +22,10 @@
 </head>
 
 <body class="font-size-normal">
+       <!-- Loader HTML -->
+       <div id="loader" style="display: none;">
+        <div class="spinner"></div>
+    </div>
     <header class="w-screen">
         <!--Top Header-->
         <div id="top-header"
@@ -62,17 +66,20 @@
                 </ul>
             </div>
 
-            <div><i class="fa fa-dollar text-red"></i> USD</div>
+            <div><i class="fa fa-euro text-red"></i> Euro</div>
+            @if(Auth::check())
             <div class="flex items-center gap-3">
                 <a href="#"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i> My
                     Account</a>
                 <a href="#"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i>
                     Logout</a>
             </div>
-            <div class="hidden flex items-center gap-3">
-                <a href="#"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i>
+            @else
+            <div class="flex items-center gap-3">
+                <a href="{{ route('customerLogin') }}"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i>
                     Login/Register</a>
             </div>
+            @endif
         </div>
         <!--Menu Bar-->
         <nav class="relative max-h-16 py-5 shadow-xl flex justify-between md:justify-around items-center" id="nav_bar"
@@ -253,7 +260,7 @@
             <!--End Mobile Nav bar-->
             @php
             if (Auth::check()) {
-                $cartItems = Cart::where(['user_id', Auth::user()->id]);
+                $cartItems = App\Models\CartItem::where('user_id', Auth::user()->id)->get();
             } else {
                 $cartItems = session()->get('cart', []);
             }
@@ -263,7 +270,13 @@
                 <div class="text-size-12 relative" id="parent-cart">
                     <div id="cart" class="relative  text-center flex flex-col justify-center items-center">
                         <i class="fa fa-shopping-cart text-2xl text-red"></i>
-                        <div class="qty absolute bg-red rounded-full size-5 right-0 top-[-10px] text-white font-bold">{{ count($cartItems) }}
+                        <div class="qty absolute bg-red rounded-full size-5 right-0 top-[-10px] text-white font-bold">
+                            @if(Auth::check())
+                            {{ $cartItems->count()}}
+                            @else
+                            {{ count($cartItems) }}
+
+                            @endif
                         </div>
 
                     </div>
@@ -330,8 +343,8 @@
     </header>
 
     @yield('content')
-    @yield('script') @vite(['resources/js/common.js', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/checkout.js'])
-
+    @vite(['resources/js/common.js', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/checkout.js'])
+    @yield('script')
 </body>
 
 </html>

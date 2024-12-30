@@ -93,7 +93,7 @@ class ProductService
     public function createProduct($data)
 {
     DB::beginTransaction(); // Start transaction
-
+// dd($data['attributes']);
     try {
         $product = $this->productRepository->create($data);
 
@@ -101,6 +101,7 @@ class ProductService
         if (isset($data['attributes'])) {
             foreach ($data['attributes'] as $key => $attributeData) {
                 if ($key === 'margin_factor') {
+                    // dd($key);
                     $this->marginFactorRepository->create([
                         'product_id' => $product->id,
                         'country_id' => 1,
@@ -110,6 +111,7 @@ class ProductService
                         'cost' => 0,
                     ]);
                 } else {
+                    // dd($data);
                     $this->attributeRepository->create([
                         'product_id' => $product->id,
                         'name' => $key, // name key from attribute data

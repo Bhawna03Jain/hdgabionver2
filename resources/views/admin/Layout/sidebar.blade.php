@@ -209,7 +209,7 @@ $categories=App\Models\Category::all();
 
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{{ url('/admin/mastersheet/boq/basket') }}" class="nav-link">
+            <a href="{{ url('/admin/mastersheet/boq/basket/standard') }}" class="nav-link">
 
                 <i class="far fa-circle nav-icon"></i>
                 <p>2.5m basket BOQ</p>

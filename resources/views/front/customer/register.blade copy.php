@@ -1,4 +1,4 @@
-@extends('front.Layout.layout')
+@extends('front.Layout.layout_old')
 
 @section('style')
     <style>

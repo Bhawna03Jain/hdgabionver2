@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Services\AttributeService;
 use App\Services\CategoryService;
 use App\Services\ImageService;
+use App\Services\MasterSheetBOQConfigService;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -18,12 +19,16 @@ class ProductController extends Controller
     protected $imageService;
     protected $attributeService;
 
-    public function __construct(CategoryService $categoryService, ProductService $productService, AttributeService $attributeService, ImageService $imageService)
+    protected $MasterSheetBOQConfigService;
+
+
+    public function __construct(MasterSheetBOQConfigService $MasterSheetBOQConfigService, CategoryService $categoryService, ProductService $productService, AttributeService $attributeService, ImageService $imageService)
     {
         $this->categoryService = $categoryService;
         $this->productService = $productService;
         $this->imageService = $imageService;
         $this->attributeService = $attributeService;
+        $this->MasterSheetBOQConfigService = $MasterSheetBOQConfigService;
     }
     public function index($catid)
     {
@@ -84,7 +89,7 @@ class ProductController extends Controller
     {
 
         $data = $request->all();
-// dd($data);
+        // dd($data);
         $category = $this->categoryService->getCategoryById($data['category_id']);
         $cat_code = $category->code;
 
@@ -219,7 +224,8 @@ class ProductController extends Controller
             switch ($cat_code) {
                 case 'baskets':
                     $sku = $this->productService->generateSku($data, $cat_code);
-break;
+
+                    break;
                 case 'parts':
                     $sku = 'parts-' . $data['article_no'];
             }
@@ -238,11 +244,28 @@ break;
             $data['main_image'] = $imageName;
             $data['relevant_images'] = $RelimageName;
             $data['sku'] = $sku;
+            // ****************calculate Price from BOQ*****************
+
+            if ($cat_code) {
+                switch ($cat_code) {
+                    case 'baskets':
+                        $BasketBOQData = $this->MasterSheetBOQConfigService->createSingleBasketBOQPrice($data, $cat_code);
+                       $data['json_format']=json_encode($BasketBOQData,true);
+dd($data);
+                        break;
+                    case 'parts':
+
+                }
+            }
+
+            // ****************End calculate Price from BOQ*****************
+
             if ($existingRecord === "trashed") {
                 $prod = $this->productService->getproductsByCatIdAndSku($sku, $data['category_id']);
 
                 $prod = $this->productService->restore($prod->id);
                 $data['product_id'] = $prod->id;
+
                 if ($this->productService->updateProduct($data)) {
                     return response()->json([
                         'status' => 'success',
@@ -251,13 +274,13 @@ break;
                     ]);
                 }
             } else {
-   // Remove any null values from the 'attributes' array
-   if (isset($data['attributes']) && is_array($data['attributes'])) {
-    $data['attributes'] = array_filter($data['attributes'], function($value) {
-        return $value !== null;
-    });
-}
-// dd($data);
+                // Remove any null values from the 'attributes' array
+                if (isset($data['attributes']) && is_array($data['attributes'])) {
+                    $data['attributes'] = array_filter($data['attributes'], function ($value) {
+                        return $value !== null;
+                    });
+                }
+                // dd($data);
                 if ($this->productService->createProduct($data)) {
                     return response()->json([
                         'status' => 'success',
@@ -307,7 +330,7 @@ break;
     {
         // dd($request->all(   ));
         $data = $request->all();
-        $data = $request->all();
+        // $data = $request->all();s
         $category = $this->categoryService->getCategoryById($data['category_id']);
         $cat_code = $category->code;
 
@@ -342,7 +365,7 @@ break;
                         'attributes.length' => 'required|numeric|min:0',
                         'attributes.width' => 'required|numeric|min:0',
                         'attributes.height' => 'required|numeric|min:0',
-                        'attributes.short_description'=>'required',
+                        'attributes.short_description' => 'required',
 
                     ];
                     $customMessages = [
@@ -370,7 +393,7 @@ break;
                         'attributes.short_description.required' => 'The short description is required.',
 
                     ];
-break;
+                    break;
                 case 'parts':
 
                     $rules = [
@@ -457,8 +480,8 @@ break;
             switch ($cat_code) {
                 case 'baskets':
                     $sku = $this->productService->generateSku($data, $cat_code);
-                break;
-                    case 'parts':
+                    break;
+                case 'parts':
                     $sku = 'parts-' . $data['article_no'];
             }
         }
@@ -550,7 +573,7 @@ break;
             case 'baskets':
 
                 $query = Product::query();
-$query->where('category_id',$catid);
+                $query->where('category_id', $catid);
                 // if ($request->filled('length') && !in_array('length_all', $request->length)) {
                 //     $query->whereHas('attributes', function ($q) use ($request) {
                 //         $q->where('name', 'length')->whereIn('value', $request->length);
@@ -616,7 +639,7 @@ $query->where('category_id',$catid);
     public function getLastNo($column)
     {
 
-       $no = $this->productService->getLastNo($column);
+        $no = $this->productService->getLastNo($column);
 
         return response()->json(['no' => $no]);
     }
@@ -629,7 +652,7 @@ $query->where('category_id',$catid);
         $cat_code = $type;
         $products = $this->productService->getproductsWithAttributesByCatId($category->id);
         if ($cat_code) {
-            return view('front.products.products', compact('products', 'category','cat_code'));
+            return view('front.products.products', compact('products', 'category', 'cat_code'));
 
             // switch ($cat_code) {
             //     case 'baskets':
@@ -638,20 +661,20 @@ $query->where('category_id',$catid);
             //            return view('front.products.products', compact('products', 'category'));
             //     case 'parts':
 
-                //     $products = $this->productService->getproductsWithAttributesByCatId
-                //     ($catid);
-                //     // dd($products);
-                //     //  $categories = $this->categoryService->getAllCategories();
-                //     return view('admin.products.parts.index', compact('products', 'category'));
+            //     $products = $this->productService->getproductsWithAttributesByCatId
+            //     ($catid);
+            //     // dd($products);
+            //     //  $categories = $this->categoryService->getAllCategories();
+            //     return view('admin.products.parts.index', compact('products', 'category'));
 
-                // case 'others':
+            // case 'others':
 
 
             // }
-    // return view('front.products.product');
+            // return view('front.products.product');
+        }
     }
-    }
-    public function productDetail($type,$id)
+    public function productDetail($type, $id)
     {
         // dd($type);
 
@@ -661,9 +684,9 @@ $query->where('category_id',$catid);
         // dd($product);
         // $products = $this->productService->getproductsWithAttributesByCatId($category->id);
         if ($cat_code) {
-            return view('front.products.product-detail', compact('product', 'category','cat_code'));
+            return view('front.products.product-detail', compact('product', 'category', 'cat_code'));
 
-    }
+        }
     }
     // *********************************End Front End***********************************
 }

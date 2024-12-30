@@ -2,7 +2,7 @@
 
     @section('style')
         <style>
-            .login-container {
+            .register-container {
                 display: flex;
                 min-height: 70vh;
                 align-items: center;
@@ -11,140 +11,168 @@
                 flex-direction: column;
             }
 
-            .login-form {
-                padding: 20px 40px;
+            .register-form {
+                padding: 0px 40px;
                 width: 100%;
+            }
+            .row{
+                display:flex;
+                justify-content:space-between;
+                align-items: center;
+                width:100%;
+
+
             }
         </style>
     @endsection
-
-    @section('main-content')
-        <!--================Reset Password Box Area =================-->
-        <section class="mainSection login-container">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12 col-md-8 mx-auto">
-                        <header class="mt-5">
-                            <div>
-                                <h4 class="centerSubHeading">REGISTER</h4>
-                                <div class="line mx-auto"></div>
-                            </div>
-                        </header>
-                        <div class="mt-5 login-form">
-                            <p id="reset-success"></p>
-                            <form action="javascript:;" method="POST" id="customerRegisterForm">
-                                @csrf
-
-                                <div class="mb-4 form-group">
-                                    <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Name" onfocus="this.placeholder = ''"
-                                        onblur="this.placeholder = 'Name'" autocomplete="off" required>
-                                </div>
-                                <p class="reset-name"></p>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-4 form-group">
-                                            <input type="email" class="form-control" id="email" name="email"
-                                                placeholder="Email ID" onfocus="this.placeholder = ''"
-                                                onblur="this.placeholder = 'Email ID'" autocomplete="off" required>
-                                        </div>
-                                        <p class="reset-email"></p>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="mb-4 form-group">
-                                            {{-- <input type="tel" class="form-control" id="mobileno" name="mobileno"
-                                                placeholder="Mobile No." onfocus="this.placeholder = ''"
-                                                onblur="this.placeholder = 'Mobile No.'; validatePhoneNumber()"
-                                                autocomplete="off" required> --}}
-                                            {{-- <input type="hidden" name="mobile" id="mobile"> --}}
-                                            {{-- <p id="phone-validation-message" class="text-danger"></p> --}}
-                                            <input type="tel" class="form-control" id="mobileno" name="mobileno" placeholder="Mobile No." required>
-                                            <input type="hidden" name="mobile" id="mobile">
-                                            <p id="phone-validation-message" class="text-danger"></p>
-
-                                        </div>
-                                        <p class="reset-mobile"></p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="mb-4 form-group">
-                                            <textarea class="form-control" name="address" id="address" rows="4" placeholder="Address"
-                                                onfocus="this.placeholder = ''" onblur="this.placeholder = 'Address'" autocomplete="off"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-4 form-group">
-                                            <input type="text" class="form-control" id="city" name="city"
-                                                placeholder="City" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="mb-4 form-group">
-                                            <input type="text" class="form-control" id="country" name="country"
-                                                placeholder="Country" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    {{-- <div class="col-12 col-sm-6">
-                        <div class="mb-4 form-group">
-                            <input type="text" class="form-control" id="state" name="state"
-                                placeholder="State" required>
-                        </div>
-                    </div> --}}
-                                    <div class="col-12">
-                                        <div class="mb-4 form-group">
-                                            <input type="text" class="form-control" id="postal" name="postal"
-                                                placeholder="Postal Code" required>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-4 form-group">
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                placeholder="Password" onfocus="this.placeholder = ''"
-                                                onblur="this.placeholder = 'Password'" autocomplete="off" required>
-                                        </div>
-                                        <p class="reset-password"></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-4 form-group">
-                                            <input type="password" class="form-control" id="password_confirmation"
-                                                name="password_confirmation" placeholder="Confirm Password"
-                                                onfocus="this.placeholder = ''"
-                                                onblur="this.placeholder = 'Confirm Password'" autocomplete="off"
-                                                required>
-                                        </div>
-                                        <p class="reset-password_confirmation"></p>
-                                    </div>
-                                </div>
-
-                                <div class="mb-4 form-group d-flex justify-content-between align-items-center flex-column">
-                                    <button type="submit" class="btn btn-red">Register</button>
-                                    <div class="mt-4">Already have Account >> <a href="{{ route('customerLogin') }}"
-                                            class="color-logo">Login</a></div>
-                                </div>
-                            </form>
-                        </div>
+    @section('content')
+        {{-- @section('main-content') --}}
+        <!--================Login Box Area =================-->
+        <section class="mainSection">
+            <div class=" mx-auto w-full md:w-3/4">
+                <header class="w-full ">
+                    <div class="w-full">
+                        <h3 class="text-center text-red text-3xl font-bold mt-10">REGISTER</h3>
+                        <div class="line bg-red border"></div>
                     </div>
+                </header>
+                <div class="register-container flex justify-around items-center flex-col md:flex-row">
+
+                    <div class="register-form w-full px-1" id="">
+
+                        <form action="javascript:;" method="POST" id="customerRegisterForm"
+                            class="flex flex-col justify-center items-center" novalidate>
+                            <p id="reset-success" class="mb-5"></p>
+                            <p id="reset-error" class="mb-5"></p>
+                            @csrf
+                            <!--Name-->
+                            <div class="relative my-5 w-full">
+                                <label for="name"
+                                    class="absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">Name
+                                    <span class="text-red">*</span></label>
+                                <input type="text" name="name" id="name" autocomplete="name"
+                                    value="{{ request('name') }}" required
+                                    class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+                            </div>
+                            <p class="reset-name"></p>
+                            <!-- New Row-->
+                            <div class="row  flex-col md:flex-row ">
+                                <!--Email-->
+                                <div class="relative my-5 w-full m-0 md:mr-4">
+                                    <label for="email"
+                                        class="absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">Email
+                                        <span class="text-red">*</span></label>
+                                    <input type="text" name="email" id="email" autocomplete="email"
+                                        value="{{ request('email') }}" required
+                                        class="form-control block w-full bg-white py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+                                </div>
+                                <p class="reset-email"></p>
+                                <!--Password-->
+                                <div class="relative my-5  w-full m-0 md:mr-4">
+                                    <label for="mobileno"
+                                        class="mb-10 absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">mobileno<span
+                                            class="text-red">*</span></label>
+                                    <input type="tel" name="mobileno" id="mobileno" autocomplete="mobileno"
+                                        value="" required
+                                        class="form-control block w-full bg-white py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+                                    <input type="hidden" name="mobile" id="mobile">
+                                    <p id="phone-validation-message" class="text-red"></p>
+                                </div>
+                                <p class="reset-mobile"></p>
+                            </div>
+                            <!--End Row-->
+                            <!-- Row-->
+                            <!--Address-->
+                            <div class="relative my-5 w-full">
+                                <label for="address"
+                                    class="mb-10 absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">Address<span
+                                        class="text-red">*</span></label>
+                                <textarea type="text" name="address" id="address" autocomplete="address" required
+                                    class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+                                </textarea>
+                            </div>
+                            <p class="reset-address"></p>
+
+                            <!--End Row-->
+
+                            <!-- New Row-->
+                            <div class="row flex-col md:flex-row">
+                                <!--City-->
+                                <div class="relative my-5 w-full m-0 md:mr-4">
+                                    <label for="city"
+                                        class="absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">City
+                                        <span class="text-red">*</span></label>
+                                    <input type="text" name="city" id="city" autocomplete="city"
+                                        value="{{ request('city') }}" required
+                                        class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+                                </div>
+                                <p class="reset-city"></p>
+                                <!--Country-->
+                                <div class="relative my-5 w-full m-0 md:mr-4">
+                                    <label for="country"
+                                        class="mb-10 absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">country<span
+                                            class="text-red">*</span></label>
+                                    <input type="text" name="country" id="country" autocomplete="country"
+                                        value="" required
+                                        class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+
+                                </div>
+                                <p class="reset-country"></p>
+                            </div>
+                            <!--End Row-->
+                            <!--Address-->
+                            <div class="relative my-5 w-full">
+                                <label for="postal"
+                                    class="mb-10 absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">Postal<span
+                                        class="text-red">*</span></label>
+                                <input type="text" name="postal" id="postal" autocomplete="postal" required
+                                    class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+
+                            </div>
+                            <p class="reset-postal"></p>
+                            <!-- New Row-->
+                            <div class="row flex-col md:flex-row">
+                                <!--Password-->
+                                <div class="relative my-5 w-full m-0 md:mr-4">
+                                    <label for="password"
+                                        class="absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">password
+                                        <span class="text-red">*</span></label>
+                                    <input type="text" name="password" id="password" autocomplete="password"
+                                        value="{{ request('password') }}" required
+                                        class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+                                </div>
+                                <p class="reset-password"></p>
+                                <!--Password Confirmation-->
+                                <div class="relative my-5 w-full m-0 md:mr-4">
+                                    <label for="password_confirmation"
+                                        class="mb-10 absolute left-3 top-1/4 text-base text-gray-500  transform -translate-y-1/2 pointer-events-none transition-all duration-200">password_confirmation<span
+                                            class="text-red">*</span></label>
+                                    <input type="text" name="password_confirmation" id="password_confirmation"
+                                        autocomplete="password_confirmation" value="" required
+                                        class="form-control block w-full bg-white px-3 py-2  text-gray-900 placeholder-transparent outline-none border-b-2 border-gray-300 focus:border-red text-sm ">
+
+                                </div>
+                                <p class="reset-password_confirmation"></p>
+                            </div>
+                            <!--End Row-->
+
+                            <button type="submit" class="bg-red w-full m-6 p-1 text-white rounded">Register</button>
+                            <div class="form-text text-center">Already have Account >>
+                                <a href="{{ route('customerLogin') }}">Login</a>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
             </div>
+            </div>
         </section>
-        <!--================End Reset Password Box Area =================-->
-    @endsection
 
-    @section('js')
+        <!--================End Login Box Area =================-->
+    @endsection
+    @section('script')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        @vite('resources/js/customerauth.js');
         <script>
             let iti;
             async function getLocationData() {
@@ -190,8 +218,8 @@
             async function initPhoneInput() {
                 const countryCode = await getCountryCode(); // Fetch user's country code
                 const phoneInputField = document.getElementById("mobileno");
-console.log(countryCode);
-iti =window.intlTelInput(phoneInputField, {
+                console.log(countryCode);
+                iti = window.intlTelInput(phoneInputField, {
                     initialCountry: countryCode, // Set default country based on user location
                     separateDialCode: true,
                     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/24.6.0/build/js/utils.js" // For validation and formatting
@@ -228,3 +256,7 @@ iti =window.intlTelInput(phoneInputField, {
             };
         </script>
     @endsection
+
+    {{-- @section('js')
+
+    @endsection --}}

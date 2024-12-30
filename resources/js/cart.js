@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             alert(decodeURIComponent(error));
                         });
                     } else if (resp.type === "success") {
-                        // console.log(resp.products);
+                        console.log(resp.products);
                         updateCart(resp.products);
                     } else {
                     }
@@ -83,6 +83,66 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         });
     }
+
+    // ************From Products Page**********
+    var addToCartProducts = document.querySelectorAll(".add_to_cart_product");
+
+    if (addToCartProducts) {
+        addToCartProducts.forEach((addToCartProduct)=>{
+        addToCartProduct.addEventListener("click", function () {
+            // console.log(addToCart);
+            const qty = 1;
+            const product_id = this.dataset.id;
+
+            const data = { product_id: product_id, quantity: qty };
+            console.log(data);
+            fetch("/cart/add", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+                .then((response) => response.json())
+                .then((resp) => {
+                    // console.log(resp.products);
+                    // updateProductList(resp.products);
+                    // document.getElementById("loader").style.display = "none";
+
+                    if (resp.type === "error" && resp.status === "false") {
+                        Object.entries(resp.errors).forEach(([key, error]) => {
+                            const errorElement = document.querySelector(
+                                `.reset-${key}`
+                            );
+                            if (errorElement) {
+                                errorElement.style.color = "red";
+                                errorElement.textContent = error;
+                                errorElement.style.display = "block";
+
+                                setTimeout(() => {
+                                    errorElement.style.display = "none";
+                                }, 4000);
+                            }
+
+                            alert(decodeURIComponent(error));
+                        });
+                    } else if (resp.type === "success") {
+                        console.log(resp.products);
+                        updateCart(resp.products);
+                    } else {
+                    }
+                })
+                .catch(() => {
+                    console.error("Error occurred.");
+                });
+            });
+        });
+    }
+
+
     function updateHeaderCart(productId,quantity) {
         // console.log(quantity);
         fetch("/cart/add", {
@@ -114,6 +174,8 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
     function updateCart(cartItems) {
+        const cartArray = Object.values(cartItems);
+        console.log(cartArray.length);
         const cartCount = document.querySelector("#cart .qty");
         const cartList = document.querySelector(".cart-list");
         const cartSummary = document.querySelector(".cart-summary #cartcount");

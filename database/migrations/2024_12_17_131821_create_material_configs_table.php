@@ -22,6 +22,8 @@ return new class extends Migration
             $table->integer('no')->nullable();
             // $table->decimal('weight_per_cm', 10, 6)->nullable();
             // $table->decimal('unit_price', 8, 2)->nullable();
+            $table->string('length_formula')->nullable();
+            $table->string('no_formula')->nullable();
             $table->string('weight_kg_formula')->nullable();
             $table->string('price_formula')->nullable();
             // $table->decimal('price', 8, 2)->default(0.0);

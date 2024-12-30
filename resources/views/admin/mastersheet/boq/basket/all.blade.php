@@ -213,6 +213,7 @@
                                         <p class="text-warning">* Fields whose values are derived from other field value are
                                             not
                                             permitted to edit.</p>
+                                            <p class="text-warning">* Only Yellow Border Fields are editable.</p>
 
                                     </div>
 
@@ -223,7 +224,7 @@
                                         <fieldset>
                                             <legend>Material Cost</legend>
                                             <p id="invalid_no" style="display:none"></p>
-                                            <div class="card">
+                                            <div class="card" style="width:100%;max-width:80vw;">
                                                 <div class="card-body table-responsive p-0">
                                                     <table class="table table-bordered" id="materials">
                                                         <thead>
@@ -236,6 +237,8 @@
                                                                 <th>No</th>
                                                                 <th>Weight per cm (Kg)</th>
                                                                 <th>Unit Price (€)</th>
+                                                                <th>Total Weight(kg)</th>
+                                                    <th>Total Price(€)</th>
                                                                 <th>Specs</th>
                                                                 {{-- <th>Actions</th> --}}
                                                             </tr>
@@ -278,7 +281,11 @@
 
                                                                     <!-- Length -->
                                                                     <td>
-                                                                        @if (in_array($item->item_code, ['base_plate_on_c', 'channels', 'brackets']))
+                                                                        <textarea  name="material_configs[{{ $item->id }}][{{ $item->item_code }}][length_formula]"
+                                                                            class="form-control"
+                                                                          readonly
+                                                                            required>{{ $item->length_formula ?? '' }}</textarea>
+                                                                        {{-- @if (in_array($item->item_code, ['base_plate_on_c', 'channels', 'brackets']))
                                                                             <input type="text"
                                                                                 name="material_configs[{{ $item->id }}][{{ $item->item_code }}][length]"
                                                                                 class="form-control"
@@ -289,14 +296,18 @@
                                                                                 name="material_configs[{{ $item->id }}][{{ $item->item_code }}][length]"
                                                                                 class="form-control"
                                                                                 value="{{ $item->length ?? '' }}" readonly>
-                                                                        @endif
+                                                                        @endif --}}
                                                                     </td>
 
 
                                                                     <!-- Number -->
 
                                                                     <td>
-                                                                        <?php
+                                                                        <textarea  name="material_configs[{{ $item->id }}][{{ $item->item_code }}][no_formula]"
+                                                                            class="form-control"
+                                                                          readonly
+                                                                            required>{{ $item->no_formula ?? '' }}</textarea>
+                                                                        {{-- <?php
                                                                         // $code=$item->product->attributes->where('name','code')->first()->value;
                                                                         // echo $code;
                                                                         ?>
@@ -304,7 +315,7 @@
                                                                             name="material_configs[{{ $item->id }}][{{ $item->item_code }}][no]"
                                                                             class="form-control {{ in_array($code, ['rods', 'spirals']) ? 'readonly' : '' }}"
                                                                             value="{{ $item->no ? $item->no : '' }}"
-                                                                            readonly>
+                                                                            readonly> --}}
                                                                     </td>
 
                                                                     <!-- Weight per cm -->
@@ -332,7 +343,26 @@
                                                                             class="form-control"
                                                                             value="{{ $unit_price ?? '' }}" readonly>
                                                                     </td>
-
+ <!-- Weight Per Kg -->
+ <td>
+    <textarea name="material_configs[{{ $item->id }}][{{ $item->item_code }}][weight_kg_formula]"
+        class="form-control"
+        readonly>{{ $item->weight_kg_formula ?? '' }}</textarea>
+    {{-- <input type="text" step="0.01"
+        name="material_configs[{{ $item->id }}][{{ $item->item_code }}][weight_kg_formula]"
+        class="form-control"
+        value="{{ $item->weight_kg_formula ?? '' }}" readonly> --}}
+</td>
+<!-- Total Price -->
+<td>
+    <textarea name="material_configs[{{ $item->id }}][{{ $item->item_code }}][no_formula]"
+        class="form-control"
+        readonly>{{ $item->no_formula ?? '' }}</textarea>
+    {{-- <input type="text" step="0.01"
+        name="material_configs[{{ $item->id }}][{{ $item->item_code }}][price_formula]"
+        class="form-control"
+        value="{{ $item->price_formula ?? '' }}" readonly> --}}
+</td>
 
                                                                     <td>
                                                                         <?php
@@ -370,6 +400,7 @@
                                         <p class="text-warning">* Fields whose values are derived from other field value are
                                             not
                                             permitted to edit.</p>
+                                            <p class="text-warning">* Only Yellow Border Fields are editable.</p>
 
                                     </div>
 
@@ -408,19 +439,19 @@
                                                                     <!-- Article No -->
                                                                     <td>
                                                                         <textarea name="material_configs[{{ $item->id }}][{{ $item->item_code }}][article_no]"
-                                                                            class="form-control editable-field" readonly required>{{ $item->product->article_no ?? '' }}</textarea>
+                                                                            class="form-control" readonly required>{{ $item->product->article_no ?? '' }}</textarea>
                                                                     </td>
 
                                                                     <!-- HS Code -->
                                                                     <td>
                                                                         <textarea name="material_configs[{{ $item->id }}][{{ $item->item_code }}][hs_code]"
-                                                                            class="form-control editable-field" readonly>{{ $item->product->hs_code ?? '' }}</textarea>
+                                                                            class="form-control" readonly>{{ $item->product->hs_code ?? '' }}</textarea>
                                                                     </td>
 
                                                                     <!-- Item Name -->
                                                                     <td>
                                                                         <textarea name="material_configs[{{ $item->id }}][{{ $item->item_code }}][item_name]"
-                                                                            class="form-control editable-field" readonly required>{{ $item->product->name ?? '' }}</textarea>
+                                                                            class="form-control" readonly required>{{ $item->product->name ?? '' }}</textarea>
                                                                     </td>
 
                                                                     <!-- Length -->
@@ -562,7 +593,7 @@
                                 {{-- <h2>Select a Product</h2> --}}
                                 <form id="productForm">
 
-                                    <fieldset>
+                                    <fieldset style="max-height:70vh; overflow:scroll;">
                                         <legend>Select Material</legend>
                                         <div class="card">
                                             <div class="card-body">
@@ -1238,21 +1269,24 @@
             "searching": true,
             "ordering": true,
             "info": true,
+            scrollX: true,
+            "buttons": ["pdf", "colvis"]
             //  "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        });
-        //  .buttons().container().appendTo('#materials_wrapper .col-md-6:eq(0)');
+        }).buttons().container().appendTo('#materials_wrapper .col-md-6:eq(0)');
     </script>
     <script>
         $("#materialTable").DataTable({
+
             "lengthChange": true,
             "autoWidth": true,
             "paging": true,
             "searching": true,
             "ordering": true,
             "info": true,
+
+            "buttons": ["pdf", "colvis"]
             //  "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        });
-        //  .buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
+        }).buttons().container().appendTo('#materialTable_wrapper .col-md-6:eq(0)');
     </script>
     <script>
         $("#extramaterials").DataTable({
@@ -1262,10 +1296,9 @@
             "searching": true,
             "ordering": true,
             "info": true,
-            //  scrollX: true,
-            //  scrollY: 200,
+            "buttons": ["pdf", "colvis"]
             //  "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        });
+        }).buttons().container().appendTo('#extramaterials_wrapper .col-md-6:eq(0)');
         //  .buttons().container().appendTo('#extramaterials_wrapper .col-md-6:eq(0)');
     </script>
     <script>

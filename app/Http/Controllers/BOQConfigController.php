@@ -29,7 +29,10 @@ class BOQConfigController extends Controller
         $this->productService = $productService;
         $this->categoryService = $categoryService;
     }
+    // public function BOQConfig($boqtype = "")
+    // {
 
+    // }
     // ****************************Fences*******************************
     public function BOQConfig($boqtype = "", $type = "")
     {
@@ -53,12 +56,32 @@ class BOQConfigController extends Controller
         $allmaterials = $this->productService->getProductsWithAttributesByCategoryCodes($cat_codes);
         $countries = $this->countryService->getAllCountries();
 // dd($country_margin_factors);
-        return view("admin.mastersheet.boq.{$boqtype}.all", compact('boqConfig', 'allmaterials', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'country_margin_factors','countries'));
+if($type==="standard"){
+    // dd($commonmaterials);
+    // "id" => 1
+    // "product_id" => 7
+    // "item_code" => "Brackets"
+    // "length" => null
+    // "no" => null
+    // "weight_kg_formula" => ""
+    // "price_formula" => "{{unit_price*no}}"
+    // "sides" => ""
+    // "specs" => null
+    // "common" => 1
+    // "status" => 1
+    // "boq_config_id" => 2
+    // "deleted_at" => null
+    // "created_at" => "2024-12-30 09:19:08"
+    // "updated_at" => "2024-12-30 09:19:08"
+    // dd($commonmaterials);
+return view("admin.mastersheet.boq.{$boqtype}.standard", compact('boqConfig', 'allmaterials', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'country_margin_factors','countries','boqtype'));
+}
+return view("admin.mastersheet.boq.{$boqtype}.all", compact('boqConfig', 'allmaterials', 'taxes', 'commonmaterials', 'extramaterials', 'manufacturing', 'country_margin_factors','countries'));
     }
 
     public function storeOrUpdateConfig($boqtype = "", $type = "", Request $request)
     {
-       dd($request->all());
+    //    dd($request->all());
     // dd($boqtype);
         $boqConfig = $this->MasterSheetBOQConfigService->getByBoqId($request->boqconfigid);
          if (!$boqConfig) {

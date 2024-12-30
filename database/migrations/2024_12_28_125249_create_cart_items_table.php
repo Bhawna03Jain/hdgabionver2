@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade'); // Associate cart with a user
             $table->foreignId('product_id')->nullable()->constrained('products')->onDelete('cascade'); // Associate cart with a user
 
-            $table->uuid('guest_id')->nullable();
-            $table->string('name'); // Product name
+            // $table->uuid('guest_id')->nullable();
+            // $table->string('name'); // Product name
             $table->integer('quantity'); // Quantity
-            $table->decimal('price', 10, 2); // Price per unit
+            // $table->decimal('price', 10, 2); // Price per unit
             $table->timestamps();
         });
     }

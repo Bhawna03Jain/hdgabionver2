@@ -239,13 +239,14 @@
 
                                             <div class="col-12 col-md-6">
                                                 <div class="form-group">
-                                                    <label for="maze">Margin Factor*</label>
+                                                    <label for="margin_factor">Margin Factor*</label>
+
                                                     <input type="number" step="any" class="form-control"
-                                                        id="unit_price" name="attributes[margin_factor]" value=""
+                                                        id="margin_factor" name="attributes[margin_factor]" value="{{ old('margin_factor', $product->marginfactors->where('country_id', 1)->first()?? '') }}"
                                                         required>
 
                                                 </div>
-                                                <p class="reset-unit_price text-danger"></p>
+                                                <p class="reset-margin_factor text-danger"></p>
                                             </div>
                                         </div>
                                     </fieldset>

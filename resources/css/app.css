@@ -6,3 +6,44 @@
     @apply text-normal; or class you choose
   } */
 
+  .line {
+    display: block;
+    height: 5px;
+    width: 100px;
+    position: relative;
+    border-radius: 5px;
+    /* overflow: hidden; */
+    margin: 10px auto 20px auto;
+}
+
+.line::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    background: white;
+    animation: MOVE-BG 4s linear infinite;
+}
+
+@keyframes MOVE-BG {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(105px);
+    }
+
+
+}
+
+.row{
+                display:flex;
+                justify-content:space-between;
+                align-items: center;
+                width:100%;
+
+
+            }

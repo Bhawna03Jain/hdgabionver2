@@ -104,7 +104,7 @@
       </div> --}}
     <!-- ========== Header  ========== -->
 
-    @include('front.Layout.header')
+    {{-- @include('front.Layout.header') --}}
     <!-- ========== Main Section ========== -->
     {{-- @include('front.Layout.home-carousel') --}}
 

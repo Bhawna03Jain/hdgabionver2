@@ -1,3 +1,6 @@
 .nav-sidebar .nav-item>.nav-link {
     margin-bottom: 0rem;
 }
+.editable-field:not([readonly]){
+    border:2px solid yellow!important;
+}

@@ -232,8 +232,8 @@
                                         <a href="product-detail/{{ $cat_code }}/{{ $product->id }}"
                                             class="ml-1 text-center text-base view-detail-large rounded-lg bg-red hover:bg-red-light px-1 py-2 w-1/2 text-white font-bold transition-all duration-300">View
                                             Detail</a>
-                                        <a
-                                            class="mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
+                                        <a id="" data-id={{ $product->id }}
+                                            class="add_to_cart_product mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
                                             To Cart</a>
                                     </div>
                                 </div>
@@ -287,9 +287,9 @@
                                         {{-- <button
                                             class="ml-2 view-detail-large rounded-lg bg-red hover:bg-red-light p-2 w-1/2 text-white font-bold transition-all duration-300">View
                                             Detail</button> --}}
-                                            <a
-                                            class="mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
-                                            To Cart</a>
+                                            <a id="" data-id={{ $product->id }}
+                                                class=" add_to_cart_product mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
+                                                To Cart</a>
                                     </div>
                                 </div>
                             </div>
@@ -522,6 +522,7 @@
     </main>
 @endsection
 @section('script')
+@vite(['resources/js/cart.js'])
     <script>
         var gridLayout = document.getElementById('products-grid');
         var listLayout = document.getElementById('products-list');
@@ -704,8 +705,8 @@ console.log(catcode);
                                         <a href="product-detail/${catcode}/${product.id}"
                                             class="ml-1 text-center text-base view-detail-large rounded-lg bg-red hover:bg-red-light px-1 py-2 w-1/2 text-white font-bold transition-all duration-300">View
                                             Detail</a>
-                                        <a href=""
-                                            class="mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
+                                        <a id="" data-id=${product.id}
+                                            class="add_to_cart_product mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
                                             To Cart</a>
                                     </div>
                                     </div>
@@ -753,8 +754,8 @@ console.log(catcode);
                                         <a href="product-detail/${catcode}/${product.id}"
                                             class="ml-1 text-center text-base view-detail-large rounded-lg bg-red hover:bg-red-light px-1 py-2 w-1/2 text-white font-bold transition-all duration-300 text-center">View
                                             Detail</a>
-                                        <a
-                                            class="mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300 text-center">Add
+                                         <a id="" data-id=${product.id}
+                                            class="add_to_cart_product mr-1 text-center text-base add-cart-large  rounded-lg bg-secondary-800 hover:bg-secondary-700 px-1 py-2  w-1/2 text-white font-bold transition-all duration-300">Add
                                             To Cart</a>
                                 </div>
                             </div>
