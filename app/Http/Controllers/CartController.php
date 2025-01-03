@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CartItem;
 use App\Services\CartService;
 use App\Services\ProductService;
 use Auth;
@@ -24,23 +25,10 @@ class CartController extends Controller
 
     public function index()
     {
-        if (Auth::check()) {
-            $cartItems = $this->cartService->getcartItemsByUserId(Auth::user()->id);
+        $cartItems = $this->cartService->getCartItemsForUser();
 
-            // $user_email = Auth::user()->email;
-            // $cartItems = Cart::search(function ($key, $value) use ($user_email) {
-            //     return $key->options->user_email == $user_email;
-            // });
-            // return   $cartItems;
-            return view('front.cart.index', compact('cartItems'));
-        } else {
+        return view('front.cart.index', compact('cartItems'));
 
-            // $session_id = Session::get('session_id');
-            $cartItems = session()->get('cart', []);
-            // return   $cartItems;
-            return view('front.cart.index', compact('cartItems'));
-        }
-        //return view('cart.index',compact('cartItems'));
     }
     public function addToCart(Request $request)
     {
@@ -60,141 +48,75 @@ class CartController extends Controller
         $customMessages = [
             'product_id.required' => 'The product ID is required.',
             'product_id.exists' => 'The selected product does not exist.',
-            // 'name.required' => 'The product name is required.',
-            // 'name.string' => 'The product name must be a string.',
-            'quantity.required' => 'The quantity is required.',
+             'quantity.required' => 'The quantity is required.',
             'quantity.integer' => 'The quantity must be an integer.',
             'quantity.min' => 'The quantity must be at least 1.',
-            // 'price.required' => 'The price is required.',
-            // 'price.numeric' => 'The price must be a valid number.',
-            // 'price.min' => 'The price must be at least 0.',
+
         ];
 
         $validator = Validator::make($request->all(), $rules, $customMessages);
 
         if (Auth::check()) {
-
-            // dd(Auth::user()->id);
-            // **Authenticated User Logic**
             $cartItem = $this->cartService->getcartByUserIdAndProductId(Auth::user()->id, $request->product_id);
-            // $cartItem = CartItem::where('user_id', Auth::user()->id)
-            //                     ->where('product_id', $request->product_id)
-            //                     ->first();
 
             if ($cartItem) {
-                // Update quantity if product already exists
-                $this->cartService->updatecartQuantity([
+                 $this->cartService->updatecartQuantity([
                     'id' => $cartItem->id,
                     'quantity' => $request->quantity,
                 ]);
-                // $cartItem->update([
-                //     'id'=> $cartItem->id,
-                //     'quantity' => $cartItem->quantity + $request->quantity,
-                // ]);
-            } else {
-                // Add new item to the cart
-                $data['user_id'] = Auth::user()->id;
-                $cartItem = $this->cartService->createcartItem($data);
-                // dd($data);
 
-                // 5 [
-                //     "product_id" => "13"
-                //     "name" => "Gabion Basket 1"
-                //     "quantity" => "1"
-                //     "price" => 0
-                //     "image" => "admin/images/products/baskets/65023.png"
-                //   ]
+            } else {
+                 $data['user_id'] = Auth::user()->id;
+                $cartItem = $this->cartService->createcartItem($data);
+
+
             }
-            // $cartItems[] = [
-            //     'product_id' => $data['product_id'],
-            //     'name' => $this->productService->getproductById($data['product_id'])->name,
-            //     'quantity' => $data['quantity'],
-            //     'price' => 0,
-            //     'image' => $this->productService->getproductById($data['product_id'])->main_image,
-            // ];
+            // dd($cartItem);
             $items = $this->cartService->getcartItemsByUserId(Auth::user()->id);
             foreach ($items as $item) {
-                $cartItems[] = [
-                    'product_id' => $item['product_id'],
-                    'name' => $this->productService->getproductById($item['product_id'])->name,
-                    'quantity' => $item['quantity'],
-                    'price' => 0,
-                    'image' => $this->productService->getproductById($item['product_id'])->main_image,
-                ];
+                $cartItems[]=$this->cartService->getAddedCartItem($item);
+
             }
-            // dd($cartItems);
 
             return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItems, 'type' => 'success']);
-
-        } else {
+    }
+        else {
             // **Guest User Logic**
-
+            // Session::forget('cart');
             $cart = Session::get('cart');
+            // dd($cart);
             $productExists = false;
             // Check if the product already exists in the session cart
             if ($cart) {
                 foreach ($cart as &$item) {
                     if ($item['product_id'] == $request->product_id) {
+
                         $item['quantity'] = $request->quantity;
+                        $item['total_price_with_vat']=$item['price_with_vat']*$request->quantity;
+                        $item['total_price_after_discount']=$item['price_after_discount']*$request->quantity;
+                        // dd($item);
                         $productExists = true;
                         break;
                     }
                 }
             }
+            // dd($cart);
             // If the product does not exist, add it to the cart
             if (!$productExists) {
-                // $carts=$this->cartService->getcartItemsByProductId($request->product_id)->first();
-                // dd($carts);
-                $cartItems[] = [
-                    'product_id' => $request->product_id,
-                    'name' => $this->productService->getproductById($request->product_id)->name,
-                    'quantity' => $request->quantity,
-                    'price' => 0,
-                    'image' => $this->productService->getproductById($request->product_id)->main_image,
-                ];
+                   $cart[]=$this->cartService->getAddedCartItem($data);
+
             }
             // Update the session cart
-            Session::put('cart', $cartItems);
-            // $cartItem=Session::get('cart');
-// Session::forget('cart');
-// dd($cartItems);
-            return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItems, 'type' => 'success']);
+            Session::put('cart', $cart);
+            // Session::forget('cart');
+            $cartItem=Session::get('cart');
+// dd($cartItem);
+            return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItem, 'type' => 'success']);
 
         }
-        // dd($cartItems);
-//         return response()->json(['message' => 'Item added to cart successfully!', 'products' => $cartItems, 'type' => 'success']);
-    }
+         }
 
-    // To handle merging the cart when a guest user logs in, you can implement logic in the login or a dedicated mergeCart function. Here’s an example:
 
-    public function mergeCart()
-    {
-        if (Session::has('cart')) {
-            $guestCart = Session::get('cart');
 
-            foreach ($guestCart as $item) {
-                $cartItem = CartItem::where('user_id', auth()->id())
-                    ->where('product_id', $item['product_id'])
-                    ->first();
-
-                if ($cartItem) {
-                    $cartItem->update([
-                        'quantity' => $cartItem->quantity + $item['quantity'],
-                    ]);
-                } else {
-                    CartItem::create([
-                        'user_id' => auth()->id(),
-                        'product_id' => $item['product_id'],
-                        'name' => $item['name'],
-                        'quantity' => $item['quantity'],
-                        'price' => $item['price'],
-                    ]);
-                }
-            }
-
-            // Clear the guest cart from the session
-            Session::forget('cart');
-        }
-    }
 
 }

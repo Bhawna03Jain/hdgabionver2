@@ -181,6 +181,8 @@
                                                         50</option>
                                                     <option value="100">
                                                         100</option>
+                                                        <option value="200">
+                                                            200</option>
                                                 </select>
                                             </div>
                                             <p class="reset-length text-danger"></p>

@@ -1,3 +1,7 @@
 //delete button in add row in master sheet boq must ask want to delete or not
 
 upload glb in product create form
+
+1) create boq for each product
+2) update price for all products automatically if boq changes
+3) improvement in json format of product

@@ -6,10 +6,12 @@ use App\Models\MaterialConfig;
 use App\Repositories\AdminRepository;
 use App\Repositories\AttributeRepository;
 use App\Repositories\BoqConfigRepository;
+use App\Repositories\CartRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\Contracts\AdminRepositoryInterface;
 use App\Repositories\Contracts\AttributeRepositoryInterface;
 use App\Repositories\Contracts\BoqConfigRepositoryInterface;
+use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Contracts\CountryRepositoryInterface;
 use App\Repositories\Contracts\CurrencyRepositoryInterface;
@@ -54,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(TaxesConfigRepositoryInterface::class, TaxesConfigRepository::class);
         $this->app->bind(CurrencyRepositoryInterface::class, CurrencyRepository::class);
+        $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
 
         // $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 

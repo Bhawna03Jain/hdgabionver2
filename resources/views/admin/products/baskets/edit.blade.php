@@ -203,6 +203,10 @@
                                                             {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '100' ? 'selected' : '' }}>
 
                                                             100</option>
+                                                            <option value="200"
+                                                            {{ old('length', $product->attributes->where('name', 'length')->first()->value ?? '') == '200' ? 'selected' : '' }}>
+
+                                                            200</option>
                                                     </select>
                                                 </div>
                                                 <p class="reset-length"></p>

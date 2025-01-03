@@ -204,6 +204,9 @@ Route::post('product-filter-data/{type}', [ProductController::class, 'filterData
 Route::prefix('/customer')->group(function () {
 
     // Route::match(['get', 'post'], '/login', [CustomerController::class, 'login'])->name('customerLogin');
+    Route::get('/try',function(){
+        return view('front.customer.login');
+    });
     Route::get('/login', [CustomerController::class, 'showLoginForm'])->name('customerLogin');
     Route::post('/login', [CustomerController::class, 'login']);
 
@@ -244,6 +247,7 @@ Route::prefix('/customer')->group(function () {
         // Route::get('boq_fences', [BOQConfigController::class, 'CustomerBOQFences'])->name('customer_boq_fences.index');
         // Route::get('/drawing-fence', [DrawingController::class, 'drawFence'])->name('drawing-fence');
         // Other routes that need this middleware
+        // Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     });
 });
 

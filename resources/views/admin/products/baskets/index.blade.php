@@ -108,42 +108,92 @@
                                 {{-- <a href="javascript:;" class="btn btn-primary" style="margin-left: auto;" id="create-category-btn">Create Category</a> --}}
                             </div>
                             <div class="card-body table-responsive">
-                                <table id="products" class="table table-bordered table-striped">
+                                <table id="products" class="table table-bordered table-striped text-center">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Article No</th>
-                                            <th>HS Code</th>
+                                            {{-- <th>Article No</th> --}}
+                                            {{-- <th>HS Code</th> --}}
                                             {{-- <th>SKU</th> --}}
-                                            <th>Name</th>
-                                            <th>Length</th>
-                                            <th>Width</th>
-                                            <th>Height</th>
-                                            <th>Maze</th>
-                                            <th>Price</th>
+                                            <th>
+                                                Name <br>(Artcle No.) <br> (HS Code)
+
+                                            </th>
+                                            <th>
+                                                Dimension <br>(LxWxH) <br> (Maze Size)
+                                            </th>
+                                            {{-- <th>Width</th>
+                                            <th>Height</th> --}}
+                                            {{-- <th>Maze</th> --}}
+                                            {{-- <th>Factors <br> (Ma) <br> (Discounted price) </th>
+                                            <th>Price <br> (price with Vat) <br> (Discounted price) </th>
+                                            <th>Price(after Discount)</th> --}}
                                             <th>Short Description</th>
                                             <th>Detailed Description</th>
                                             <th>Main Image</th>
                                             <th>Visible To Frontend</th>
                                             <th>Action</th>
                                         </tr>
+                                        {{-- <tr>
+                                            <th>ID</th>
+                                            <th>Article No</th>
+                                            <th>HS Code</th>
+
+                                            <th>Name</th>
+                                            <th>Length</th>
+                                            <th>Width</th>
+                                            <th>Height</th>
+                                            <th>Maze</th>
+                                            <th>Price(inluding Vat)</th>
+                                            <th>Price(after Discount)</th>
+                                            <th>Short Description</th>
+                                            <th>Detailed Description</th>
+                                            <th>Main Image</th>
+                                            <th>Visible To Frontend</th>
+                                            <th>Action</th>
+                                        </tr> --}}
                                     </thead>
-                                    <tbody>
+                                    <tbody >
                                             @forelse ($products as $product)
                                                 <tr>
                                                     <td>{{ $product->id }}</td>
-                                                    <td>{{ $product->article_no }}</td>
-                                                    <td>{{ $product->hs_code }}</td>
+                                                    {{-- <td>{{ $product->article_no }}</td>
+                                                    <td>{{ $product->hs_code }}</td> --}}
                                                     {{-- <td>{{ $product->sku }}</td> --}}
-                                                    <td>{{ $product->name }}</td>
-                                                    <td>@php
-                                                        $Attribute = $product->attributes->firstWhere('name', 'length');
-                                                    @endphp
-                                                        @if ($Attribute)
-                                                            {{ $Attribute->value }}
-                                                        @endif
+                                                    <td >
+                                                        {{ $product->name }}
+                                                        <br>({{ $product->article_no }})
+                                                        <br> ({{ $product->hs_code }})
                                                     </td>
                                                     <td>@php
+                                                        $length = $product->attributes->firstWhere('name', 'length');
+                                                        $width = $product->attributes->firstWhere('name', 'width');
+                                                        $height = $product->attributes->firstWhere('name', 'height');
+                                                        $maze= $product->attributes->firstWhere('name', 'maze');
+                                                        // $Attribute = $product->attributes->firstWhere('name', 'length');
+                                                    @endphp
+(
+                                                        @if ($length)
+                                                            {{ $length->value}}
+                                                        @endif
+                                                        @if ($width)
+                                                        x {{ $width->value}}
+                                                    @endif
+                                                    @if ($height)
+                                                    x {{ $height->value}}
+                                                @endif
+)
+
+                                                <br>
+                                                @if ($maze)
+                                                (
+                                               {{ $maze->value}}
+                                                )
+                                            @endif
+
+
+                                                    </td>
+                                                    {{-- <td>@php
                                                         $Attribute = $product->attributes->firstWhere('name', 'width');
                                                     @endphp
                                                         @if ($Attribute)
@@ -156,15 +206,36 @@
                                                         @if ($Attribute)
                                                             {{ $Attribute->value }}
                                                         @endif
-                                                    </td>
-                                                    <td>@php
+                                                    </td> --}}
+                                                    {{-- <td>@php
                                                         $Attribute = $product->attributes->firstWhere('name', 'maze');
                                                     @endphp
                                                         @if ($Attribute)
                                                             {{ $Attribute->value }}
                                                         @endif
+                                                    </td> --}}
+                                                    {{-- <td>
+                                                        <p> ( {{ $margin_factor??"" }})</p>
+                                                     <p> ({{ $discount_per }})%</p>
+
                                                     </td>
-                                                    <td>{{ $product->total_price }}</td>
+                                                    <td>
+                                                        {{ $price_with_vat }} including vat
+                                                        <br>
+                                                        {{ $price_after_discount }}
+                                                        {{-- @php --}}
+                                                        {{-- //     $price = json_decode($product->json_format, true);
+                                                        //     // if($price && isset($price['country_margin'])){
+                                                        //     // print_r($price['country_margin'][1]['margin_factors']);
+                                                        //     // }
+                                                        // @endphp
+                                                        // @if ($price && isset($price['country_margin']))
+
+                                                        //     {{ $price['country_margin'][1]['margin_factors']}}
+                                                        // @else
+                                                        //     {{ 'N/A' }}
+                                                        {{-- // @endif --}}
+                                                    {{-- </td>  --}}
                                                     <td>
                                                         @php
                                                             $Attribute = $product->attributes->firstWhere(
@@ -209,7 +280,7 @@
                                                                         @endphp
                                                                         @if ($Attribute)
                                                                             <div class="description-content"
-                                                                                style="width: 100vw;">
+                                                                                style="width: 100vw;text-align:left">
                                                                                 {!! $Attribute->value !!}
                                                                             </div>
                                                                         @else

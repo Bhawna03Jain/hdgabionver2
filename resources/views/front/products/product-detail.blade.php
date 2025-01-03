@@ -132,10 +132,19 @@
                 </div>
                 <!-- Pricing -->
                 <div class="pb-4">
-                    <span class="text-red text-2xl font-bold">$980.00</span>
-                    <span class="line-through text-gray-500 ml-2">$990.00</span>
-                    <span class="text-green-600 ml-2">IN STOCK</span>
+                    @if(isset($price_after_discount) && isset($price_with_vat))
+                        <span class="text-red text-2xl font-bold">
+                            {{ number_format($price_after_discount, 2) }} €
+                        </span>
+                        <span class="line-through text-gray-500 ml-2">
+                            {{ number_format($price_with_vat, 2) }} €
+                        </span>
+                        <span class="text-green-600 ml-2">IN STOCK</span>
+                    @else
+                        <span class="text-gray-500 text-sm">Price not available</span>
+                    @endif
                 </div>
+
                 <!-- Description -->
                 <p class="text-gray-600 py-8">
                     {{ $product->attributes->firstwhere('name', 'short_description')->value }}
@@ -162,7 +171,7 @@
                     <div class="flex items-center border rounded-full">
                         <button class="px-3 py-2" onclick="decrement(this)">-</button>
                         <input type="number" value="1" id="qtyid"
-                            class="qty w-12 text-center border-none focus:outline-none">
+                            class="qty w-12 text-center border-none focus:outline-none" value="">
                         <button class="px-3 py-2" onclick="increment(this)">+</button>
                     </div>
                     <button class="bg-red text-white px-6 py-3 rounded-full hover:bg-red-light" id="add_to_cart"

@@ -15,7 +15,7 @@
         <div id="right" class="w-svw">
             <h2 class="font-bold text-2xl mb-5">SHOPPING CART</h2>
             <div class="overflow-x-auto">
-                <table class="table-fixed w-full text-center border-collapse">
+                <table class="table-fixed w-full text-center border-collapse" id="cart_items">
                     <thead class="border-b-2">
                         <tr class="">
                             <th class="border-b-2 border-slate-300 p-3 w-24 ">Image</th>
@@ -28,16 +28,19 @@
                     </thead>
                     <tbody>
                         @php
-                            $total = 0;
-
+                            $total_price_after_discount = 0;
+                            $total_price_with_vat=0;
                         @endphp
                         @forelse ($cartItems as $item)
                             @php
                                 $product = App\Models\Product::where(['id' => $item['product_id']])->first();
-                                $attribute = $product->attributes->firstwhere('name', 'price');
-                                if ($attribute) {
-                                    $total += $attribute->value * $item['quantity'];
-                                }
+                                $total_price_after_discount+=$item['total_price_after_discount'];
+                                $total_price_with_vat+=$item['total_price_with_vat'];
+
+                                // $attribute = $product->attributes->firstwhere('name', 'price');
+                                // if ($attribute) {
+                                //     $total += $attribute->value * $item['quantity'];
+                                // }
                             @endphp
                             <tr>
                                 <td class="border-b-2 border-slate-300 flex justify-center items-center py-3">
@@ -53,10 +56,10 @@
                                 <td class="border-b-2 border-slate-300">
                                     <div class="flex items-center justify-center border rounded-full">
                                         <button class="px-3 py-2 decrementBtn"  data-id={{ $item['product_id'] }}>-</button>
-                                        <input type="number" name="" id="" min="1"
+                                        <input type="text" name="" id="" min="1"
                                             class="qty border border-1 w-10" value="{{ $item['quantity'] }}"
                                             data-id={{ $item['product_id'] }}
-                                            data-price="{{ $product->attributes->firstwhere('name', 'price') ? $product->attributes->firstwhere('name', 'price')->value : 0 }}">
+                                            data-price="{{ $item['price_after_discount'] ?: 0 }}">
                                         <button class="px-3 py-2 incrementBtn"  data-id={{ $item['product_id'] }}>+</button>
                                     </div>
                                     {{-- <input type="number" value="1" id="qty" class="w-12 text-center border-none focus:outline-none" fdprocessedid="b1si91">
@@ -67,24 +70,33 @@
                                 </td>
                                 <td class="border-b-2 border-slate-300">
                                     <h4 class="price text-base">
-                                        {{ $product->attributes->firstwhere('name', 'price') ? $product->attributes->firstwhere('name', 'price')->value : 0 }}
+                                        <p class="text-green-700 font-bold"><i class="fa-solid fa-euro-sign"></i>{{ $item['price_after_discount'] ?: 0 }}</p>
+                                        <p class="line-through text-gray-600 text-xs"><i class="fa-solid fa-euro-sign"></i>{{ $item['price_with_vat'] ?: 0 }}</p><span class="text-xs">({{ $item['discount_per'] ?: 0 }}% off)</span>
+                                        {{-- {{ $product->attributes->firstwhere('name', 'price') ? $product->attributes->firstwhere('name', 'price')->value : 0 }} --}}
                                     </h4>
                                 </td>
-                                <td data-id={{ $item['product_id'] }} class="totalprice border-b-2 border-slate-300">
-                                    {{ $product->attributes->firstwhere('name', 'price') ? $product->attributes->firstwhere('name', 'price')->value * $item['quantity'] : 0 }}
+                                <td data-id={{ $item['product_id'] }} class="totalprice border-b-2 border-slate-300"><i class="fa-solid fa-euro-sign"></i>
+                                    {{  $item['price_after_discount'] ?  $item['price_after_discount']  * $item['quantity'] : 0 }}
                                 </td>
                                 <td class="border-b-2 border-slate-300"><i
                                         class="fa-solid fa-trash-can text-red text-xl"></i></td>
                             </tr>
                         @empty
                         @endforelse
-
                         <tr>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td class="border-b-2 border-slate-300 py-3">Sub Total</td>
-                            <td class="border-b-2 border-slate-300">{{ $total }}</td>
+                            <td class="border-b-2 border-slate-300 py-3" >Price With vat</td>
+                            <td class="border-b-2 border-slate-300" id="price_with_vat"><i class="fa-solid fa-euro-sign"></i> {{  $total_price_with_vat}}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="border-b-2 border-slate-300 py-3">Total Discount </td>
+                            <td class="border-b-2 border-slate-300" id="discount_price"><i class="fa-solid fa-euro-sign"></i> {{   $total_price_with_vat-$total_price_after_discount }}</td>
                             <td></td>
                         </tr>
                         <tr>
@@ -92,7 +104,7 @@
                             <td></td>
                             <td></td>
                             <td class="border-b-2 border-slate-300 py-3">Total</td>
-                            <td class="border-b-2 border-slate-300">{{ $total }}</td>
+                            <td class="border-b-2 border-slate-300" id="price_after_discount"><i class="fa-solid fa-euro-sign"></i> {{ $total_price_after_discount }}</td>
                             <td></td>
                         </tr>
 

@@ -1,24 +1,29 @@
 <?php
 namespace App\Services;
 
+use App\Models\CartItem;
 use App\Repositories\AttributeRepository;
 use App\Repositories\cartItemRepository;
 use App\Repositories\CartRepository;
+use Auth;
 use Illuminate\Http\Request;
+
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
-
-
-
+use Session;
 
 class CartService
 {
     protected $cartItemRepository;
+    protected $productService;
+    // protected $cartService;
 
-
-    public function __construct(CartRepository $cartRepository)
+    public function __construct(CartRepository $cartRepository,ProductService $productService)
     {
         $this->cartItemRepository = $cartRepository;
+        $this->productService = $productService;
+        // $this->cartService = $cartService;
+
 
     }
 
@@ -129,9 +134,9 @@ class CartService
     {
         return $this->cartItemRepository->delete($id);
     }
-    public function getcartByUserIdAndProductId($userid,$productid)
+    public function getcartByUserIdAndProductId($userid, $productid)
     {
-return $this->cartItemRepository->getcartByUserIdAndProductId($userid,$productid);
+        return $this->cartItemRepository->getcartByUserIdAndProductId($userid, $productid);
     }
     // public function generateSku($data, $cat_code)
     // {
@@ -142,4 +147,85 @@ return $this->cartItemRepository->getcartByUserIdAndProductId($userid,$productid
     //         return $sku;
     //     }
     // }
+    public function getCartItemsForUser()
+    {
+        if (Auth::check()) {
+            return CartItem::where('user_id', Auth::user()->id)->get();
+        } else {
+            return session()->get('cart', []);
+        }
+    }
+    public function getAddedCartItem($item){
+        // dd($item);
+        $product=$this->productService->getproductById($item['product_id']);
+        $price_with_vat = null;
+        $price_after_discount = null;
+        $discount_per = null;
+        if ($product) {
+            $price = json_decode($product->json_format, true);
+            $country_id = 1; // Default country ID
+
+            if ($price && isset($price['country_margin'][$country_id])) {
+                $country_margin = $price['country_margin'][$country_id];
+                // Calculate prices with discounts
+                $discount_per = $country_margin['discount_per'] ?? 0;
+                $price_with_vat = $country_margin['price_with_vat_netto'] ?? 0;
+                $price_after_discount = $price_with_vat * (1 - ($discount_per / 100));
+            }
+        }
+        $cartItems = [
+            'product_id' => $item['product_id'],
+            'name' => $product->name,
+            'quantity' => $item['quantity'],
+            'price' => 0,
+            'image' => $product->main_image,
+            'price_after_discount' => round($price_after_discount, 2), // Round to 2 decimal places
+            'discount_per' => round($discount_per, 2), // Round to 2 decimal places
+            'price_with_vat' => round($price_with_vat, 2), // Round to 2 decimal places
+            'total_price_with_vat' => round($price_with_vat * $item['quantity'], 2), // Calculate and round
+            'total_price_after_discount' => round($price_after_discount * $item['quantity'], 2), // Calculate and round
+        ];
+        // dd($cartItems);
+        return $cartItems;
+    }
+    public function mergeCartAfterLogin()
+    {
+        // dd(Session::has('cart'));
+        if (Session::has('cart')) {
+            $guestCart = Session::get('cart');
+
+            foreach ($guestCart as $item) {
+                // $data['user_id'] = Auth::user()->id;
+                $cartItem  = $this->getcartByUserIdAndProductId(Auth::user()->id,$item['product_id']);
+                // $this->cartService->getcartByUserIdAndProductId
+                // dd($data);
+                // $cartItem = $this->cartService->createcartItem($data);
+                // $cartItem = App\Models\CartItem::where('user_id', auth()->id())
+                //     ->where('product_id', $item['product_id'])
+                //     ->first();
+
+                if ($cartItem ) {
+                    $cartItem->update([
+                        'quantity' => $item['quantity'],
+                    ]);
+                } else {
+                    $data['user_id'] = Auth::user()->id;
+                    $data['quantity']=$item['quantity'];
+                    $data['product_id']=$item['product_id'];
+                    // dd($data);
+                    $cartItem = $this->createcartItem($data);
+                    // App\Models\CartItem::create([
+                    //     'user_id' => auth()->id(),
+                    //     'product_id' => $item['product_id'],
+                    //     'name' => $item['name'],
+                    //     'quantity' => $item['quantity'],
+                    //     'price' => $item['price'],
+                    // ]);
+                }
+            }
+// dd("merged");
+            // Clear the guest cart from the session
+            Session::forget('cart');
+        }
+    }
 }

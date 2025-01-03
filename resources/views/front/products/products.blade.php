@@ -194,6 +194,7 @@
                     <!-- Grid-->
                     <div id="products-grid" class=" grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @forelse ($products as $product)
+                        {{-- {{ $price_json=$product->json_format}} --}}
                             <div class="product rounded-lg border border-gray-300 mt-3" data-catcode={{ $cat_code }}>
                                 <!--Image Box-->
                                 <div class="img_box  relative flex justify-center items-center group rounded-full p-4">
@@ -225,9 +226,10 @@
                                     </div>
 
                                     <div class="price-big flex justify-center gap-6 items-center w-full">
-                                        <span class="text-2xl text-bold text-red">$43</span> <span
-                                            class="text-xl text-gray-500 line-through">$39</span>
-                                    </div>
+                                        <span class="text-xl font-bold text-green-700"><i class="fa-solid fa-euro-sign"></i>   {{ isset($price_after_discount[$country_id][$product->id]) ? round($price_after_discount[$country_id][$product->id], 2) : "" }}</span> <span
+                                            class="text-xl text-gray-500 line-through"><i class="fa-solid fa-euro-sign"></i>  {{ isset($price_with_vat[$country_id][$product->id]) ? round($price_with_vat[$country_id][$product->id], 2) : "" }}</span>
+
+                                        </div>
                                     <div class="action-btn flex justify-center items-center w-full gap-2 mb-1">
                                         <a href="product-detail/{{ $cat_code }}/{{ $product->id }}"
                                             class="ml-1 text-center text-base view-detail-large rounded-lg bg-red hover:bg-red-light px-1 py-2 w-1/2 text-white font-bold transition-all duration-300">View
@@ -277,8 +279,10 @@
                                     </div>
 
                                     <div class="price-big flex justify-center gap-6 items-center w-full">
-                                        <span class="text-2xl text-bold text-red">$43</span> <span
-                                            class="text-xl text-gray-500 line-through">$39</span>
+                                        {{-- <span class="text-2xl text-bold text-red">$43</span> <span
+                                            class="text-xl text-gray-500 line-through">$39</span> --}}
+                                            <span class="text-xl font-bold text-green-700"><i class="fa-solid fa-euro-sign"></i>   {{ isset($price_after_discount[$country_id][$product->id]) ? round($price_after_discount[$country_id][$product->id], 2) : "" }}</span> <span
+                                            class="text-xl text-gray-500 line-through"><i class="fa-solid fa-euro-sign"></i>  {{ isset($price_with_vat[$country_id][$product->id]) ? round($price_with_vat[$country_id][$product->id], 2) : "" }}</span>
                                     </div>
                                     <div class="action-btn flex justify-center items-center w-full gap-2 mb-1">
                                         <a href="product-detail/{{ $cat_code }}/{{ $product->id }}"
@@ -641,8 +645,8 @@
                             alert(decodeURIComponent(error));
                         });
                     } else if (resp.type === "success") {
-
-                        updateProductList(resp.products);
+// console.log(resp.country_id);
+                        updateProductList(resp.products,resp.price,resp.country_id);
                     } else {
                         console.log("in");
                     }
@@ -652,12 +656,12 @@
                 });
         }
 
-        function updateProductList(products) {
+        function updateProductList(products,price,country_id) {
 
             const productContainerGrid = document.querySelector("#products-grid");
             const productContainerList = document.querySelector("#products-list");
 const catcode=document.querySelector('main').dataset.catcode;
-console.log(catcode);
+console.log(price);
             // Clear existing products
             productContainerGrid.innerHTML = "";
             productContainerList.innerHTML = "";
@@ -667,6 +671,11 @@ console.log(catcode);
                 products.forEach((product) => {
 
                     if (product) {
+                         // Fetch price dynamically
+                const priceAfterDiscount =
+                    price?.price_after_discount?.[country_id]?.[product.id] || null;
+                const priceWithVat =
+                    price?.price_with_vat?.[country_id]?.[product.id] || null;
                         const productHTML = `<div class="product rounded-lg border border-gray-300 mt-3">
                                 <!--Image Box-->
                                 <div class="img_box  relative flex justify-center items-center group rounded-full p-4">
@@ -698,8 +707,10 @@ console.log(catcode);
                                     </div>
 
                                     <div class="price-big flex justify-center gap-6 items-center w-full">
-                                        <span class="text-2xl text-bold text-red">$43</span> <span
-                                            class="text-xl text-gray-500 line-through">$39</span>
+                                         <span class="text-xl font-bold text-green-700"><i class="fa-solid fa-euro-sign"></i> ${priceAfterDiscount ? priceAfterDiscount.toFixed(2) : ""}</span>
+                                          <span
+                                            class="text-xl text-gray-500 line-through"><i class="fa-solid fa-euro-sign"></i> ${priceWithVat ? priceWithVat.toFixed(2) : ""}</span>
+
                                     </div>
                                     <div class="action-btn flex justify-center items-center w-full gap-2 mb-1">
                                         <a href="product-detail/${catcode}/${product.id}"
@@ -745,11 +756,14 @@ console.log(catcode);
                                     <p class="text-sm">Mesh Size-${product.attributes.find((attr) => attr.name === "maze")?.value || ""}</p>
                                 </div>
 
-                                <div class="price-big flex justify-center gap-6 items-center w-full">
-                                    <span class="text-2xl text-bold text-red">$43</span> <span
-                                        class="text-xl text-gray-500 line-through">$39</span>
-                                </div>
 
+
+                                    <div class="price-big flex justify-center gap-6 items-center w-full">
+                                         <span class="text-xl font-bold text-green-700"><i class="fa-solid fa-euro-sign"></i> ${priceAfterDiscount ? priceAfterDiscount.toFixed(2) : ""}</span>
+                                          <span
+                                            class="text-xl text-gray-500 line-through"><i class="fa-solid fa-euro-sign"></i> ${priceWithVat ? priceWithVat.toFixed(2) : ""}</span>
+
+                                    </div>
                                  <div class="action-btn flex justify-center items-center w-full gap-2 mb-1">
                                         <a href="product-detail/${catcode}/${product.id}"
                                             class="ml-1 text-center text-base view-detail-large rounded-lg bg-red hover:bg-red-light px-1 py-2 w-1/2 text-white font-bold transition-all duration-300 text-center">View

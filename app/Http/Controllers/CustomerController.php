@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 // use App\Services\OrderService;
+use App\Services\CartService;
 use App\Services\UserService;
 use Auth;
 use Hash;
@@ -13,12 +14,13 @@ use Validator;
 class CustomerController extends Controller
 {
     protected $userService;
+    protected $cartService;
     // protected $orderService;
 
-    public function __construct(UserService $userService)
-    // ,OrderService $orderService)
+    public function __construct(UserService $userService,CartService $cartService)
     {
         $this->userService = $userService;
+        $this->cartService = $cartService;
         // $this->orderService = $orderService;
     }
 
@@ -34,6 +36,7 @@ class CustomerController extends Controller
     public function showLoginForm()
     {
 
+        //   dd('login');
         return view('front.customer.login');
     }
     public function register(Request $request)
@@ -160,7 +163,7 @@ class CustomerController extends Controller
     }
     public function login(Request $request)
     {
-
+// dd($request);
 
         $rules = [
             'email' => 'required|email|max:255',
@@ -178,6 +181,7 @@ class CustomerController extends Controller
         if ($this->userService->findByEmail($request->email)) {
             if ($this->userService->login($credentials)) {
                 if ($this->userService->isActive($request->email)) {
+                    $this->cartService->mergeCartAfterLogin();
                     $redirectUrl = session('url.intended', route('home'));
                     return response()->json([
                         'status' => 'true',

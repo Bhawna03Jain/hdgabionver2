@@ -71,7 +71,7 @@
             <div class="flex items-center gap-3">
                 <a href="#"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i> My
                     Account</a>
-                <a href="#"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i>
+                <a href="{{ route('customerLogout') }}"><i class="fa-regular fa-user text-red"></i><i class="fa fa-user-o text-red"></i>
                     Logout</a>
             </div>
             @else
@@ -290,30 +290,36 @@
                         <li class="shadow">
                             <div class="cart-list max-h-48 overflow-y-scroll  px-3 py-5">
                                 @forelse ($cartItems as $item)
+
                                     @php
+                                    // Session::forget('cart');
+                                    // print_r($item);
                                         $product = App\Models\Product::where(['id' => $item['product_id']])->first();
-                                        $attribute = $product->attributes->firstwhere('name', 'price');
-                                        if ($attribute) {
-                                            $total += $attribute->value * $item['quantity'];
-                                        }
+                                        // $attribute = $product->attributes->firstwhere('name', 'price');
+                                        // if ($attribute) {
+                                        //     $total += $attribute->value * $item['quantity'];
+                                        // }
+                                        $total+=$item['total_price_after_discount'];
                                     @endphp
-                                    <div class="product-widget relative flex items-center justify-around">
+                                    <div class="py-3 product-widget relative flex items-center justify-around">
                                         <div class="product-img max-w-12 m-3 flex justify-center items-center">
                                             <img class="w-fit object-contain" src="{{ asset($product->main_image) }}"
                                                 alt="">
                                         </div>
                                         <div class="product-body">
                                             <h3 class="product-name font-bold mb-1"><a
-                                                    href="#">{{ $product->name }}</a>
+                                                    href="/products/product-detail/baskets/{{ $product->id }}">{{ $product->name }}</a>
                                             </h3>
                                             <h4 class="product-price"><span
                                                     class="qty">{{ $item['quantity'] }}x</span><span
-                                                    class="price font-bold ml-1">{{ $attribute ? $attribute->value : 0 }}</span>
+                                                    class="price font-bold ml-1 text-green-800">{{ $item['price_after_discount'] ?  $item['price_after_discount'] : 0 }} <span class="line-through text-gray-700">{{ $item['price_with_vat'] ?  $item['price_with_vat'] : 0 }}</span> </span>
+                                                    <br><span class="font-bold">({{ $item['discount_per'] ?  $item['discount_per'] : 0 }}% off) </span>
                                             </h4>
                                         </div>
                                         <button class="delete absolute bg-red  text-white size-4 top-1 left-2"><i
                                                 class="fa fa-close"></i></button>
                                     </div>
+                                    <hr>
                                 @empty
                                 @endforelse
                             </div>
@@ -327,8 +333,8 @@
                         <li>
                             <div
                                 class="mt-1 cart-btns w-full flex justify-between items-center text-center text-white text-size-14 font-bold">
-                                <a href="#" class="bg-secondary-800 p-3 w-full">View Cart</a>
-                                <a href="#" class="bg-red p-3 w-full">Checkout <i
+                                <a href="/cart" class="bg-secondary-800 p-3 w-full">View Cart</a>
+                                <a href="/checkout" class="bg-red p-3 w-full">Checkout <i
                                         class="fa fa-arrow-circle-right pl-2"></i></a>
                             </div>
                         </li>
@@ -343,7 +349,7 @@
     </header>
 
     @yield('content')
-    @vite(['resources/js/common.js', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/checkout.js'])
+    @vite(['resources/js/common.js', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/checkout.js', 'resources/js/customerauth' ])
     @yield('script')
 </body>
 

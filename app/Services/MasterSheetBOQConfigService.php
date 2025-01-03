@@ -187,7 +187,7 @@ class MasterSheetBOQConfigService
                                     }
                                     $data['sides'] = $sides;
                                     $data['length_formula'] = "{{height}}";
-                                    $data['no_formula'] = "{{(width/10+1)*(length>100?3:2)}}";
+                                    $data['no_formula'] = "{{((height/10+1)*2)+((length>100)?(height/10+1):0)}}";
 
 
                                     break;
@@ -201,7 +201,8 @@ class MasterSheetBOQConfigService
                                     }
                                     $data['sides'] = $sides;
                                     $data['length_formula'] = "{{width}}";
-                                    $data['no_formula'] = "{{((width/maze+1)*2)(length>100?3:2)}}";
+                                    $data['no_formula'] = "{{((height/maze+1)*2)+((length>100)?(height/10+1):0)}}";
+
 
 
 
@@ -543,11 +544,12 @@ class MasterSheetBOQConfigService
         $BasketBOQData['exfactory_cost'] = round($BasketBOQData['material_configs']['total_price'] + $BasketBOQData['manufacturing_configs']['total_price'] + $BasketBOQData['taxes_configs']['total_price'], 2);
         // **For All Europe******
         $country_id = 1;
-        $BasketBOQData['country_id_' . $country_id]['margin_factors'] = $boqConfig->marginFactorsConfigs->where('country_id', 1)->first()->margin_factor;
-        $BasketBOQData['country_id_' . $country_id]['price_without_vat_bruto'] = round(($BasketBOQData['exfactory_cost'] * $BasketBOQData['country_id_' . $country_id]['margin_factors']) / 1.23, 2);
-        $BasketBOQData['country_id_' . $country_id]['price_with_vat_netto'] = round(($BasketBOQData['exfactory_cost'] * $BasketBOQData['country_id_' . $country_id]['margin_factors']), 2);
-        $BasketBOQData['country_id_' . $country_id]['vat_23'] = round(($BasketBOQData['country_id_' . $country_id]['price_with_vat_netto'] - $BasketBOQData['country_id_' . $country_id]['price_without_vat_bruto']), 2);
-        dd($BasketBOQData);
+        $BasketBOQData['country_margin'][$country_id]['margin_factors'] = $boqConfig->marginFactorsConfigs->where('country_id', 1)->first()->margin_factor;
+        $BasketBOQData['country_margin'][$country_id]['discount_per'] = $boqConfig->marginFactorsConfigs->where('country_id', 1)->first()->discount_per;
+        $BasketBOQData['country_margin'][$country_id]['price_without_vat_bruto'] = round(($BasketBOQData['exfactory_cost'] * $BasketBOQData['country_margin'][$country_id]['margin_factors']) / 1.23, 2);
+        $BasketBOQData['country_margin'][$country_id]['price_with_vat_netto'] = round(($BasketBOQData['exfactory_cost'] * $BasketBOQData['country_margin'][$country_id]['margin_factors']), 2);
+        $BasketBOQData['country_margin'][$country_id]['vat_23'] = round(($BasketBOQData['country_margin'][$country_id]['price_with_vat_netto'] - $BasketBOQData['country_margin'][$country_id]['price_without_vat_bruto']), 2);
+        // dd($BasketBOQData);
         return $BasketBOQData;
 
         // $country_margin_factors = $boqConfig->marginFactorsConfigs;
@@ -600,9 +602,11 @@ class MasterSheetBOQConfigService
     }
     function evaluateFormula($formula, $variables)
     {
+        // dd($formula);
+        $formula="{{((height/maze+1)*2)+((length>100)?(height/10+1):0)}}";
         // Clean the formula by removing placeholders and whitespace
         $formula = trim(str_replace(['{{', '}}'], '', $formula));
-
+// dd($formula);
         // If formula is not applicable, return default value
         if ($formula === "N/A") {
             return 0;
@@ -611,6 +615,8 @@ class MasterSheetBOQConfigService
         foreach ($variables as $key => $value) {
             $formula = str_replace($key, $value, $formula);
         }
+        // dd($formula);
+        // dd(eval ('return ' . $formula . ';'));
         // Safely evaluate the formula
         try {
             return eval ('return ' . $formula . ';');
@@ -638,25 +644,29 @@ class MasterSheetBOQConfigService
                     ];
                     // Length
                     $BasketBOQData['material_configs']['common'][$prodIdKey]['length'] = $this->evaluateFormula($material->length_formula, $variables);
-
+// dd($material->no_formula);
                     // No
                     $BasketBOQData['material_configs']['common'][$prodIdKey]['no'] = $this->evaluateFormula($material->no_formula, $variables);
 
                     // Weight in Kg
                     $variables['length'] = $BasketBOQData['material_configs']['common'][$prodIdKey]['length'] ?? 1;
                     $variables['no'] = $BasketBOQData['material_configs']['common'][$prodIdKey]['no'] ?? 1;
+                    dd($BasketBOQData['material_configs']['common'][$prodIdKey]['no']);
                     $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_kg'] = $this->evaluateFormula($material->weight_kg_formula, $variables);
                     $totalWeight += $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_kg'];
-
+// dd($totalWeight);
                     // Total Price in Euro
                     $variables['weight_kg'] = $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_kg'] ?? 1;
+                    // dd( $variables['unit_price']);
                     $BasketBOQData['material_configs']['common'][$prodIdKey]['price'] = $this->evaluateFormula($material->price_formula, $variables);
+                   dd($BasketBOQData['material_configs']['common'][$prodIdKey]['price']);
                     $totalMaterialCost += $BasketBOQData['material_configs']['common'][$prodIdKey]['price'];
 
                     // Additional attributes
                     $BasketBOQData['material_configs']['common'][$prodIdKey]['weight_per_unit'] = $variables['weight_per_unit'];
                     $BasketBOQData['material_configs']['common'][$prodIdKey]['unit_price'] = $variables['unit_price'];
                 }
+                dd($BasketBOQData['material_configs']['common']);
                 $BasketBOQData['material_configs']['common']['total_price'] = round($totalMaterialCost, 2);
                 $BasketBOQData['material_configs']['common']['total_weight_kg'] = $totalWeight;
 

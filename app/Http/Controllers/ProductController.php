@@ -41,7 +41,20 @@ class ProductController extends Controller
                 case 'baskets':
                     $products = $this->productService->getproductsWithAttributesByCatId
                     ($catid);
-                    // dd($products);
+                    //   foreach($products as $product){
+
+                    //     $price = json_decode($product->json_format, true);
+                    //     if($price && isset($price['country_margin'])){
+                    //         // dd($price['country_margin']);
+                    //         $margin_factor=$price['country_margin'][1]['margin_factors'];
+                    //         $discount_per=$price['country_margin'][1]['discount_per'];
+
+                    //         $price_with_vat=$price['country_margin'][1]['price_with_vat_netto'];
+                    //         $price_after_discount=$price_with_vat*(1-$price['country_margin'][1]['discount_per'])/100;
+
+                    //     }
+                    //   }
+
                     //  $categories = $this->categoryService->getAllCategories();
                     return view('admin.products.baskets.index', compact('products', 'category'));
                 case 'parts':
@@ -250,8 +263,8 @@ class ProductController extends Controller
                 switch ($cat_code) {
                     case 'baskets':
                         $BasketBOQData = $this->MasterSheetBOQConfigService->createSingleBasketBOQPrice($data, $cat_code);
-                       $data['json_format']=json_encode($BasketBOQData,true);
-dd($data);
+                        $data['json_format'] = json_encode($BasketBOQData, true);
+                        // dd($data);
                         break;
                     case 'parts':
 
@@ -529,6 +542,21 @@ dd($data);
                         $data['relevant_images'] = $request->relevant_images;
                     }
                     $data['sku'] = $sku;
+                    // ****************calculate Price from BOQ*****************
+
+                    if ($cat_code) {
+                        switch ($cat_code) {
+                            case 'baskets':
+                                $BasketBOQData = $this->MasterSheetBOQConfigService->createSingleBasketBOQPrice($data, $cat_code);
+                                $data['json_format'] = json_encode($BasketBOQData, true);
+                                // dd($data);
+                                break;
+                            case 'parts':
+
+                        }
+                    }
+
+                    // ****************End calculate Price from BOQ*****************
                     // dd($data);
                     if ($this->productService->updateProduct($data)) {
                         return response()->json([
@@ -609,10 +637,30 @@ dd($data);
                 // Get the filtered results
                 $products = $query->with('attributes')->get();
                 // dd($products);
+                $country_id=1;
+                $pricelist = [];
+                foreach ($products as $product) {
+
+                    $price = json_decode($product->json_format, true);
+
+                    if ($price && isset($price['country_margin'])) {
+                        // dd($price['country_margin']);
+                        // $margin_factor[$product->id]=$price['country_margin'][1]['margin_factors'];
+
+                        $pricelist['discount_per'][$country_id][$product->id] = $price['country_margin'][$country_id]['discount_per'];
+
+                        $pricelist['price_with_vat'][$country_id][$product->id] = $price['country_margin'][$country_id]['price_with_vat_netto'];
+                        $pricelist['price_after_discount'][$country_id][$product->id] = $pricelist['price_with_vat'][$country_id][$product->id] * (1 - ($price['country_margin'][$country_id]['discount_per'] / 100));
+
+                    }
+                }
+                // dd($pricelist);
                 // dd($products[0]['attributes']);
                 return response()->json([
                     'type' => 'success',
                     'products' => $products,
+                    'price' => $pricelist,
+                    'country_id'=>$country_id,
                     'message' => '/baskets'
                 ]);
             // $query = Product::query();
@@ -651,8 +699,30 @@ dd($data);
         $category = $this->categoryService->getCategoryByCode($type);
         $cat_code = $type;
         $products = $this->productService->getproductsWithAttributesByCatId($category->id);
+        $country_id=1;
+        foreach ($products as $product) {
+
+            $price = json_decode($product->json_format, true);
+            if ($price && isset($price['country_margin'])) {
+                // dd($price['country_margin']);
+                // $margin_factor[$product->id]=$price['country_margin'][1]['margin_factors'];
+
+                $discount_per[$country_id][$product->id] = $price['country_margin'][$country_id]['discount_per'];
+
+                $price_with_vat[$country_id][$product->id] = $price['country_margin'][$country_id]['price_with_vat_netto'];
+                $price_after_discount[$country_id][$product->id] = $price_with_vat[$country_id][$product->id] * (1 - ($price['country_margin'][$country_id]['discount_per'] / 100));
+
+            }
+        }
+        // foreach ($products as $product) {
+        //     if ($product->article_no == "1000030") {
+
+
+        //         dd($product->json_format);
+        //     }
+        // }
         if ($cat_code) {
-            return view('front.products.products', compact('products', 'category', 'cat_code'));
+            return view('front.products.products', compact('products', 'category', 'cat_code', 'country_id', 'price_with_vat', 'price_after_discount'));
 
             // switch ($cat_code) {
             //     case 'baskets':
@@ -677,16 +747,64 @@ dd($data);
     public function productDetail($type, $id)
     {
         // dd($type);
-
         $category = $this->categoryService->getCategoryByCode($type);
         $cat_code = $type;
         $product = $this->productService->getproductById($id);
-        // dd($product);
-        // $products = $this->productService->getproductsWithAttributesByCatId($category->id);
-        if ($cat_code) {
-            return view('front.products.product-detail', compact('product', 'category', 'cat_code'));
 
+        $price_with_vat = null;
+        $price_after_discount = null;
+        $discount_per = null;
+
+        if ($product) {
+            $price = json_decode($product->json_format, true);
+            $country_id = 1; // Default country ID
+
+            if ($price && isset($price['country_margin'][$country_id])) {
+                $country_margin = $price['country_margin'][$country_id];
+
+                // Calculate prices with discounts
+                $discount_per = $country_margin['discount_per'] ?? 0;
+                $price_with_vat = $country_margin['price_with_vat_netto'] ?? 0;
+                $price_after_discount = $price_with_vat * (1 - ($discount_per / 100));
+                // $price_after_discount = $price_with_vat * (1 - ($discount_per / 100));
+            }
         }
+
+        // Check if category exists
+        if ($cat_code) {
+            return view('front.products.product-detail', compact(
+                'product',
+                'category',
+                'cat_code',
+                'country_id',
+                'price_with_vat',
+                'price_after_discount',
+                'discount_per',
+
+            ));
+        }
+
+        // $category = $this->categoryService->getCategoryByCode($type);
+        // $cat_code = $type;
+        // $product = $this->productService->getproductById($id);
+        // $price = json_decode($product->json_format, true);
+        // $country_id=1;
+        // if ($price && isset($price['country_margin'])) {
+        //     // dd($price['country_margin']);
+        //     // $margin_factor[$product->id]=$price['country_margin'][1]['margin_factors'];
+
+        //     $discount_per[$country_id][$product->id] = $price['country_margin'][$country_id]['discount_per'];
+
+        //     $price_with_vat[$country_id][$product->id] = $price['country_margin'][$country_id]['price_with_vat_netto'];
+        //     $price_after_discount[$country_id][$product->id] = $price_with_vat[$country_id][$product->id] * (1 - ($price['country_margin'][$country_id]['discount_per'] / 100));
+
+        // }
+        // // dd($product);
+        // // $products = $this->productService->getproductsWithAttributesByCatId($category->id);
+        // if ($cat_code) {
+        //     return view('front.products.product-detail', compact('product', 'category', 'cat_code', 'country_id', 'price_with_vat', 'price_after_discount'));
+
+        // }
     }
     // *********************************End Front End***********************************
 }
